@@ -27,3 +27,7 @@
 *.exe
 *.out
 *.app
+
+# Backup files
+*.BAK
+*.CKP
