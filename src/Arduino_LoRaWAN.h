@@ -233,7 +233,7 @@ private:
 /****************************************************************************\
 |
 |	Eventually this will get removed for "free" builds. But if you build
-|	in the Arduino enfironment, this is going to get 
+|	in the Arduino enfironment, this is going to get hard to override.
 |
 \****************************************************************************/
 
