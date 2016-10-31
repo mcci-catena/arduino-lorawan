@@ -62,9 +62,9 @@ public:
 	/*
 	|| debug things
 	*/
-	enum { 
+	enum {
 	     LOG_BASIC = 1 << 0,
-	     LOG_ERRORS = 1 << 1, 
+	     LOG_ERRORS = 1 << 1,
 	     LOG_VERBOSE = 1 << 2,
 	     };
 
@@ -141,7 +141,7 @@ public:
 		/* format counts start with 2 for non-static C++ member fns */
 
 
-	/* 
+	/*
 	|| we only support a single instance, but we don't name it. During
 	|| begin processing, we register, then we can find it.
 	*/
