@@ -170,6 +170,39 @@ public:
 	    );
 
 protected:
+	virtual ProvisioningStyle GetProvisioningStyle(void)
+		{
+		return ProvisioningStyle::kNone;
+		}
+	virtual bool GetAbpProvisioningInfo(
+			AbpProvisioningInfo *pProvisioningInfo
+			)
+		{
+		if (pProvisioningInfo)
+                    {
+                    memset(
+                        pProvisioningInfo,
+                        0,
+                        sizeof(*pProvisioningInfo)
+                        );
+                    }
+		return false;
+		}
+	virtual bool GetAbpProvisioningInfo(
+			OtaaProvisioningInfo *pProvisioningInfo
+			)
+		{
+		if (pProvisioningInfo)
+                    {
+                    memset(
+                        pProvisioningInfo,
+                        0,
+                        sizeof(*pProvisioningInfo)
+                        );
+                    }
+		return false;
+		}
+
 	bool LogVerbose()
 		{
 		return this->m_ulDebugMask & LOG_VERBOSE;
