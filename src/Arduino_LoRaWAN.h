@@ -170,6 +170,13 @@ public:
 	    );
 
 protected:
+        // you must have a NetBegin() function or things won't work.
+        virtual bool NetBegin(void) = 0;
+
+        // you may have a NetJoin() function.
+        // if not, the base function does nothing.
+        virtual void NetJoin(void) {};
+
 	virtual ProvisioningStyle GetProvisioningStyle(void)
 		{
 		return ProvisioningStyle::kNone;
@@ -188,7 +195,7 @@ protected:
                     }
 		return false;
 		}
-	virtual bool GetAbpProvisioningInfo(
+	virtual bool GetOtaaProvisioningInfo(
 			OtaaProvisioningInfo *pProvisioningInfo
 			)
 		{
@@ -209,10 +216,15 @@ protected:
 		}
 	
 	uint32_t m_ulDebugMask;
-	ProvisioningInfo m_ProvisioningInfo;
 
 private:
+        // this is a 'global' -- it gives us a way to bootstrap
+        // back into C++ from the LMIC code.
 	static Arduino_LoRaWAN *pLoRaWAN;
+
+        void StandardEventProcessor(
+            uint32_t ev
+            );
 
 	struct Listener
 		{

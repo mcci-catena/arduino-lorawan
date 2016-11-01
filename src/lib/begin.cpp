@@ -1,4 +1,4 @@
-/* begin.cpp	Tue Oct 25 2016 03:38:36 tmm */
+/* begin.cpp	Tue Nov  1 2016 05:25:12 tmm */
 
 /*
 
@@ -8,7 +8,7 @@ Function:
 	Arduino_LoRaWAN::begin();
 
 Version:
-	V1.00a	Tue Oct 25 2016 03:38:36 tmm	Edit level 1
+	V0.2.0	Tue Nov  1 2016 05:25:12 tmm	Edit level 2
 
 Copyright notice:
 	This file copyright (C) 2016 by
@@ -26,7 +26,7 @@ Author:
 	Terry Moore, MCCI Corporation	October 2016
 
 Revision history:
-   1.00a  Tue Oct 25 2016 03:38:36  tmm
+   0.1.0  Tue Oct 25 2016 03:38:36  tmm
 	Module created.
 
 */
@@ -52,18 +52,6 @@ bool Arduino_LoRaWAN::begin()
     // Reset the MAC state. Session and pending data transfers will be 
     // discarded.
     LMIC_reset();
-
-    // Set data rate and transmit power (note: txpow seems to be ignored by 
-    // the library)
-    LMIC_setDrTxpow(DR_SF7,14);
-
-    // Select SubBand
-    cLMIC::SelectSubBand(
-        cLMIC::SubBand::SubBand_2 // must align with subband on gateway.
-        ); 
-
-    // Start job
-    // do_send(&sendjob);
 
     return true;
     }
@@ -93,6 +81,10 @@ void Arduino_LoRaWAN::DispatchEvent(
         cLMIC::GetEventName(ev)
         );
 
+    // do the usual work in another function, for clarity.
+    this->StandardEventProcessor(ev);
+
+    // dispatch to the registered clients
     for (unsigned i = 0; i < this->m_nRegisteredListeners; ++i)
         {
         this->m_RegisteredListeners[i].ReportEvent(ev);
@@ -141,7 +133,10 @@ Arduino_LoRaWAN::cLMIC::GetEventName(uint32_t ev)
         return p;
     }
 
-#if 0
+void Arduino_LoRaWAN::StandardEventProcessor(
+    uint32_t ev
+    )
+    {
     switch(ev) 
         {
         case EV_SCAN_TIMEOUT:
@@ -159,7 +154,7 @@ Arduino_LoRaWAN::cLMIC::GetEventName(uint32_t ev)
             // Disable link check validation (automatically enabled
             // during join, but not supported by TTN at this time).
             // TODO: move this to a TTN module; perhaps virtualize?
-            LMIC_setLinkCheckMode(0);
+	    this->NetJoin();
             break;
 
         case EV_RFU1:
@@ -172,18 +167,6 @@ Arduino_LoRaWAN::cLMIC::GetEventName(uint32_t ev)
             break;
 
         case EV_TXCOMPLETE:
-            // TODO: call the completion function for the current send,
-            // and advance the queue.
-            //
-            // Logger may well want to run on its own schedule.
-            // TODO: enforce access requriements here (if logger is running
-            // too fast, discard?)
-            //
-            // EV_TXCOMPLETE (includes waiting for RX windows)
-            // TODO: if LMIC.dataLen, report a message to the listener.
-            //    Serial.write(LMIC.frame+LMIC.dataBeg, LMIC.dataLen);
-            // os_setTimedCallback(&sendjob, os_getTime()+sec2osticks(TX_INTERVAL), do_send);
-
             break;
 
         case EV_LOST_TSYNC:
@@ -209,12 +192,11 @@ Arduino_LoRaWAN::cLMIC::GetEventName(uint32_t ev)
         case EV_TXSTART:
             break;
 
-        default:
-            if (Serial) Serial.println(F("Unknown event"));
-            break;
+	default:
+	    break;
+	}
     }
-}
-#endif
+
 
 /****************************************************************************\
 |
@@ -235,13 +217,15 @@ bool Arduino_LoRaWAN::GetAppEUI(
     uint8_t *pBuf
     )
     {
-    if (this->m_ProvisioningInfo.type != ProvisioningStyle::kOTAA)
+    OtaaProvisioningInfo otaaInfo;
+
+    if (! this->GetOtaaProvisioningInfo(&otaaInfo))
         return false;
 
     memcpy(
-        pBuf, 
-        this->m_ProvisioningInfo.otaa.AppEUI,
-        sizeof(this->m_ProvisioningInfo.otaa.AppEUI)
+        pBuf,
+        otaaInfo.AppEUI,
+        sizeof(otaaInfo.AppEUI)
         );
 
     return true;
@@ -260,13 +244,15 @@ bool Arduino_LoRaWAN::GetDevEUI(
     uint8_t *pBuf
     )
     {
-    if (this->m_ProvisioningInfo.type != ProvisioningStyle::kOTAA)
+    OtaaProvisioningInfo otaaInfo;
+
+    if (! this->GetOtaaProvisioningInfo(&otaaInfo))
         return false;
 
     memcpy(
         pBuf, 
-        this->m_ProvisioningInfo.otaa.DevEUI,
-        sizeof(this->m_ProvisioningInfo.otaa.DevEUI)
+        otaaInfo.DevEUI,
+        sizeof(otaaInfo.DevEUI)
         );
 
     return true;
@@ -287,13 +273,15 @@ bool Arduino_LoRaWAN::GetAppKey(
     uint8_t *pBuf
     )
     {
-    if (this->m_ProvisioningInfo.type != ProvisioningStyle::kOTAA)
+    OtaaProvisioningInfo otaaInfo;
+
+    if (! this->GetOtaaProvisioningInfo(&otaaInfo))
         return false;
 
     memcpy(
         pBuf, 
-        this->m_ProvisioningInfo.otaa.AppKey,
-        sizeof(this->m_ProvisioningInfo.otaa.AppKey)
+        otaaInfo.AppKey,
+        sizeof(otaaInfo.AppKey)
         );
 
     return true;

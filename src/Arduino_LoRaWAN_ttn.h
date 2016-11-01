@@ -51,6 +51,11 @@ class Arduino_LoRaWAN_ttn_base :  public Arduino_LoRaWAN
 public:
 	Arduino_LoRaWAN_ttn_base() {};
 
+protected:
+	// the netjoin function does any post-join work -- at present
+	// this can be shared by all networks.
+	void NetJoin();
+
 private:
 	};
 
@@ -66,6 +71,12 @@ class Arduino_LoRaWAN_ttn_us915 : public Arduino_LoRaWAN_ttn_base
 	{
 public:
 	Arduino_LoRaWAN_ttn_us915() {};
+
+protected:
+	// the NetBegin() function does specific work when starting
+	// up. For ttn we need to turn off the link check mode, and
+	// select the subband.
+	bool NetBegin();
 
 private:
 	};
