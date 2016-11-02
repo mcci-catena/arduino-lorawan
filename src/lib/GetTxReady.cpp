@@ -75,5 +75,5 @@ bool Arduino_LoRaWAN::GetTxReady()
         if (LMIC.opmode & OP_TXRXPEND)
                 return false;
         else
-                return true;
+                return ! this->m_fTxPending;
         }

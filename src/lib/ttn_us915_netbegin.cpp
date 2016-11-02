@@ -78,6 +78,12 @@ bool Arduino_LoRaWAN_ttn_us915::NetBegin()
                 abpInfo.AppSkey
                 );
 
+	// set the seqnoUp and seqnoDown
+	// presumably if non-zero, somebody is stashing these
+	// in NVR
+	LMIC.seqnoUp = abpInfo.InitialSeqnoUp;
+	LMIC.seqnoDn = abpInfo.InitialSeqnoDown;
+
         // becasue it's ABP, we need to set up the paramaters we'd set
         // after an OTAA join.
 

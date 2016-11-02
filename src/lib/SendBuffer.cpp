@@ -71,11 +71,17 @@ Revision history:
 
 bool Arduino_LoRaWAN::SendBuffer(
         const uint8_t *pBuffer,
-        size_t nBuffer
+        size_t nBuffer,
+        SendBufferCbFn *pDoneFn,
+        void *pDoneCtx
         )
         {
-        if (LMIC.opmode & OP_TXRXPEND)
+        if (this->m_fTxPending || LMIC.opmode & OP_TXRXPEND)
+                {
+                if (pDoneFn)
+                        (*pDoneFn)(pDoneCtx, false);
                 return false;
+                }
 
         const int iResult = LMIC_setTxData2(
                                 /* port: */ 1,
@@ -84,5 +90,17 @@ bool Arduino_LoRaWAN::SendBuffer(
                                 0
                                 );
 
-        return (iResult == 0);
+        if (iResult == 0)
+                {
+                this->m_fTxPending = true;
+                this->m_pSendBufferDoneFn = pDoneFn;
+                this->m_pSendBufferDoneCtx = pDoneCtx;
+                return true;
+                }
+        else
+                {
+                if (pDoneFn)
+                        (*pDoneFn)(pDoneCtx, false);
+                return false;
+                }
         }

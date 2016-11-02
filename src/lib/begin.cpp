@@ -53,7 +53,7 @@ bool Arduino_LoRaWAN::begin()
     // discarded.
     LMIC_reset();
 
-    return true;
+    return this->NetBegin();
     }
 
 /****************************************************************************\
@@ -167,6 +167,10 @@ void Arduino_LoRaWAN::StandardEventProcessor(
             break;
 
         case EV_TXCOMPLETE:
+            this->m_fTxPending = false;
+            this->NetTxComplete();
+            if (this->m_pSendBufferDoneFn)
+                this->m_pSendBufferDoneFn(this->m_pSendBufferDoneCtx, true);
             break;
 
         case EV_LOST_TSYNC:
@@ -178,6 +182,7 @@ void Arduino_LoRaWAN::StandardEventProcessor(
         case EV_RXCOMPLETE:
             // data received in ping slot
             // see TXCOMPLETE.
+            this->NetRxComplete();
             break;
 
         case EV_LINK_DEAD:

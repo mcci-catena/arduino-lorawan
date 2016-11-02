@@ -78,6 +78,8 @@ public:
 		uint8_t		NwkSkey[16];
 		uint8_t		AppSkey[16];
 		uint32_t	DevAddr;
+                uint32_t        InitialSeqnoUp;
+                uint32_t        InitialSeqnoDown;
 		};
 
 	struct OtaaProvisioningInfo
@@ -89,13 +91,16 @@ public:
 
 	struct ProvisioningInfo
 		{
-		ProvisioningStyle	type;
-		union
-			{
-			AbpProvisioningInfo abp;
-			OtaaProvisioningInfo otaa;
-			};
+		ProvisioningStyle	Style;
+		AbpProvisioningInfo     AbpInfo;
+		OtaaProvisioningInfo    OtaaInfo;
 		};
+
+        struct ProvisioningTable
+                {
+                const ProvisioningInfo  *pInfo;
+                unsigned                nInfo;
+                };
 
         /*
         || the constructor.
@@ -152,9 +157,13 @@ public:
 
 	bool GetTxReady();
 
+        typedef void SendBufferCbFn(void *pCtx, bool fSuccess);
+
 	bool SendBuffer(
 		const uint8_t *pBuffer,
-		size_t nBuffer
+		size_t nBuffer,
+                SendBufferCbFn pDoneFn = nullptr,
+                void *pCtx = nullptr
 		);
 
 	bool GetDevEUI(
@@ -175,7 +184,18 @@ protected:
 
         // you may have a NetJoin() function.
         // if not, the base function does nothing.
-        virtual void NetJoin(void) {};
+        virtual void NetJoin(void) 
+                { /* NOTHING */ };
+
+        // you may have a NetRxComplete() function. 
+        // if not, the base function does nothing.
+        virtual void NetRxComplete(void) 
+                { /* NOTHING */ };
+
+        // you may have a NetTxComplete() function. 
+        // if not, the base function does nothing.
+        virtual void NetTxComplete(void) 
+                { /* NOTHING */ };
 
 	virtual ProvisioningStyle GetProvisioningStyle(void)
 		{
@@ -212,10 +232,14 @@ protected:
 
 	bool LogVerbose()
 		{
-		return this->m_ulDebugMask & LOG_VERBOSE;
+		return (this->m_ulDebugMask & LOG_VERBOSE) != 0;
 		}
 	
 	uint32_t m_ulDebugMask;
+        bool m_fTxPending;
+
+        SendBufferCbFn *m_pSendBufferDoneFn;
+        void *m_pSendBufferDoneCtx;
 
 private:
         // this is a 'global' -- it gives us a way to bootstrap
@@ -249,7 +273,7 @@ private:
 |
 \****************************************************************************/
 
-#if MCCIADK_DEBUG
+#if MCCIADK_DEBUG || 1
 # define ARDUINO_LORAWAN_PRINTF(a_check, a_fmt, ...)    \
     do  {                                               \
         if (this->a_check())                            \
