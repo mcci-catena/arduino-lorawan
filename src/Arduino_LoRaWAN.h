@@ -68,6 +68,18 @@ public:
 	     LOG_VERBOSE = 1 << 2,
 	     };
 
+        struct lmic_pinmap {
+                // Use this for any unused pins.
+                static constexpr uint8_t LMIC_UNUSED_PIN = 0xff;
+                static constexpr int NUM_DIO = 3;
+
+                uint8_t nss;
+                uint8_t rxtx;
+                uint8_t rst;
+                uint8_t dio[NUM_DIO];
+                };
+
+
 	enum class ProvisioningStyle
 		{
 		kNone, kABP, kOTAA
@@ -106,6 +118,7 @@ public:
         || the constructor.
         */
         Arduino_LoRaWAN();
+        Arduino_LoRaWAN(const lmic_pinmap &pinmap) : m_lmic_pins(pinmap) {}
 
         /*
         || the begin function. Call this to start things (the constructor
@@ -178,6 +191,9 @@ public:
 	    uint8_t *pBuf
 	    );
 
+        // the pins
+        lmic_pinmap m_lmic_pins;
+
 protected:
         // you must have a NetBegin() function or things won't work.
         virtual bool NetBegin(void) = 0;
@@ -242,6 +258,7 @@ protected:
         void *m_pSendBufferDoneCtx;
 
 private:
+
         // this is a 'global' -- it gives us a way to bootstrap
         // back into C++ from the LMIC code.
 	static Arduino_LoRaWAN *pLoRaWAN;

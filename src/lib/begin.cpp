@@ -34,9 +34,13 @@ Revision history:
 #include <Arduino_LoRaWAN.h>
 #include <Arduino_LoRaWAN_lmic.h>
 #include <mcciadk_baselib.h>
+#include <hal/hal.h>
 
 /* the global instance pointer */
 Arduino_LoRaWAN *Arduino_LoRaWAN::pLoRaWAN = NULL;
+
+/* we have to provide the LMIC's instance of the lmic_pins structure */
+static struct ::lmic_pinmap s_lmic_pins;
 
 bool Arduino_LoRaWAN::begin()
     {
@@ -46,8 +50,15 @@ bool Arduino_LoRaWAN::begin()
 
     Arduino_LoRaWAN::pLoRaWAN = this;
 
+    // set up the LMIC pinmap.
+    s_lmic_pins.nss = this->m_lmic_pins.nss;
+    s_lmic_pins.rxtx = this->m_lmic_pins.rxtx;
+    s_lmic_pins.rst = this->m_lmic_pins.rst;
+    memcpy(s_lmic_pins.dio, this->m_lmic_pins.dio, sizeof(s_lmic_pins.dio));
+
     // LMIC init
-    os_init();
+    if (! os_init_ex(&s_lmic_pins))
+        return false;
 
     // Reset the MAC state. Session and pending data transfers will be 
     // discarded.

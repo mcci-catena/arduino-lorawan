@@ -50,6 +50,8 @@ class Arduino_LoRaWAN_ttn_base :  public Arduino_LoRaWAN
 	{
 public:
 	Arduino_LoRaWAN_ttn_base() {};
+        using Super = Arduino_LoRaWAN;
+        Arduino_LoRaWAN_ttn_base(const lmic_pinmap & pinmap) : Super(pinmap) {};
 
 protected:
 	// the netjoin function does any post-join work -- at present
@@ -62,7 +64,9 @@ private:
 class Arduino_LoRaWAN_ttn_eu868 : public Arduino_LoRaWAN_ttn_base
 	{
 public:
+        using Super = Arduino_LoRaWAN_ttn_base;
 	Arduino_LoRaWAN_ttn_eu868() {};
+        Arduino_LoRaWAN_ttn_eu868(const lmic_pinmap & pinmap) : Super(pinmap) {};
 
 private:
 	};
@@ -70,7 +74,9 @@ private:
 class Arduino_LoRaWAN_ttn_us915 : public Arduino_LoRaWAN_ttn_base
 	{
 public:
-	Arduino_LoRaWAN_ttn_us915() {};
+        using Super = Arduino_LoRaWAN_ttn_base;
+        Arduino_LoRaWAN_ttn_us915() {};
+        Arduino_LoRaWAN_ttn_us915(const lmic_pinmap & pinmap) : Super(pinmap) {};
 
 protected:
 	// the NetBegin() function does specific work when starting
@@ -84,7 +90,9 @@ private:
 class Arduino_LoRaWAN_ttn_as923 : public Arduino_LoRaWAN_ttn_base
 	{
 public:
-	Arduino_LoRaWAN_ttn_as923() {};
+        using Super = Arduino_LoRaWAN_ttn_base;
+        Arduino_LoRaWAN_ttn_as923() {};
+        Arduino_LoRaWAN_ttn_as923(const lmic_pinmap & pinmap) : Super(pinmap) {};
 
 private:
 	};
@@ -108,7 +116,9 @@ private:
 class Arduino_LoRaWAN_ttn : public Arduino_LoRaWAN_ttn_LOCAL(Arduino_LoRaWAN_REGION_TAG)
 	{
 public:
-	Arduino_LoRaWAN_ttn() {};
+        using Super = Arduino_LoRaWAN_ttn_LOCAL(Arduino_LoRaWAN_REGION_TAG);
+        Arduino_LoRaWAN_ttn() {};
+        Arduino_LoRaWAN_ttn(const lmic_pinmap & pinmap) : Super(pinmap) {};
 
 private:
 	};
