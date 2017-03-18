@@ -1,4 +1,4 @@
-/* begin.cpp	Tue Nov  1 2016 05:25:12 tmm */
+/* begin.cpp	Sun Mar 12 2017 15:05:33 tmm */
 
 /*
 
@@ -8,10 +8,10 @@ Function:
 	Arduino_LoRaWAN::begin();
 
 Version:
-	V0.2.0	Tue Nov  1 2016 05:25:12 tmm	Edit level 2
+	V0.2.2	Sun Mar 12 2017 15:05:33 tmm	Edit level 3
 
 Copyright notice:
-	This file copyright (C) 2016 by
+	This file copyright (C) 2016-2017 by
 
 		MCCI Corporation
 		3520 Krums Corners Road
@@ -28,6 +28,9 @@ Author:
 Revision history:
    0.1.0  Tue Oct 25 2016 03:38:36  tmm
 	Module created.
+
+   0.2.2  Sun Mar 12 2017 15:05:33  tmm
+	Revise to support stable storage of join parameters.
 
 */
 
@@ -143,11 +146,42 @@ Arduino_LoRaWAN::cLMIC::GetEventName(uint32_t ev)
     else
         return p;
     }
+
+/*
+
+Name:	Arduino_LoRaWAN::StandardEventProcessor()
+
+Function:
+	Handle LMIC events.
+
+Definition:
+	private: void Arduino_LoRaWAN::StandardEventProcessor(
+			uint32_t ev
+			);
+
+Description:
+	The simple events emitted from the LMIC core are processed, both
+	to arrange for completions and notificatoins for asynchronous events, 
+	and to generate notifications to cause data to be pushed to the
+	platform's persistent storage.
+
+Returns:
+	No explicit result.
+
+*/
 
 void Arduino_LoRaWAN::StandardEventProcessor(
     uint32_t ev
     )
     {
+    /* TODO (tmm@mcci.com) see if we can do a better job of filtering FCntDn */
+
+    if (this->m_savedFCntDown != LMIC.seqnoDn)
+	{
+	this->m_savedFCntDown = LMIC.seqnoDn;
+	this->NetSaveFCntDown(LMIC.seqnoDn);
+	}
+
     switch(ev) 
         {
         case EV_SCAN_TIMEOUT:
@@ -159,41 +193,83 @@ void Arduino_LoRaWAN::StandardEventProcessor(
         case EV_BEACON_TRACKED:
             break;
         case EV_JOINING:
+            // if we're joining, try to see if we have OTAA info. If not
+            // we need to just reset.
+            if (! this->GetOtaaProvisioningInfo(nullptr))
+                {
+                bool txPending = this->m_fTxPending;
+                this->m_fTxPending = false;
+                // notify client that TX is complete
+                if (txPending && this->m_pSendBufferDoneFn)
+                        this->m_pSendBufferDoneFn(this->m_pSendBufferDoneCtx, false);
+                }
             break;
 
         case EV_JOINED:
-            // Disable link check validation (automatically enabled
-            // during join, but not supported by TTN at this time).
-            // TODO: move this to a TTN module; perhaps virtualize?
+            {
+	    // announce that we have joined; allows for
+	    // network-specific fixups, and saving keys.
 	    this->NetJoin();
+            SessionInfo Info;
+            Info.V1.Tag = kSessionInfoTag_V1;
+            Info.V1.Size = sizeof(Info);
+            Info.V1.Rsv2 = 0;
+            Info.V1.Rsv3 = 0;
+            LMIC_getSessionKeys(&Info.V1.NetId, &Info.V1.DevAddr, Info.V1.NwkSkey, Info.V1.AppSkey);
+            Info.V1.FCntUp = LMIC.seqnoUp;
+            Info.V1.FCntDown = LMIC.seqnoDn;
+
+            this->NetSaveSessionInfo(Info, nullptr, 0);
+            }
             break;
 
         case EV_RFU1:
             break;
 
         case EV_JOIN_FAILED:
+	    // we failed the join. But we keep trying; client must
+	    // do a reset to stop us.
+	    // TODO(tmm@mcci.com): this->NetJoinFailed(), and/or 
+            // an outcall
             break;
 
         case EV_REJOIN_FAILED:
+	    // after we join, if ABP is enabled (LMIC_setLinkCheck(true)),
+	    // if we don't get downlink messages for a while, we'll try to
+	    // rejoin. This message indicated that the rejoin failed.
+	    // TODO(tmm@mcci.com): this->NetRejoinFailed(), and/or
+	    //	an outcall
             break;
 
         case EV_TXCOMPLETE:
             this->m_fTxPending = false;
+
+	    // notify framework that RX is available (because this happens
+	    // after every transmit. 
+	    this->NetRxComplete();
+
+	    // notify framework that tx is complete
             this->NetTxComplete();
-            if (this->m_pSendBufferDoneFn)
-                this->m_pSendBufferDoneFn(this->m_pSendBufferDoneCtx, true);
+
+	    // notify client that TX is complete
+            this->completeTx(true);
             break;
 
         case EV_LOST_TSYNC:
+	    // only for class-B or class-C: we lost beacon time synch.
             break;
 
         case EV_RESET:
+	    // the LoRaWAN MAC just got reset due to a pending frame rollover 
+	    // on FCntDn or actual rollover on FCntUp.
             break;
 
         case EV_RXCOMPLETE:
             // data received in ping slot
             // see TXCOMPLETE.
-            this->NetRxComplete();
+
+	    // follow protocol:
+	    this->NetRxComplete();
             break;
 
         case EV_LINK_DEAD:
@@ -206,6 +282,7 @@ void Arduino_LoRaWAN::StandardEventProcessor(
             break;
 
         case EV_TXSTART:
+	    this->NetSaveFCntUp(LMIC.seqnoUp);
             break;
 
 	default:
@@ -213,6 +290,26 @@ void Arduino_LoRaWAN::StandardEventProcessor(
 	}
     }
 
+void Arduino_LoRaWAN::NetRxComplete(void)
+	{
+	// notify client that RX is available
+	if (LMIC.dataLen)
+		{
+		if (this->m_pReceiveBufferFn)
+			{
+			this->m_pReceiveBufferFn(
+				this->m_pReceiveBufferCtx,
+				LMIC.frame + LMIC.dataBeg,
+				LMIC.dataLen
+				);
+			}
+		}
+
+	// Try to save the Rx sequence number.
+	// For efficiency, client should look for changes 
+	// since last save.
+	this->NetSaveFCntDown(LMIC.seqnoDn);
+	}
 
 /****************************************************************************\
 |

@@ -56,7 +56,7 @@ public:
 protected:
 	// the netjoin function does any post-join work -- at present
 	// this can be shared by all networks.
-	void NetJoin();
+	virtual void NetJoin();
 
 private:
 	};
@@ -83,6 +83,9 @@ protected:
 	// up. For ttn we need to turn off the link check mode, and
 	// select the subband.
 	bool NetBegin();
+
+	// Implement the NetJoin() operations for US915
+	virtual void NetJoin();
 
 private:
 	};

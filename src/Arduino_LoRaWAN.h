@@ -114,6 +114,45 @@ public:
                 unsigned                nInfo;
                 };
 
+	enum SessionInfoTag : uint8_t
+		{
+		kSessionInfoTag_V1 = 0x01,
+		};
+
+	struct SessionInfoHdr
+		{
+		uint8_t Tag;
+		uint8_t Size;
+		};
+
+	// Version 1 of session info.
+	struct SessionInfoV1
+		{
+		// to ensure packing, we just repeat the header.
+		uint8_t		Tag;		// kSessionInfoTag_V1
+		uint8_t		Size;		// sizeof(SessionInfoV1)
+		uint8_t		Rsv2;		// reserved
+		uint8_t		Rsv3;		// reserved
+                uint32_t        NetId;          // the network ID
+		uint32_t	DevAddr;	// device address
+		uint8_t		NwkSkey[16];	// network session key
+		uint8_t		AppSkey[16];	// app session key
+                uint32_t        FCntUp;		// uplink frame count
+                uint32_t        FCntDown;	// downlink frame count
+		};
+
+	// information about the curent session, stored persistenly if
+	// possible. We allow for versioning, primarily so that (if we
+	// choose) we can accommodate older versions and very simple
+	// storage schemes. However, this is just future-proofing.
+	union SessionInfo
+		{
+		// the header, same for all versions
+		SessionInfoHdr	Hdr;
+		// the body.
+		SessionInfoV1	V1;
+		};
+
         /*
         || the constructor.
         */
@@ -130,6 +169,16 @@ public:
 	|| the function to call from your loop()
 	*/
 	void loop(void);
+
+        /*
+        || Reset the LMIC
+        */
+        void Reset(void);
+
+        /*
+        || Shutdown the LMIC
+        */
+        void Shutdown(void);
 
         /*
         || Registering listeners... returns true for
@@ -175,9 +224,24 @@ public:
 	bool SendBuffer(
 		const uint8_t *pBuffer,
 		size_t nBuffer,
-                SendBufferCbFn pDoneFn = nullptr,
+                SendBufferCbFn *pDoneFn = nullptr,
                 void *pCtx = nullptr
 		);
+
+        typedef void ReceiveBufferCbFn(
+		void *pCtx, 
+		const uint8_t *pBuffer, 
+		size_t nBuffer
+		);
+
+	void SetReceiveBufferBufferCb(
+		ReceiveBufferCbFn *pReceiveBufferFn,
+		void *pCtx = nullptr
+		)
+		{
+		this->m_pReceiveBufferFn = pReceiveBufferFn;
+		this->m_pReceiveBufferCtx = pCtx;
+		}
 
 	bool GetDevEUI(
 		uint8_t *pBuf
@@ -205,36 +269,30 @@ protected:
 
         // you may have a NetRxComplete() function. 
         // if not, the base function does nothing.
-        virtual void NetRxComplete(void) 
-                { /* NOTHING */ };
+        virtual void NetRxComplete(void);
 
         // you may have a NetTxComplete() function. 
         // if not, the base function does nothing.
         virtual void NetTxComplete(void) 
                 { /* NOTHING */ };
 
+	// you should provide a function that returns the provisioning
+	// style from stable storage; if you don't yet have provisioning
+	// info, return ProvisioningStyle::kNone
 	virtual ProvisioningStyle GetProvisioningStyle(void)
 		{
-		return ProvisioningStyle::kNone;
+		return ProvisioningStyle::kOTAA;
 		}
+
+	// you should provide a function that returns provisioning info from 
+	// persistent storage. Called during initialization. If this returns
+	// false, OTAA will be forced. If this returns true (as it should for
+        // a saved session), 
 	virtual bool GetAbpProvisioningInfo(
 			AbpProvisioningInfo *pProvisioningInfo
 			)
 		{
-		if (pProvisioningInfo)
-                    {
-                    memset(
-                        pProvisioningInfo,
-                        0,
-                        sizeof(*pProvisioningInfo)
-                        );
-                    }
-		return false;
-		}
-	virtual bool GetOtaaProvisioningInfo(
-			OtaaProvisioningInfo *pProvisioningInfo
-			)
-		{
+		// if not provided, default zeros buf and returns false.
 		if (pProvisioningInfo)
                     {
                     memset(
@@ -246,6 +304,87 @@ protected:
 		return false;
 		}
 
+	// you should provide a function that returns 
+	// OTAA provisioning info from persistent storage. Only called
+	// if you return ProvisioningStyle::kOtaa to GetProvisioningStyle().
+	virtual bool GetOtaaProvisioningInfo(
+			OtaaProvisioningInfo *pProvisioningInfo
+			)
+		{
+		// if not provided, default zeros buf and returns false.
+		if (pProvisioningInfo)
+                    {
+                    memset(
+                        pProvisioningInfo,
+                        0,
+                        sizeof(*pProvisioningInfo)
+                        );
+                    }
+		return false;
+		}
+
+	// if you have persistent storage, you should provide a function
+	// that gets the saved session info from persistent storage, or
+	// indicate that there isn't a valid saved session. Note that
+	// the saved info is opaque to the higher level. The number of
+	// bytes actually stored into pSessionInfo is returned. FCntUp
+	// and FCntDown are stored separately.
+	virtual bool GetSavedSessionInfo(
+			SessionInfo *pSessionInfo,
+			uint8_t *pExtraSessionInfo,
+			size_t nExtraSessionInfo,
+			size_t *pnExtraSessionActual
+			)
+		{
+		// if not provided, default zeros buf and returns false.
+		if (pExtraSessionInfo)
+			{
+			memset(pExtraSessionInfo, 0, nExtraSessionInfo);
+			}
+		if (pSessionInfo)
+			{
+			memset(pSessionInfo, 0, sizeof(*pSessionInfo));
+			}
+		if (pnExtraSessionActual)
+			{
+			*pnExtraSessionActual = 0;
+			}
+		return false;
+		}
+
+	// if you have persistent storage, you shold provide a function that
+	// saves session info to persistent storage. This will be called
+	// after a successful join or a MAC message update.
+	virtual void NetSaveSessionInfo(
+			const SessionInfo &SessionInfo,
+			const uint8_t *pExtraSessionInfo,
+			size_t nExtraSessionInfo
+			)
+		{
+		// default: do nothing.
+		}
+
+	// Save FCntUp value (the uplink frame counter) (spelling matches
+	// LoRaWAN spec).
+	// If you have persistent storage, you should provide this function
+	virtual void NetSaveFCntUp(
+			uint32_t uFcntUp
+			)
+		{
+		// default: no nothing.
+		}
+
+	// save FCntDown value (the downlink frame counter) (spelling matches
+	// LoRaWAN spec).  If you have persistent storage, you should provide
+	// this function.
+	virtual void NetSaveFCntDown(
+			uint32_t uFcntDown
+			)
+		{
+		// default: do nothing.
+		}
+
+	// return true if verbose logging is enabled.
 	bool LogVerbose()
 		{
 		return (this->m_ulDebugMask & LOG_VERBOSE) != 0;
@@ -256,6 +395,18 @@ protected:
 
         SendBufferCbFn *m_pSendBufferDoneFn;
         void *m_pSendBufferDoneCtx;
+
+        void completeTx(bool fStatus)
+                {
+                SendBufferCbFn * const pSendBufferDoneFn = this->m_pSendBufferDoneFn;
+
+                this->m_pSendBufferDoneFn = nullptr;
+                if (pSendBufferDoneFn != nullptr)
+                        (*pSendBufferDoneFn)(this->m_pSendBufferDoneCtx, true);
+                };
+
+	ReceiveBufferCbFn *m_pReceiveBufferFn;
+	void *m_pReceiveBufferCtx;
 
 private:
 
@@ -280,7 +431,10 @@ private:
 
 	Listener m_RegisteredListeners[4];
 	uint32_t m_nRegisteredListeners;
-	
+
+	// since the LMIC code is not really obvious as to which events
+        // update the downlink count, we simply watch for changes.
+	uint32_t m_savedFCntDown;
         };
 
 /****************************************************************************\
