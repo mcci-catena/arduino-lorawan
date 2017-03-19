@@ -1,14 +1,14 @@
-/* begin.cpp	Sun Mar 12 2017 15:05:33 tmm */
+/* arduino_lorawan_begin.cpp	Sat Mar 18 2017 23:41:11 tmm */
 
 /*
 
-Module:  begin.cpp
+Module:  arduino_lorawan_begin.cpp
 
 Function:
 	Arduino_LoRaWAN::begin();
 
 Version:
-	V0.2.2	Sun Mar 12 2017 15:05:33 tmm	Edit level 3
+	V0.2.2	Sat Mar 18 2017 23:41:11 tmm	Edit level 4
 
 Copyright notice:
 	This file copyright (C) 2016-2017 by
@@ -31,6 +31,9 @@ Revision history:
 
    0.2.2  Sun Mar 12 2017 15:05:33  tmm
 	Revise to support stable storage of join parameters.
+
+   0.2.2  Sat Mar 18 2017 23:41:11  tmm
+	Rename to follow project standards.
 
 */
 
