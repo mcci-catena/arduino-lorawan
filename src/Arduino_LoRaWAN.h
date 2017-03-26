@@ -87,11 +87,12 @@ public:
 
 	struct AbpProvisioningInfo
 		{
-		uint8_t		NwkSkey[16];
-		uint8_t		AppSkey[16];
+		uint8_t		NwkSKey[16];
+		uint8_t		AppSKey[16];
 		uint32_t	DevAddr;
-                uint32_t        InitialSeqnoUp;
-                uint32_t        InitialSeqnoDown;
+                uint32_t        NwkID;
+                uint32_t        FCntUp;
+                uint32_t        FCntDown;
 		};
 
 	struct OtaaProvisioningInfo

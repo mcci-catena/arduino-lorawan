@@ -101,15 +101,15 @@ bool Arduino_LoRaWAN_ttn_us915::NetBegin()
         {
         LMIC_setSession(/* port */ 1,
                 abpInfo.DevAddr,
-                abpInfo.NwkSkey,
-                abpInfo.AppSkey
+                abpInfo.NwkSKey,
+                abpInfo.AppSKey
                 );
 
 	// set the seqnoUp and seqnoDown
 	// presumably if non-zero, somebody is stashing these
 	// in NVR
-	LMIC.seqnoUp = abpInfo.InitialSeqnoUp;
-	LMIC.seqnoDn = abpInfo.InitialSeqnoDown;
+	LMIC.seqnoUp = abpInfo.FCntUp;
+	LMIC.seqnoDn = abpInfo.FCntDown;
 
         // because it's ABP, we need to set up the parameters we'd set
         // after an OTAA join.
