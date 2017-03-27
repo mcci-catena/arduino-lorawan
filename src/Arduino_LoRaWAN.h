@@ -90,7 +90,7 @@ public:
 		uint8_t		NwkSKey[16];
 		uint8_t		AppSKey[16];
 		uint32_t	DevAddr;
-                uint32_t        NwkID;
+                uint32_t        NetID;
                 uint32_t        FCntUp;
                 uint32_t        FCntDown;
 		};
@@ -134,10 +134,10 @@ public:
 		uint8_t		Size;		// sizeof(SessionInfoV1)
 		uint8_t		Rsv2;		// reserved
 		uint8_t		Rsv3;		// reserved
-                uint32_t        NetId;          // the network ID
+                uint32_t        NetID;          // the network ID
 		uint32_t	DevAddr;	// device address
-		uint8_t		NwkSkey[16];	// network session key
-		uint8_t		AppSkey[16];	// app session key
+		uint8_t		NwkSKey[16];	// network session key
+		uint8_t		AppSKey[16];	// app session key
                 uint32_t        FCntUp;		// uplink frame count
                 uint32_t        FCntDown;	// downlink frame count
 		};

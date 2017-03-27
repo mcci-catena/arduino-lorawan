@@ -218,7 +218,7 @@ void Arduino_LoRaWAN::StandardEventProcessor(
             Info.V1.Size = sizeof(Info);
             Info.V1.Rsv2 = 0;
             Info.V1.Rsv3 = 0;
-            LMIC_getSessionKeys(&Info.V1.NetId, &Info.V1.DevAddr, Info.V1.NwkSkey, Info.V1.AppSkey);
+            LMIC_getSessionKeys(&Info.V1.NetID, &Info.V1.DevAddr, Info.V1.NwkSKey, Info.V1.AppSKey);
             Info.V1.FCntUp = LMIC.seqnoUp;
             Info.V1.FCntDown = LMIC.seqnoDn;
 
