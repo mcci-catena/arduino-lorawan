@@ -1,4 +1,4 @@
-/* Arduino_LoRaWAN_ttn.h	Mon Oct 31 2016 15:44:49 tmm */
+/* Arduino_LoRaWAN_ttn.h	Fri May 19 2017 23:58:34 tmm */
 
 /*
 
@@ -8,26 +8,29 @@ Function:
 	LoRaWAN-variants for The Things Network.
 
 Version:
-	V0.2.0	Mon Oct 31 2016 15:44:49 tmm	Edit level 1
+	V0.2.3	Fri May 19 2017 23:58:34 tmm	Edit level 2
 
 Copyright notice:
-	This file copyright (C) 2016 by
+	This file copyright (C) 2016-2017 by
 
 		MCCI Corporation
 		3520 Krums Corners Road
 		Ithaca, NY  14850
 
 	An unpublished work.  All rights reserved.
-	
+
 	This file is proprietary information, and may not be disclosed or
 	copied without the prior permission of MCCI Corporation.
- 
+
 Author:
 	Terry Moore, MCCI Corporation	October 2016
 
 Revision history:
    0.2.0  Mon Oct 31 2016 15:44:49  tmm
 	Module created.
+
+   0.2.3  Fri May 19 2017 23:58:34  tmm
+        Support eu868.
 
 */
 
@@ -54,9 +57,17 @@ public:
         Arduino_LoRaWAN_ttn_base(const lmic_pinmap & pinmap) : Super(pinmap) {};
 
 protected:
+        // the NetBegin() function does specific work when starting
+        // up; this does the common work for all TTN lorawan
+        // variants
+        virtual bool NetBegin();
+
 	// the netjoin function does any post-join work -- at present
 	// this can be shared by all networks.
 	virtual void NetJoin();
+
+        // every derivative must have a NetBeginInit.
+        virtual void NetBeginRegionInit() = 0;
 
 private:
 	};
@@ -68,8 +79,16 @@ public:
 	Arduino_LoRaWAN_ttn_eu868() {};
         Arduino_LoRaWAN_ttn_eu868(const lmic_pinmap & pinmap) : Super(pinmap) {};
 
+protected:
+        // the NetBeginInit() function does specific work for the common code
+        // when starting up.
+        virtual void NetBeginRegionInit();
+
+        // Implement the NetJoin() operations for eu868
+        virtual void NetJoin();
+
 private:
-	};
+        };
 
 class Arduino_LoRaWAN_ttn_us915 : public Arduino_LoRaWAN_ttn_base
 	{
@@ -79,10 +98,10 @@ public:
         Arduino_LoRaWAN_ttn_us915(const lmic_pinmap & pinmap) : Super(pinmap) {};
 
 protected:
-	// the NetBegin() function does specific work when starting
-	// up. For ttn we need to turn off the link check mode, and
+	// the NetBeginInit() function does specific work when starting
+	// up. For us915, we need to turn off the link check mode, and
 	// select the subband.
-	bool NetBegin();
+        virtual void NetBeginRegionInit();
 
 	// Implement the NetJoin() operations for US915
 	virtual void NetJoin();
@@ -96,6 +115,15 @@ public:
         using Super = Arduino_LoRaWAN_ttn_base;
         Arduino_LoRaWAN_ttn_as923() {};
         Arduino_LoRaWAN_ttn_as923(const lmic_pinmap & pinmap) : Super(pinmap) {};
+
+protected:
+	// the NetBeginInit() function does specific work when starting
+	// up. For us915, we need to turn off the link check mode, and
+	// select the subband.
+        virtual void NetBeginRegionInit();
+
+	// Implement the NetJoin() operations for as923
+	virtual void NetJoin();
 
 private:
 	};
