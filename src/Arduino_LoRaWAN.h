@@ -226,7 +226,8 @@ public:
 		const uint8_t *pBuffer,
 		size_t nBuffer,
                 SendBufferCbFn *pDoneFn = nullptr,
-                void *pCtx = nullptr
+                void *pCtx = nullptr,
+		bool fConfirmed = false
 		);
 
         typedef void ReceiveBufferCbFn(
