@@ -63,6 +63,7 @@ Revision history:
 \****************************************************************************/
 
 // protected virtual
+#ifdef CFG_us915
 void Arduino_LoRaWAN_ttn_us915::NetBeginRegionInit()
     {
     // Set data rate and transmit power
@@ -75,7 +76,7 @@ void Arduino_LoRaWAN_ttn_us915::NetBeginRegionInit()
     // LMIC.adrTxpow.  Then radio.c limits to the value for 10 dBm, and
     // apparendly doesn't even turn on the +20 dBm option if over 10 dBm.
 
-    LMIC_setDrTxpow(DR_SF7, 14);
+    LMIC_setDrTxpow(US915_DR_SF7, 14);
 
     // Select SubBand prejoin -- saves power for joining
     // This is specific to the US915 bandplan.
@@ -83,3 +84,4 @@ void Arduino_LoRaWAN_ttn_us915::NetBeginRegionInit()
         cLMIC::SubBand::SubBand_2 // must align with subband on gateway.
         );
     }
+#endif
