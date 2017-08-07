@@ -53,7 +53,7 @@ public:
 
 	static inline void SelectSubBand(SubBand subBand)
 		{
-#if CFG_us915
+#if CFG_LMIC_US_like
 		LMIC_selectSubBand(
 			static_cast<u1_t>(subBand)
 			);

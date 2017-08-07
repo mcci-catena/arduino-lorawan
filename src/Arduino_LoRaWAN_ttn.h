@@ -109,6 +109,26 @@ protected:
 private:
 	};
 
+class Arduino_LoRaWAN_ttn_au921 : public Arduino_LoRaWAN_ttn_base
+	{
+public:
+        using Super = Arduino_LoRaWAN_ttn_base;
+        Arduino_LoRaWAN_ttn_au921() {};
+        Arduino_LoRaWAN_ttn_au921(const lmic_pinmap & pinmap) : Super(pinmap) {};
+
+protected:
+	// the NetBeginInit() function does specific work when starting
+	// up. For au921, we need to turn off the link check mode, and
+	// select the subband.
+        virtual void NetBeginRegionInit();
+
+	// Implement the NetJoin() operations for US915
+	virtual void NetJoin();
+
+private:
+	};
+
+
 class Arduino_LoRaWAN_ttn_as923 : public Arduino_LoRaWAN_ttn_base
 	{
 public:
@@ -118,8 +138,7 @@ public:
 
 protected:
 	// the NetBeginInit() function does specific work when starting
-	// up. For us915, we need to turn off the link check mode, and
-	// select the subband.
+	// up. 
         virtual void NetBeginRegionInit();
 
 	// Implement the NetJoin() operations for as923
@@ -128,12 +147,35 @@ protected:
 private:
 	};
 
-#if CFG_eu868
+class Arduino_LoRaWAN_ttn_in866 : public Arduino_LoRaWAN_ttn_base
+	{
+public:
+        using Super = Arduino_LoRaWAN_ttn_base;
+        Arduino_LoRaWAN_ttn_in866() {};
+        Arduino_LoRaWAN_ttn_in866(const lmic_pinmap & pinmap) : Super(pinmap) {};
+
+protected:
+	// the NetBeginInit() function does specific work when starting
+	// up. 
+        virtual void NetBeginRegionInit();
+
+	// Implement the NetJoin() operations for as923
+	virtual void NetJoin();
+
+private:
+	};
+
+
+#if defined(CFG_eu868)
 # define Arduino_LoRaWAN_REGION_TAG eu868
-#elif CFG_us915
+#elif defined(CFG_us915)
 # define Arduino_LoRaWAN_REGION_TAG us915
-#elif defined(CFG_as923) && CFG_as923
+#elif defined(CFG_au921)
+# define Arduino_LoRaWAN_REGION_TAG au921
+#elif defined(CFG_as923)
 # define Arduino_LoRaWAN_REGION_TAG as923
+#elif defined(CFG_in866)
+# define Arduino_LoRaWAN_REGION_TAG in866
 #else
 # error "Can't define Arduino_LoRaWAN_REGION_TAG"
 #endif
