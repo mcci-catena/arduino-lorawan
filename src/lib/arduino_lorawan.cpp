@@ -71,4 +71,6 @@ Revision history:
 Arduino_LoRaWAN::Arduino_LoRaWAN()
         {
         memset(&this->m_lmic_pins, lmic_pinmap::LMIC_UNUSED_PIN, sizeof(this->m_lmic_pins));
+        this->m_lmic_pins.rxtx_rx_active = 0;
+        this->m_lmic_pins.spi_freq = 0;	/* use default */
         }
