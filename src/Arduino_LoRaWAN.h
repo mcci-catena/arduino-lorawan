@@ -81,8 +81,8 @@ public:
                 uint8_t rxtx;
                 uint8_t rst;
                 uint8_t dio[NUM_DIO];
-		uint8_t rxtx_rx_active;
-		uint32_t spi_freq;
+                uint8_t rxtx_rx_active;
+                uint32_t spi_freq;
                 };
 
 
