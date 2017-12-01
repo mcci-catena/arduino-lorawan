@@ -70,7 +70,15 @@ Revision history:
 
 Arduino_LoRaWAN::Arduino_LoRaWAN()
         {
+	// initialize the pin structure, which mostly needs to be 
+	// lmic_pinmap::LMIC_UNUSED_PIN
         memset(&this->m_lmic_pins, lmic_pinmap::LMIC_UNUSED_PIN, sizeof(this->m_lmic_pins));
+	
+	// However, a few fields need to be different.
+	// By default, we want the RX/TX pin to be high for TX.
         this->m_lmic_pins.rxtx_rx_active = 0;
+	
+	// By default, use the SPI frequency that comes from the LMIC
+	// configuration file.
         this->m_lmic_pins.spi_freq = 0;	/* use default */
         }
