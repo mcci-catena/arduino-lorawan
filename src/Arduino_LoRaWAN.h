@@ -68,6 +68,10 @@ public:
 	     LOG_VERBOSE = 1 << 2,
 	     };
 
+	// We must replicate the C structure from
+	// "lmic.h" inside the class. Otherwise we'd
+	// need to have all of lmic.h in scope everywhere,
+	// which could cause naming clashes.
         struct lmic_pinmap {
                 // Use this for any unused pins.
                 static constexpr uint8_t LMIC_UNUSED_PIN = 0xff;
@@ -77,6 +81,8 @@ public:
                 uint8_t rxtx;
                 uint8_t rst;
                 uint8_t dio[NUM_DIO];
+                uint8_t rxtx_rx_active;
+                uint32_t spi_freq;
                 };
 
 

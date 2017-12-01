@@ -57,10 +57,16 @@ bool Arduino_LoRaWAN::begin()
     Arduino_LoRaWAN::pLoRaWAN = this;
 
     // set up the LMIC pinmap.
+    // this is a little awkward because we don't want the LMIC
+    // header in scope everywhere, so we have a duplicate C++
+    // structure that's part of the class. Therefore we have to
+    // copy element by element.
     s_lmic_pins.nss = this->m_lmic_pins.nss;
     s_lmic_pins.rxtx = this->m_lmic_pins.rxtx;
     s_lmic_pins.rst = this->m_lmic_pins.rst;
     memcpy(s_lmic_pins.dio, this->m_lmic_pins.dio, sizeof(s_lmic_pins.dio));
+    s_lmic_pins.rxtx_rx_active = this->m_lmic_pins.rxtx_rx_active;
+    s_lmic_pins.spi_freq = this->m_lmic_pins.spi_freq;
 
     // LMIC init
     if (! os_init_ex(&s_lmic_pins))
