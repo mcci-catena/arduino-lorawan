@@ -50,6 +50,7 @@ The resulting programming environment is just a little more complicated than bas
 | Library | Version | Comments |
 |---------|:-------:|----------|
 | [arduino-lmic](https://github.com/mcci-catena/arduino-lmic) | 2.1.0 | Earlier versions will fail to compile due to missing `lmic_pinmap::rxtx_rx_polarity` and `lmic_pinmap::spi_freq` fields. |
+| [Catena MCCI ADK](https://github.com/mcci-catena/Catena-mcciadk) |*|Basic support functions|
 
 ## Release History
 

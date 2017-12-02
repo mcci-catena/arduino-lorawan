@@ -1,0 +1,37 @@
+{
+  "name": "MCCI Arduino LoRaWAN library",
+  "keywords": "ttn, lora, the things network",
+  "description": "High-level library for LoRaWAN-based Arduino end-devices",
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/mcci-catena/arduino-lorawan"
+  },
+  "authors":
+  [
+    {
+      "name": "Terry Moore",
+      "email": "tmm@mcci.com",
+      "maintainer": true
+    },
+    {
+      "name": "ChaeHee Won"
+    }
+  ],
+  "dependencies":
+  [
+    {
+      "name": "Multi-Bandplan IBM LMIC framework",
+      "version": "https://github.com/mcci-catena/arduino-lmic.git",
+      "authors": ["Matthijs Kooijman <matthijs@stdin.nl>", "Terry Moore <tmm@mcci.com>"]
+    },
+    {
+      "name": "Catena MCCI Arduino Development Kit",
+      "version": "https://github.com/mcci-catena/Catena-mcciadk.git",
+      "authors": ["Terry Moore <tmm@mcci.com>"]
+    }
+  ],
+  "version": "0.3.0",
+  "frameworks": "arduino",
+  "platforms": "*"
+}

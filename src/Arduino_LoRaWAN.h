@@ -36,7 +36,9 @@ Revision history:
 
 #include <stdint.h>
 #include <Arduino.h>
-#include <mcciadk_env.h>
+#ifndef _MCCIADK_ENV_H_
+# include <mcciadk_env.h>
+#endif
 
 class Arduino_LoRaWAN;
 
