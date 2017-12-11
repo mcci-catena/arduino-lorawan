@@ -50,9 +50,11 @@ The resulting programming environment is just a little more complicated than bas
 | Library | Version | Comments |
 |---------|:-------:|----------|
 | [arduino-lmic](https://github.com/mcci-catena/arduino-lmic) | 2.1.0 | Earlier versions will fail to compile due to missing `lmic_pinmap::rxtx_rx_polarity` and `lmic_pinmap::spi_freq` fields. |
-| [Catena MCCI ADK](https://github.com/mcci-catena/Catena-mcciadk) |*|Basic support functions|
+| [catena-mcci](https://github.com/mcci-catena/Catena-mcciadk) | 0.1.1 | Needed for miscellaneous definitions |
 
 ## Release History
+
+- V0.3.1 adds documention (in this file, in the [Required Libraries](#required-libraries) section) describing the need for the [catena-mcciadk](https://github.com/mcci-catena/Catena-mcciadk) library. No code changes.
 
 - V0.3.0 adds support for the Murata module. It requires V2.1.0 of the arduino-lmic library.
 
