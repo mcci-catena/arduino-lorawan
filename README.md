@@ -1,6 +1,6 @@
 # arduino-lorawan
 
-> **User-friendly library for using the Feather M0 LoRa with The Things Network and LoRaWAN™**
+> **User-friendly library for using the Feather M0 LoRa or MCCI Catena 4551 with The Things Network and LoRaWAN™**
 
 **Contents**
 <!-- TOC depthFrom:2 -->
@@ -66,9 +66,7 @@ The resulting programming environment is just a little more complicated than bas
 
 ## Notes
 
->  * MCCI and MCCI Catena are registered trademarks of MCCI Corporation. LoRaWAN is a trademark of the LoRa Alliance. All other trademarks are the properties of their respective owners.
 >  * Terry Moore of MCCI was the principal author of **arduino-lorawan**.
 >  * Many thanks to Bob Fendrick for assistance in preparing initial test units.
->  * **MCCI** and **Catena** are registered trademarks of MCCI Corporation.
->  * This document composed with [StackEdit](https://stackedit.io/).
-
+>  * **MCCI** and **Catena** are registered trademarks of MCCI Corporation. **LoRaWAN** is a trademark of the LoRa Alliance. All other trademarks are the properties of their respective owners.
+>  * This document initially composed with [StackEdit](https://stackedit.io/); now maintained using Visual Studio Code.
