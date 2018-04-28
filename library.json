@@ -1,5 +1,5 @@
 {
-  "name": "MCCI Arduino LoRaWAN library",
+  "name": "Arduino-LoRaWAN",
   "keywords": "ttn, lora, the things network",
   "description": "High-level library for LoRaWAN-based Arduino end-devices",
   "repository":
@@ -31,7 +31,7 @@
       "authors": ["Terry Moore <tmm@mcci.com>"]
     }
   ],
-  "version": "0.3.0",
+  "version": "0.3.3",
   "frameworks": "arduino",
   "platforms": "*"
 }
