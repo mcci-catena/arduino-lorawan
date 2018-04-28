@@ -45,9 +45,12 @@ Revision history:
 # include <mcciadk_env.h>
 #endif
 
+#if !defined(PLATFORMIO)
 /* this is a bit of a hack, but... */
 /* make sure we have the config variables in scope */
+/* Under PlatformIO use build_flags = -DCFG_ etc. in platformio.ini */
 #include "../../arduino-lmic/project_config/lmic_project_config.h"
+#endif
 
 class Arduino_LoRaWAN_ttn_base :  public Arduino_LoRaWAN
 	{

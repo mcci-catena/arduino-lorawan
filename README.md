@@ -52,7 +52,6 @@ The resulting programming environment is just a little more complicated than bas
 | [arduino-lmic](https://github.com/mcci-catena/arduino-lmic) | 2.1.0 | Earlier versions will fail to compile due to missing `lmic_pinmap::rxtx_rx_polarity` and `lmic_pinmap::spi_freq` fields. |
 | [catena-mcci](https://github.com/mcci-catena/Catena-mcciadk) | 0.1.1 | Needed for miscellaneous definitions |
 
-
 ## Release History
 
 - V0.3.2 is just documentation changes.
