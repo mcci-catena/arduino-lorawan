@@ -183,13 +183,7 @@ void Arduino_LoRaWAN::StandardEventProcessor(
     uint32_t ev
     )
     {
-    /* TODO (tmm@mcci.com) see if we can do a better job of filtering FCntDn */
-
-    if (this->m_savedFCntDown != LMIC.seqnoDn)
-	{
-	this->m_savedFCntDown = LMIC.seqnoDn;
-	this->NetSaveFCntDown(LMIC.seqnoDn);
-	}
+    this->UpdateFCntDown(LMIC.seqnoDn);
 
     switch(ev)
         {
@@ -317,9 +311,7 @@ void Arduino_LoRaWAN::NetRxComplete(void)
 	// Try to save the Rx sequence number.
 	// For efficiency, client should look for changes
 	// since last save.
-	//
-	// TODO(tmm@mcci.com) only if m_savedFCntDown != LMIC.seqnoDn.
-	this->NetSaveFCntDown(LMIC.seqnoDn);
+	this->UpdateFCntDown(LMIC.seqnoDn);
 	}
 
 /****************************************************************************\

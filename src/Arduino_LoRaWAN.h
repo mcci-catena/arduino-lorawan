@@ -447,6 +447,15 @@ private:
 	// since the LMIC code is not really obvious as to which events
 	// update the downlink count, we simply watch for changes.
 	uint32_t m_savedFCntDown;
+
+	void UpdateFCntDown(uint32_t newFCntDown)
+		{
+		if (this->m_savedFCntDown != newFCntDown)
+			{
+			this->m_savedFCntDown = newFCntDown;
+			this->NetSaveFCntDown(newFCntDown);
+			}
+		}
 	};
 
 /****************************************************************************\
