@@ -18,10 +18,10 @@ Copyright notice:
 		Ithaca, NY  14850
 
 	An unpublished work.  All rights reserved.
-	
+
 	This file is proprietary information, and may not be disclosed or
 	copied without the prior permission of MCCI Corporation.
- 
+
 Author:
 	Terry Moore, MCCI Corporation	October 2016
 
@@ -65,7 +65,7 @@ public:
 			);
 #else
 		/* nothing */
-#endif		
+#endif
 		}
 
 	static const char *GetEventName(uint32_t ev);
