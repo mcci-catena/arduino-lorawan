@@ -15,13 +15,13 @@ Copyright notice:
 
 		MCCI Corporation
 		3520 Krums Corners Road
-                Ithaca, NY  14850
+		Ithaca, NY  14850
 
 	An unpublished work.  All rights reserved.
-	
+
 	This file is proprietary information, and may not be disclosed or
 	copied without the prior permission of MCCI Corporation.
- 
+
 Author:
 	Terry Moore, MCCI Corporation	October 2016
 
@@ -54,7 +54,7 @@ typedef void ARDUINO_LORAWAN_EVENT_FN(void *, uint32_t);
 MCCIADK_END_DECLS
 
 class Arduino_LoRaWAN
-        {
+	{
 public:
 	/*
 	|| the internal LMIC wrapper
@@ -74,18 +74,18 @@ public:
 	// "lmic.h" inside the class. Otherwise we'd
 	// need to have all of lmic.h in scope everywhere,
 	// which could cause naming clashes.
-        struct lmic_pinmap {
-                // Use this for any unused pins.
-                static constexpr uint8_t LMIC_UNUSED_PIN = 0xff;
-                static constexpr int NUM_DIO = 3;
+	struct lmic_pinmap {
+		// Use this for any unused pins.
+		static constexpr uint8_t LMIC_UNUSED_PIN = 0xff;
+		static constexpr int NUM_DIO = 3;
 
-                uint8_t nss;
-                uint8_t rxtx;
-                uint8_t rst;
-                uint8_t dio[NUM_DIO];
-                uint8_t rxtx_rx_active;
-                uint32_t spi_freq;
-                };
+		uint8_t nss;
+		uint8_t rxtx;
+		uint8_t rst;
+		uint8_t dio[NUM_DIO];
+		uint8_t rxtx_rx_active;
+		uint32_t spi_freq;
+		};
 
 
 	enum class ProvisioningStyle
@@ -98,9 +98,9 @@ public:
 		uint8_t		NwkSKey[16];
 		uint8_t		AppSKey[16];
 		uint32_t	DevAddr;
-                uint32_t        NetID;
-                uint32_t        FCntUp;
-                uint32_t        FCntDown;
+		uint32_t        NetID;
+		uint32_t        FCntUp;
+		uint32_t        FCntDown;
 		};
 
 	struct OtaaProvisioningInfo
@@ -117,11 +117,11 @@ public:
 		OtaaProvisioningInfo    OtaaInfo;
 		};
 
-        struct ProvisioningTable
-                {
-                const ProvisioningInfo  *pInfo;
-                unsigned                nInfo;
-                };
+	struct ProvisioningTable
+		{
+		const ProvisioningInfo  *pInfo;
+		unsigned                nInfo;
+		};
 
 	enum SessionInfoTag : uint8_t
 		{
@@ -142,12 +142,12 @@ public:
 		uint8_t		Size;		// sizeof(SessionInfoV1)
 		uint8_t		Rsv2;		// reserved
 		uint8_t		Rsv3;		// reserved
-                uint32_t        NetID;          // the network ID
+		uint32_t        NetID;          // the network ID
 		uint32_t	DevAddr;	// device address
 		uint8_t		NwkSKey[16];	// network session key
 		uint8_t		AppSKey[16];	// app session key
-                uint32_t        FCntUp;		// uplink frame count
-                uint32_t        FCntDown;	// downlink frame count
+		uint32_t        FCntUp;		// uplink frame count
+		uint32_t        FCntDown;	// downlink frame count
 		};
 
 	// information about the curent session, stored persistenly if
@@ -162,38 +162,38 @@ public:
 		SessionInfoV1	V1;
 		};
 
-        /*
-        || the constructor.
-        */
-        Arduino_LoRaWAN();
-        Arduino_LoRaWAN(const lmic_pinmap &pinmap) : m_lmic_pins(pinmap) {}
+	/*
+	|| the constructor.
+	*/
+	Arduino_LoRaWAN();
+	Arduino_LoRaWAN(const lmic_pinmap &pinmap) : m_lmic_pins(pinmap) {}
 
-        /*
-        || the begin function. Call this to start things (the constructor
-        || does not!
-        */
-        bool begin(void);
+	/*
+	|| the begin function. Call this to start things (the constructor
+	|| does not!
+	*/
+	bool begin(void);
 
 	/*
 	|| the function to call from your loop()
 	*/
 	void loop(void);
 
-        /*
-        || Reset the LMIC
-        */
-        void Reset(void);
+	/*
+	|| Reset the LMIC
+	*/
+	void Reset(void);
 
-        /*
-        || Shutdown the LMIC
-        */
-        void Shutdown(void);
+	/*
+	|| Shutdown the LMIC
+	*/
+	void Shutdown(void);
 
-        /*
-        || Registering listeners... returns true for
-        || success.
-        */
-        bool RegisterListener(ARDUINO_LORAWAN_EVENT_FN *, void *);
+	/*
+	|| Registering listeners... returns true for
+	|| success.
+	*/
+	bool RegisterListener(ARDUINO_LORAWAN_EVENT_FN *, void *);
 
 	/*
 	|| Dispatch an event to all listeners
@@ -228,19 +228,19 @@ public:
 
 	bool GetTxReady();
 
-        typedef void SendBufferCbFn(void *pCtx, bool fSuccess);
+	typedef void SendBufferCbFn(void *pCtx, bool fSuccess);
 
 	bool SendBuffer(
 		const uint8_t *pBuffer,
 		size_t nBuffer,
-                SendBufferCbFn *pDoneFn = nullptr,
-                void *pCtx = nullptr,
+		SendBufferCbFn *pDoneFn = nullptr,
+		void *pCtx = nullptr,
 		bool fConfirmed = false
 		);
 
-        typedef void ReceiveBufferCbFn(
-		void *pCtx, 
-		const uint8_t *pBuffer, 
+	typedef void ReceiveBufferCbFn(
+		void *pCtx,
+		const uint8_t *pBuffer,
 		size_t nBuffer
 		);
 
@@ -265,26 +265,28 @@ public:
 	    uint8_t *pBuf
 	    );
 
-        // the pins
-        lmic_pinmap m_lmic_pins;
+	// the pins
+	lmic_pinmap m_lmic_pins;
 
 protected:
-        // you must have a NetBegin() function or things won't work.
-        virtual bool NetBegin(void) = 0;
+	// you must have a NetBegin() function or things won't work.
+	virtual bool NetBegin(void) = 0;
 
-        // you may have a NetJoin() function.
-        // if not, the base function does nothing.
-        virtual void NetJoin(void) 
-                { /* NOTHING */ };
+	// you may have a NetJoin() function.
+	// if not, the base function does nothing.
+	virtual void NetJoin(void)
+		{ /* NOTHING */ };
 
-        // you may have a NetRxComplete() function. 
-        // if not, the base function does nothing.
-        virtual void NetRxComplete(void);
+	// You may have a NetRxComplete() function; this is called
+	// when receive data *may* be available.
+	// If not, the base class function calls this->m_pReceiveBufferFn,
+	// and then calls this->NetSaveFCntDown().
+	virtual void NetRxComplete(void);
 
-        // you may have a NetTxComplete() function. 
-        // if not, the base function does nothing.
-        virtual void NetTxComplete(void) 
-                { /* NOTHING */ };
+	// you may have a NetTxComplete() function.
+	// if not, the base function does nothing.
+	virtual void NetTxComplete(void)
+		{ /* NOTHING */ };
 
 	// you should provide a function that returns the provisioning
 	// style from stable storage; if you don't yet have provisioning
@@ -294,27 +296,27 @@ protected:
 		return ProvisioningStyle::kOTAA;
 		}
 
-	// you should provide a function that returns provisioning info from 
+	// you should provide a function that returns provisioning info from
 	// persistent storage. Called during initialization. If this returns
 	// false, OTAA will be forced. If this returns true (as it should for
-        // a saved session), 
+	// a saved session),
 	virtual bool GetAbpProvisioningInfo(
 			AbpProvisioningInfo *pProvisioningInfo
 			)
 		{
 		// if not provided, default zeros buf and returns false.
 		if (pProvisioningInfo)
-                    {
-                    memset(
-                        pProvisioningInfo,
-                        0,
-                        sizeof(*pProvisioningInfo)
-                        );
-                    }
+		    {
+		    memset(
+			pProvisioningInfo,
+			0,
+			sizeof(*pProvisioningInfo)
+			);
+		    }
 		return false;
 		}
 
-	// you should provide a function that returns 
+	// you should provide a function that returns
 	// OTAA provisioning info from persistent storage. Only called
 	// if you return ProvisioningStyle::kOtaa to GetProvisioningStyle().
 	virtual bool GetOtaaProvisioningInfo(
@@ -323,13 +325,13 @@ protected:
 		{
 		// if not provided, default zeros buf and returns false.
 		if (pProvisioningInfo)
-                    {
-                    memset(
-                        pProvisioningInfo,
-                        0,
-                        sizeof(*pProvisioningInfo)
-                        );
-                    }
+		    {
+		    memset(
+			pProvisioningInfo,
+			0,
+			sizeof(*pProvisioningInfo)
+			);
+		    }
 		return false;
 		}
 
@@ -381,7 +383,7 @@ protected:
 			uint32_t uFcntUp
 			)
 		{
-		// default: no nothing.
+		// default: do nothing.
 		}
 
 	// save FCntDown value (the downlink frame counter) (spelling matches
@@ -399,34 +401,34 @@ protected:
 		{
 		return (this->m_ulDebugMask & LOG_VERBOSE) != 0;
 		}
-	
+
 	uint32_t m_ulDebugMask;
-        bool m_fTxPending;
+	bool m_fTxPending;
 
-        SendBufferCbFn *m_pSendBufferDoneFn;
-        void *m_pSendBufferDoneCtx;
+	SendBufferCbFn *m_pSendBufferDoneFn;
+	void *m_pSendBufferDoneCtx;
 
-        void completeTx(bool fStatus)
-                {
-                SendBufferCbFn * const pSendBufferDoneFn = this->m_pSendBufferDoneFn;
+	void completeTx(bool fStatus)
+		{
+		SendBufferCbFn * const pSendBufferDoneFn = this->m_pSendBufferDoneFn;
 
-                this->m_pSendBufferDoneFn = nullptr;
-                if (pSendBufferDoneFn != nullptr)
-                        (*pSendBufferDoneFn)(this->m_pSendBufferDoneCtx, true);
-                };
+		this->m_pSendBufferDoneFn = nullptr;
+		if (pSendBufferDoneFn != nullptr)
+			(*pSendBufferDoneFn)(this->m_pSendBufferDoneCtx, true);
+		};
 
 	ReceiveBufferCbFn *m_pReceiveBufferFn;
 	void *m_pReceiveBufferCtx;
 
 private:
 
-        // this is a 'global' -- it gives us a way to bootstrap
-        // back into C++ from the LMIC code.
+	// this is a 'global' -- it gives us a way to bootstrap
+	// back into C++ from the LMIC code.
 	static Arduino_LoRaWAN *pLoRaWAN;
 
-        void StandardEventProcessor(
-            uint32_t ev
-            );
+	void StandardEventProcessor(
+	    uint32_t ev
+	    );
 
 	struct Listener
 		{
@@ -443,9 +445,9 @@ private:
 	uint32_t m_nRegisteredListeners;
 
 	// since the LMIC code is not really obvious as to which events
-        // update the downlink count, we simply watch for changes.
+	// update the downlink count, we simply watch for changes.
 	uint32_t m_savedFCntDown;
-        };
+	};
 
 /****************************************************************************\
 |
@@ -457,11 +459,11 @@ private:
 #if MCCIADK_DEBUG || 1
 # define ARDUINO_LORAWAN_PRINTF(a_check, a_fmt, ...)    \
     do  {                                               \
-        if (this->a_check())                            \
-                {                                       \
-                this->LogPrintf(a_fmt, ## __VA_ARGS__); \
-                }                                       \
-        } while (0)
+	if (this->a_check())                            \
+		{                                       \
+		this->LogPrintf(a_fmt, ## __VA_ARGS__); \
+		}                                       \
+	} while (0)
 #else
 # define ARDUINO_LORAWAN_PRINTF(a_check, a_fmt, ...)	\
     do { ; } while (0)

@@ -18,10 +18,10 @@ Copyright notice:
                 Ithaca, NY  14850
 
 	An unpublished work.  All rights reserved.
-	
+
 	This file is proprietary information, and may not be disclosed or
 	copied without the prior permission of MCCI Corporation.
- 
+
 Author:
 	Terry Moore, MCCI Corporation	October 2016
 
@@ -72,7 +72,7 @@ bool Arduino_LoRaWAN::begin()
     if (! os_init_ex(&s_lmic_pins))
         return false;
 
-    // Reset the MAC state. Session and pending data transfers will be 
+    // Reset the MAC state. Session and pending data transfers will be
     // discarded.
     LMIC_reset();
 
@@ -85,7 +85,7 @@ bool Arduino_LoRaWAN::begin()
 |
 \****************************************************************************/
 
-void onEvent(ev_t ev) 
+void onEvent(ev_t ev)
     {
     Arduino_LoRaWAN * const pLoRaWAN = Arduino_LoRaWAN::GetInstance();
 
@@ -99,8 +99,8 @@ void Arduino_LoRaWAN::DispatchEvent(
     )
     {
     ARDUINO_LORAWAN_PRINTF(
-        LogVerbose, 
-        "EV_%s\n", 
+        LogVerbose,
+        "EV_%s\n",
         cLMIC::GetEventName(ev)
         );
 
@@ -119,10 +119,10 @@ bool Arduino_LoRaWAN::RegisterListener(
     void *pContext
     )
     {
-    if (this->m_nRegisteredListeners < 
+    if (this->m_nRegisteredListeners <
                 MCCIADK_LENOF(this->m_RegisteredListeners))
         {
-        Arduino_LoRaWAN::Listener * const pListener = 
+        Arduino_LoRaWAN::Listener * const pListener =
                 &this->m_RegisteredListeners[this->m_nRegisteredListeners];
         ++this->m_nRegisteredListeners;
 
@@ -144,9 +144,9 @@ Arduino_LoRaWAN::cLMIC::GetEventName(uint32_t ev)
 
     if (ev < ARDUINO_LORAWAN_LMIC_EV_NAMES__BASE)
         return "<<unknown>>";
-        
+
     p = McciAdkLib_MultiSzIndex(
-        szEventNames, 
+        szEventNames,
         ev - ARDUINO_LORAWAN_LMIC_EV_NAMES__BASE
         );
 
@@ -170,7 +170,7 @@ Definition:
 
 Description:
 	The simple events emitted from the LMIC core are processed, both
-	to arrange for completions and notificatoins for asynchronous events, 
+	to arrange for completions and notificatoins for asynchronous events,
 	and to generate notifications to cause data to be pushed to the
 	platform's persistent storage.
 
@@ -191,7 +191,7 @@ void Arduino_LoRaWAN::StandardEventProcessor(
 	this->NetSaveFCntDown(LMIC.seqnoDn);
 	}
 
-    switch(ev) 
+    switch(ev)
         {
         case EV_SCAN_TIMEOUT:
             break;
@@ -238,7 +238,7 @@ void Arduino_LoRaWAN::StandardEventProcessor(
         case EV_JOIN_FAILED:
 	    // we failed the join. But we keep trying; client must
 	    // do a reset to stop us.
-	    // TODO(tmm@mcci.com): this->NetJoinFailed(), and/or 
+	    // TODO(tmm@mcci.com): this->NetJoinFailed(), and/or
             // an outcall
             break;
 
@@ -253,8 +253,8 @@ void Arduino_LoRaWAN::StandardEventProcessor(
         case EV_TXCOMPLETE:
             this->m_fTxPending = false;
 
-	    // notify framework that RX is available (because this happens
-	    // after every transmit. 
+	    // notify framework that RX may be available (because this happens
+	    // after every transmit).
 	    this->NetRxComplete();
 
 	    // notify framework that tx is complete
@@ -269,7 +269,7 @@ void Arduino_LoRaWAN::StandardEventProcessor(
             break;
 
         case EV_RESET:
-	    // the LoRaWAN MAC just got reset due to a pending frame rollover 
+	    // the LoRaWAN MAC just got reset due to a pending frame rollover
 	    // on FCntDn or actual rollover on FCntUp.
             break;
 
@@ -315,8 +315,10 @@ void Arduino_LoRaWAN::NetRxComplete(void)
 		}
 
 	// Try to save the Rx sequence number.
-	// For efficiency, client should look for changes 
+	// For efficiency, client should look for changes
 	// since last save.
+	//
+	// TODO(tmm@mcci.com) only if m_savedFCntDown != LMIC.seqnoDn.
 	this->NetSaveFCntDown(LMIC.seqnoDn);
 	}
 
@@ -326,7 +328,7 @@ void Arduino_LoRaWAN::NetRxComplete(void)
 |
 \****************************************************************************/
 
-void os_getArtEui(uint8_t* buf) 
+void os_getArtEui(uint8_t* buf)
     {
     Arduino_LoRaWAN * const pLoRaWAN = Arduino_LoRaWAN::GetInstance();
 
@@ -353,7 +355,7 @@ bool Arduino_LoRaWAN::GetAppEUI(
     return true;
     }
 
-void os_getDevEui(uint8_t* buf) 
+void os_getDevEui(uint8_t* buf)
     {
     Arduino_LoRaWAN * const pLoRaWAN = Arduino_LoRaWAN::GetInstance();
 
@@ -372,7 +374,7 @@ bool Arduino_LoRaWAN::GetDevEUI(
         return false;
 
     memcpy(
-        pBuf, 
+        pBuf,
         otaaInfo.DevEUI,
         sizeof(otaaInfo.DevEUI)
         );
@@ -382,7 +384,7 @@ bool Arduino_LoRaWAN::GetDevEUI(
 
 
 
-void os_getDevKey(uint8_t* buf) 
+void os_getDevKey(uint8_t* buf)
     {
     Arduino_LoRaWAN * const pLoRaWAN = Arduino_LoRaWAN::GetInstance();
 
@@ -401,7 +403,7 @@ bool Arduino_LoRaWAN::GetAppKey(
         return false;
 
     memcpy(
-        pBuf, 
+        pBuf,
         otaaInfo.AppKey,
         sizeof(otaaInfo.AppKey)
         );
