@@ -34,6 +34,12 @@ Revision history:
 #ifndef _ARDUINO_LORAWAN_LMIC_H_		/* prevent multiple includes */
 #define _ARDUINO_LORAWAN_LMIC_H_
 
+#pragma once
+
+#ifndef _ARDUINO_LORAWAN_H_
+# include <Arduino_LoRaWAN.h>
+#endif
+
 #include <lmic.h>
 
 class Arduino_LoRaWAN::cLMIC
