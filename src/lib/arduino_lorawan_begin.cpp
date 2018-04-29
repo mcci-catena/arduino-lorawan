@@ -253,8 +253,8 @@ void Arduino_LoRaWAN::StandardEventProcessor(
         case EV_TXCOMPLETE:
             this->m_fTxPending = false;
 
-	    // notify framework that RX is available (because this happens
-	    // after every transmit. 
+	    // notify framework that RX may be available (because this happens
+	    // after every transmit).
 	    this->NetRxComplete();
 
 	    // notify framework that tx is complete
@@ -317,6 +317,8 @@ void Arduino_LoRaWAN::NetRxComplete(void)
 	// Try to save the Rx sequence number.
 	// For efficiency, client should look for changes 
 	// since last save.
+	//
+	// TODO(tmm@mcci.com) only if m_savedFCntDown != LMIC.seqnoDn.
 	this->NetSaveFCntDown(LMIC.seqnoDn);
 	}
 
