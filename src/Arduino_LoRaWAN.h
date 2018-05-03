@@ -265,6 +265,21 @@ public:
 	    uint8_t *pBuf
 	    );
 
+        // return true iff network seems to be provisioned
+        virtual bool IsProvisioned(void)
+                {
+                switch (this->GetProvisioningStyle())
+                        {
+                case ProvisioningStyle::kABP:
+                        return this->GetAbpProvisioningInfo(nullptr);
+                case ProvisioningStyle::kOTAA:
+                        return this->GetOtaaProvisioningInfo(nullptr);
+                case ProvisioningStyle::kNone:
+                default:
+                        return false;
+                        }
+                }
+
 	// the pins
 	lmic_pinmap m_lmic_pins;
 
@@ -299,7 +314,8 @@ protected:
 	// you should provide a function that returns provisioning info from
 	// persistent storage. Called during initialization. If this returns
 	// false, OTAA will be forced. If this returns true (as it should for
-	// a saved session),
+	// a saved session), then a call with a non-null pointer will get teh
+        // filled-in provisioning info.
 	virtual bool GetAbpProvisioningInfo(
 			AbpProvisioningInfo *pProvisioningInfo
 			)
