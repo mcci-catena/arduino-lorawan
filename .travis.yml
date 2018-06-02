@@ -31,8 +31,8 @@ before_install:
   - arduino --pref "boardsmanager.additional.urls=https://github.com/mcci-catena/arduino-boards/raw/master/BoardManagerFiles/package_mcci_index.json" --save-prefs
 
 install:
- - git clone --depth 1 https://github.com/mcci-catena/Catena-mcciadk.git $HOME/arduino_ide/libraries/Catena-mcciadk
- - git clone --depth 1 https://github.com/mcci-catena/arduino-lmic.git $HOME/arduino_ide/libraries/arduino-lmic
+ - git clone --depth=1 https://github.com/mcci-catena/Catena-mcciadk.git $HOME/arduino_ide/libraries/Catena-mcciadk
+ - git clone --depth=1 https://github.com/mcci-catena/arduino-lmic.git $HOME/arduino_ide/libraries/arduino-lmic
  - arduino --install-boards mcci:samd
 
 # - arduino --install-boards mcci:stm32
