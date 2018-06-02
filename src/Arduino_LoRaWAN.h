@@ -40,6 +40,8 @@ Revision history:
 # include <mcciadk_env.h>
 #endif
 
+#include <cstring>
+
 class Arduino_LoRaWAN;
 
 /*
@@ -123,15 +125,132 @@ public:
 		unsigned                nInfo;
 		};
 
-	enum SessionInfoTag : uint8_t
+	// US-like regions use a 72-bit mask of enabled channels.
+	// EU-like regions use a a table of 16 frequencies with 
+	//    100-Hz resolution (at 24 bits, that's 48 bytes)
+	//    In this encoding, we use zeros to represent disabled channels
+
+	struct SessionChannelMask_Header
 		{
-		kSessionInfoTag_V1 = 0x01,
+		enum eMaskKind : uint8_t { kEUlike = 0, kUSlike = 1 };
+
+		uint8_t		Tag;
+		uint8_t		Size;	
+		};
+	
+	struct SessionChannelMask_US_like
+		{
+		enum : uint32_t { nCh = 64 + 8 };
+
+		// the fields
+		SessionChannelMask_Header	Header;
+		uint8_t				ChannelMask[nCh / 8];
+
+		// the methods
+		bool isEnabled(unsigned iCh) const
+			{
+			if (iCh < nCh)
+				{
+				return this->ChannelMask[iCh / 8] & (1 << (iCh & 7));
+				}
+			else
+				return false;
+			}
+		
+		void clearAll() 
+			{
+			for (auto i = 0; i < nCh / 8; ++i)
+				this->ChannelMask[i] = 0;
+			}
+
+		// change enable state of indicated channel
+		// and return previous state.
+		bool enable(unsigned iCh, bool fEnable)
+			{
+			if (iCh < nCh)
+				{
+				auto pByte = this->ChannelMask + iCh/8;
+				uint8_t mask = 1 << (iCh & 7);
+				auto v = *pByte;
+				bool fResult = (v & mask) != 0;
+
+				if (fEnable)
+					*pByte = uint8_t(v | mask);
+				else
+					*pByte = uint8_t(v & ~mask);
+
+				return fResult;
+				}
+			else
+				return false;
+			}
 		};
 
-	struct SessionInfoHdr
+	struct SessionChannelMask_EU_like
 		{
-		uint8_t Tag;
-		uint8_t Size;
+		enum : uint32_t { nCh = 16 };
+
+		// the fields
+		SessionChannelMask_Header	Header;
+		uint8_t				ChannelFreq[nCh * 3];
+
+		// useful methods
+
+		// fetch the recorded frequency of a given channel.
+		uint32_t getFrequency(unsigned iCh) const
+			{
+			if (iCh > nCh)
+				return 0;
+			else
+				{
+				auto const chPtr = this->ChannelFreq + iCh * 3;
+				return (uint32_t(chPtr[0] << 16) |
+				        uint32_t(chPtr[1] << 8) |
+				        uint32_t(chPtr[2])) * 100;
+				} 
+			}
+
+		// record the frequency of a given channel.
+		bool setFrequency(unsigned iCh, uint32_t frequency)
+			{
+			if (iCh > nCh)
+				return false;
+			const uint32_t reducedFreq = frequency / 100;
+			if (reducedFreq > 0xFFFFFFu)
+				return false;
+
+			auto const chPtr = this->ChannelFreq + iCh * 3;
+			chPtr[0] = uint8_t(reducedFreq >> 16);
+			chPtr[1] = uint8_t(reducedFreq >> 8);
+			chPtr[2] = uint8_t(reducedFreq);
+			}
+
+		// clear all frequencies
+		void clearAll() 
+			{
+			std::memset(this->ChannelFreq, 0, sizeof(this->ChannelFreq));
+			}
+		};
+
+	union SessionChannelMask
+		{
+		SessionChannelMask_Header	Header;
+		SessionChannelMask_EU_like	EUlike;
+		SessionChannelMask_US_like	USlike;
+		};
+
+	// discriminate SessionInfo variants
+	enum SessionInfoTag : uint8_t
+		{
+		kSessionInfoTag_Null = 0x00,	// indicates that there's no info.
+		kSessionInfoTag_V1 = 0x01,	// indicates the V1 structure, which was written but never read.
+		kSessionInfoTag_V2 = 0x02,	// indicates the V2 structure, which is first version written and read.
+		};
+
+	struct SessionInfoHeader
+		{
+		uint8_t Tag;			// the discriminator
+		uint8_t Size;			// size of the overall structure
 		};
 
 	// Version 1 of session info.
@@ -150,6 +269,29 @@ public:
 		uint32_t        FCntDown;	// downlink frame count
 		};
 
+	// Version 2 of session info.
+	struct SessionInfoV2
+		{
+		// to ensure packing, we just repeat the header.
+		uint8_t		Tag;		// kSessionInfoTag_V1
+		uint8_t		Size;		// sizeof(SessionInfoV1)
+		uint8_t		Region;		// selected region.
+		uint8_t		LinkADR;	// Current link ADR (per [1.0.2] 5.2)
+		uint8_t		Redundancy;	// NbTrans (in bits 3:0)
+		uint32_t        NetID;          // the network ID
+		uint32_t	DevAddr;	// device address
+		uint8_t		NwkSKey[16];	// network session key
+		uint8_t		AppSKey[16];	// app session key
+		uint32_t        FCntUp;		// uplink frame count
+		uint32_t        FCntDown;	// downlink frame count
+		SessionChannelMask Channels;	// info about the enabled
+						// channels.
+		uint16_t	Country;	// Country code
+		uint8_t		DutyCycle;	// Duty cycle (per [1.0.2] 5.3)
+		// TODO(tmm@mcci.com) complete		 
+		};
+
+
 	// information about the curent session, stored persistenly if
 	// possible. We allow for versioning, primarily so that (if we
 	// choose) we can accommodate older versions and very simple
@@ -157,9 +299,17 @@ public:
 	union SessionInfo
 		{
 		// the header, same for all versions
-		SessionInfoHdr	Hdr;
-		// the body.
+		SessionInfoHeader	Header;
+
+		// the V1 version was never used by MCCI, but is
+		// maintained for reference, since it shipped and
+		// probably has been written to NVRAM
 		SessionInfoV1	V1;
+
+		// SessionInfo::V2 is used as of June 2018 for MCCI
+		// products to save session info in NVRAM. Layout is
+		// extended from SessionInfo::V1.
+		SessionInfoV2	V2;
 		};
 
 	/*
