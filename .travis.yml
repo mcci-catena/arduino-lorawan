@@ -10,8 +10,14 @@ before_install:
   - wget http://downloads.arduino.cc/arduino-1.8.5-linux64.tar.xz
   - tar xf arduino-1.8.5-linux64.tar.xz
   - mv arduino-1.8.5 $HOME/arduino_ide
-  - ln -s $PWD $HOME/arduino_ide/libraries/Test_Library
   - export PATH="$HOME/arduino_ide:$PATH"
+  #
+  # arduino_lorawan looks for project_config things, so we must put
+  # things in the canonical place
+  #
+  - export THISLIB="$HOME/arduino_ide/libraries/arduino-lorawan"
+  - ln -s $PWD $THISLIB
+
   #
   # functions to generate the board settings for SAMD, STM32L0, ...
   # keep args for these aligned for any common options. $1 is always board name, $2 is region.
@@ -45,37 +51,37 @@ script:
 
 #
 # test each of the regions.
- - arduino --verify --board $(_samdopts '' us915) $PWD/examples/header_test/header_test.ino
- - arduino --verify --board $(_samdopts '' eu868) $PWD/examples/header_test/header_test.ino
+ - arduino --verify --board $(_samdopts '' us915) $THISLIB/examples/header_test/header_test.ino
+ - arduino --verify --board $(_samdopts '' eu868) $THISLIB/examples/header_test/header_test.ino
 # V1.1.0 of the samd bsp doesn't support au921 correctly -- test with projcfg
-# - arduino --verify --board $(_samdopts '' au921) $PWD/examples/header_test/header_test.ino
- - _projcfg CFG_au921 CFG_sx1276_radio && arduino --verify --board $(_samdopts '' projcfg) $PWD/examples/header_test/header_test.ino
- - arduino --verify --board $(_samdopts '' as923) $PWD/examples/header_test/header_test.ino
- - arduino --verify --board $(_samdopts '' as923jp) $PWD/examples/header_test/header_test.ino
- - arduino --verify --board $(_samdopts '' in866) $PWD/examples/header_test/header_test.ino
+# - arduino --verify --board $(_samdopts '' au921) $THISLIB/examples/header_test/header_test.ino
+ - _projcfg CFG_au921 CFG_sx1276_radio && arduino --verify --board $(_samdopts '' projcfg) $THISLIB/examples/header_test/header_test.ino
+ - arduino --verify --board $(_samdopts '' as923) $THISLIB/examples/header_test/header_test.ino
+ - arduino --verify --board $(_samdopts '' as923jp) $THISLIB/examples/header_test/header_test.ino
+ - arduino --verify --board $(_samdopts '' in866) $THISLIB/examples/header_test/header_test.ino
 
- - arduino --verify --board $(_samdopts '' us915) $PWD/examples/header_test_lmic/header_test_lmic.ino
- - arduino --verify --board $(_samdopts '' eu868) $PWD/examples/header_test_lmic/header_test_lmic.ino
+ - arduino --verify --board $(_samdopts '' us915) $THISLIB/examples/header_test_lmic/header_test_lmic.ino
+ - arduino --verify --board $(_samdopts '' eu868) $THISLIB/examples/header_test_lmic/header_test_lmic.ino
 # V1.1.0 of the samd bsp doesn't support au921 correctly -- test with projcfg
-# - arduino --verify --board $(_samdopts '' au921) $PWD/examples/header_test_lmic/header_test_lmic.ino
- - _projcfg CFG_au921 CFG_sx1276_radio && arduino --verify --board $(_samdopts '' projcfg) $PWD/examples/header_test_lmic/header_test_lmic.ino
- - arduino --verify --board $(_samdopts '' as923) $PWD/examples/header_test_lmic/header_test_lmic.ino
- - arduino --verify --board $(_samdopts '' as923jp) $PWD/examples/header_test_lmic/header_test_lmic.ino
- - arduino --verify --board $(_samdopts '' in866) $PWD/examples/header_test_lmic/header_test_lmic.ino
+# - arduino --verify --board $(_samdopts '' au921) $THISLIB/examples/header_test_lmic/header_test_lmic.ino
+ - _projcfg CFG_au921 CFG_sx1276_radio && arduino --verify --board $(_samdopts '' projcfg) $THISLIB/examples/header_test_lmic/header_test_lmic.ino
+ - arduino --verify --board $(_samdopts '' as923) $THISLIB/examples/header_test_lmic/header_test_lmic.ino
+ - arduino --verify --board $(_samdopts '' as923jp) $THISLIB/examples/header_test_lmic/header_test_lmic.ino
+ - arduino --verify --board $(_samdopts '' in866) $THISLIB/examples/header_test_lmic/header_test_lmic.ino
 
- - arduino --verify --board $(_samdopts '' us915) $PWD/examples/header_test_ttn/header_test_ttn.ino
- - arduino --verify --board $(_samdopts '' eu868) $PWD/examples/header_test_ttn/header_test_ttn.ino
+ - arduino --verify --board $(_samdopts '' us915) $THISLIB/examples/header_test_ttn/header_test_ttn.ino
+ - arduino --verify --board $(_samdopts '' eu868) $THISLIB/examples/header_test_ttn/header_test_ttn.ino
 # V1.1.0 of the samd bsp doesn't support au921 correctly -- test with projcfg
-# - arduino --verify --board $(_samdopts '' au921) $PWD/examples/header_test_ttn/header_test_ttn.ino
- - _projcfg CFG_au921 CFG_sx1276_radio && arduino --verify --board $(_samdopts '' projcfg) $PWD/examples/header_test_ttn/header_test_ttn.ino
- - arduino --verify --board $(_samdopts '' as923) $PWD/examples/header_test_ttn/header_test_ttn.ino
- - arduino --verify --board $(_samdopts '' as923jp) $PWD/examples/header_test_ttn/header_test_ttn.ino
- - arduino --verify --board $(_samdopts '' in866) $PWD/examples/header_test_ttn/header_test_ttn.ino
+# - arduino --verify --board $(_samdopts '' au921) $THISLIB/examples/header_test_ttn/header_test_ttn.ino
+ - _projcfg CFG_au921 CFG_sx1276_radio && arduino --verify --board $(_samdopts '' projcfg) $THISLIB/examples/header_test_ttn/header_test_ttn.ino
+ - arduino --verify --board $(_samdopts '' as923) $THISLIB/examples/header_test_ttn/header_test_ttn.ino
+ - arduino --verify --board $(_samdopts '' as923jp) $THISLIB/examples/header_test_ttn/header_test_ttn.ino
+ - arduino --verify --board $(_samdopts '' in866) $THISLIB/examples/header_test_ttn/header_test_ttn.ino
 
 #
 # *** TESTS FOR STM32L0 / Catena 4551 ****
 #  make sure you install the BSP above.
 #
-# - arduino --verify --board $(_stm32l0opts) $PWD/examples/header_test/header_test.ino
+# - arduino --verify --board $(_stm32l0opts) $THISLIB/examples/header_test/header_test.ino
 
 ### end of file ###
