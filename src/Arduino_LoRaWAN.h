@@ -96,7 +96,10 @@ public:
 		uint8_t rst;
 		uint8_t dio[NUM_DIO];
 		uint8_t rxtx_rx_active;
-		uint32_t spi_freq;
+                int8_t rssi_cal;            // byte 7: cal in dB -- added to RSSI
+                                            //   measured prior to decision.
+                                            //   Must include noise guardband!
+                uint32_t spi_freq;          // bytes 8..11: SPI freq in Hz.
 		};
 
 
