@@ -55,6 +55,16 @@ MCCIADK_BEGIN_DECLS
 typedef void ARDUINO_LORAWAN_EVENT_FN(void *, uint32_t);
 MCCIADK_END_DECLS
 
+namespace Arduino_LMIC {
+        // return the country code
+        constexpr uint16_t kCountryCode(char c1, char c2)
+                {
+                return (c1 < 'A' || c1 > 'Z' || c2 < 'A' || c2 > 'Z')
+                        ? 0
+                        : ((c1 << 8) | c1);
+                }
+} // namespace Arduino_LMIC
+
 class Arduino_LoRaWAN
 	{
 public:
@@ -375,6 +385,34 @@ public:
 		{
 		return Arduino_LoRaWAN::pLoRaWAN;
 		}
+
+        // return the region string to the buffer
+        char *GetRegionString(char *pBuf, size_t sizeBuf) const;
+
+        // return the region code
+        enum class Region : uint8_t
+                {
+                unknown = 0,
+                eu868 = 1,
+                us915,
+                cn783,
+                eu433,
+                au921,
+                cn490,
+                as923,
+                kr921,
+                in866,
+                };
+        Region GetRegion(void) const;
+
+        enum class CountryCode : uint16_t
+                {
+                none = 0,
+                JP = Arduino_LMIC::kCountryCode('J', 'P'),
+                };
+        CountryCode GetCountryCode() const;
+
+        virtual const char *GetNetworkName() const = 0;
 
 	bool GetTxReady();
 

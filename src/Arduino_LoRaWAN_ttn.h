@@ -61,6 +61,11 @@ public:
         using Super = Arduino_LoRaWAN;
         Arduino_LoRaWAN_ttn_base(const lmic_pinmap & pinmap) : Super(pinmap) {};
 
+        virtual const char *GetNetworkName() const
+                {
+                return "The Things Network";
+                };
+
 protected:
         // the NetBegin() function does specific work when starting
         // up; this does the common work for all TTN lorawan
