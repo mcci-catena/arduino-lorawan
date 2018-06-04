@@ -18,11 +18,14 @@ Author:
 #include <Arduino_LoRaWAN_lmic.h>
 #include <mcciadk_baselib.h>
 
-char *
+const char *
 Arduino_LoRaWAN::GetRegionString(char *pBuf, size_t nBuf) const
         {
         if (pBuf == nullptr || nBuf == 0)
-                return "<<null>>";
+		{
+		static const char sNull[] = "<<null>>";
+                return sNull;
+		}
 
         const char *pString;
 

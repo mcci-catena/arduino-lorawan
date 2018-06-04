@@ -22,6 +22,7 @@ const Arduino_LoRaWAN::lmic_pinmap myPinmap = {
      .rst = 4,
      .dio = { 3, 6, Arduino_LoRaWAN::lmic_pinmap::LMIC_UNUSED_PIN },
      .rxtx_rx_active = 0,
+     .rssi_cal = 0,
      .spi_freq = 8000000,
 };
 

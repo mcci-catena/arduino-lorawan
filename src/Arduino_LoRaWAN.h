@@ -390,7 +390,7 @@ public:
 		}
 
         // return the region string to the buffer
-        char *GetRegionString(char *pBuf, size_t sizeBuf) const;
+        const char *GetRegionString(char *pBuf, size_t sizeBuf) const;
 
         // return the region code
         enum class Region : uint8_t
