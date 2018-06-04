@@ -109,8 +109,10 @@ private:
 
 #if defined(CFG_us915)
 # define Arduino_LoRaWAN_REGION_TAG us915
-#else
+#elif defined(ARDUINO_LORAWAN_NETWORK_MACHINEQ)
 # warning "Configured region not supported for machineQ: can't define Arduino_LoRaWAN_REGION_TAG"
+#else
+// just be silent if we don't think we're targeting MachineQ
 #endif
 
 #define Arduino_LoRaWAN_machineQ_LOCAL_(Region)		\
