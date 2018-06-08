@@ -29,7 +29,7 @@ before_install:
   #
   # Put one or more arguments into lmic_project_config.h as  `#define $i\n`
   # If an argument is A=B, produce '#define A B".'
-  - function _projcfg { function _projcfg { for i in "$@" ; do echo $i | awk 'BEGIN { FS="=" } { if ($2 == "") $2 = 1; printf("#define %s %s\\n", $1, $2); }' ; done  > $HOME/arduino_ide/libraries/arduino-lmic/project_config/lmic_project_config.h ; }
+  - 'function _projcfg { function _projcfg { for i in "$@" ; do echo $i | awk ''BEGIN { FS="=" } { if ($2 == "") $2 = 1; printf("#define %s %s\n", $1, $2); } ''; done  > $HOME/arduino_ide/libraries/arduino-lmic/project_config/lmic_project_config.h ; }'
   #
   # Handy macro to deal with expected failures.
   - 'function _expect_failure { if [ $? -eq 0 ]; then echo "Suceeded, but should have failed!" ; echo project_config/lmic_project_config.h ; cat $HOME/arduino_ide/libraries/arduino-lmic/project_config/lmic_project_config.h ; return 1 ; else echo "Failed, as expected"; return 0 ; fi ; }'
