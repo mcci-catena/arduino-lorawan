@@ -81,25 +81,25 @@ script:
 #
 # *** TESTS FOR STM32L0 / Catena 4551 ****
 #  make sure you install the BSP above.
- - _projcfg CFG_us915 CFG_sx1276_radio && arduino --verify --board $(_stm32l0opts projcfg) $THISLIB/examples/header_test/header_test.ino
- - _projcfg CFG_eu868 CFG_sx1276_radio && arduino --verify --board $(_stm32l0opts projcfg) $THISLIB/examples/header_test/header_test.ino
- - _projcfg CFG_au921 CFG_sx1276_radio && arduino --verify --board $(_stm32l0opts projcfg) $THISLIB/examples/header_test/header_test.ino
- - _projcfg CFG_as923 CFG_sx1276_radio && arduino --verify --board $(_stm32l0opts projcfg) $THISLIB/examples/header_test/header_test.ino
- - _projcfg CFG_as923 LMIC_COUNTRY_CODE=LMIC_COUNTRY_CODE_JP CFG_sx1276_radio && arduino --verify --board $(_stm32l0opts projcfg) $THISLIB/examples/header_test/header_test.ino
- - _projcfg CFG_in866 CFG_sx1276_radio && arduino --verify --board $(_stm32l0opts projcfg) $THISLIB/examples/header_test/header_test.ino
+ - _projcfg CFG_us915 CFG_sx1276_radio && arduino --verify --board $(_stm32l0opts '' projcfg) $THISLIB/examples/header_test/header_test.ino
+ - _projcfg CFG_eu868 CFG_sx1276_radio && arduino --verify --board $(_stm32l0opts '' projcfg) $THISLIB/examples/header_test/header_test.ino
+ - _projcfg CFG_au921 CFG_sx1276_radio && arduino --verify --board $(_stm32l0opts '' projcfg) $THISLIB/examples/header_test/header_test.ino
+ - _projcfg CFG_as923 CFG_sx1276_radio && arduino --verify --board $(_stm32l0opts '' projcfg) $THISLIB/examples/header_test/header_test.ino
+ - _projcfg CFG_as923 LMIC_COUNTRY_CODE=LMIC_COUNTRY_CODE_JP CFG_sx1276_radio && arduino --verify --board $(_stm32l0opts '' projcfg) $THISLIB/examples/header_test/header_test.ino
+ - _projcfg CFG_in866 CFG_sx1276_radio && arduino --verify --board $(_stm32l0opts '' projcfg) $THISLIB/examples/header_test/header_test.ino
 
- - _projcfg CFG_us915 CFG_sx1276_radio && arduino --verify --board $(_stm32l0opts projcfg) $THISLIB/examples/header_test_lmic/header_test_lmic.ino
- - _projcfg CFG_eu868 CFG_sx1276_radio && arduino --verify --board $(_stm32l0opts projcfg) $THISLIB/examples/header_test_lmic/header_test_lmic.ino
- - _projcfg CFG_au921 CFG_sx1276_radio && arduino --verify --board $(_stm32l0opts projcfg) $THISLIB/examples/header_test_lmic/header_test_lmic.ino
- - _projcfg CFG_as923 CFG_sx1276_radio && arduino --verify --board $(_stm32l0opts projcfg) $THISLIB/examples/header_test_lmic/header_test_lmic.ino
- - _projcfg CFG_as923 LMIC_COUNTRY_CODE=LMIC_COUNTRY_CODE_JP CFG_sx1276_radio && arduino --verify --board $(_stm32l0opts projcfg) $THISLIB/examples/header_test_lmic/header_test_lmic.ino
- - _projcfg CFG_in866 CFG_sx1276_radio && arduino --verify --board $(_stm32l0opts projcfg) $THISLIB/examples/header_test_lmic/header_test_lmic.ino
+ - _projcfg CFG_us915 CFG_sx1276_radio && arduino --verify --board $(_stm32l0opts '' projcfg) $THISLIB/examples/header_test_lmic/header_test_lmic.ino
+ - _projcfg CFG_eu868 CFG_sx1276_radio && arduino --verify --board $(_stm32l0opts '' projcfg) $THISLIB/examples/header_test_lmic/header_test_lmic.ino
+ - _projcfg CFG_au921 CFG_sx1276_radio && arduino --verify --board $(_stm32l0opts '' projcfg) $THISLIB/examples/header_test_lmic/header_test_lmic.ino
+ - _projcfg CFG_as923 CFG_sx1276_radio && arduino --verify --board $(_stm32l0opts '' projcfg) $THISLIB/examples/header_test_lmic/header_test_lmic.ino
+ - _projcfg CFG_as923 LMIC_COUNTRY_CODE=LMIC_COUNTRY_CODE_JP CFG_sx1276_radio && arduino --verify --board $(_stm32l0opts '' projcfg) $THISLIB/examples/header_test_lmic/header_test_lmic.ino
+ - _projcfg CFG_in866 CFG_sx1276_radio && arduino --verify --board $(_stm32l0opts '' projcfg) $THISLIB/examples/header_test_lmic/header_test_lmic.ino
 
- - _projcfg CFG_us915 CFG_sx1276_radio && arduino --verify --board $(_stm32l0opts projcfg) $THISLIB/examples/header_test_ttn/header_test_ttn.ino
- - _projcfg CFG_eu868 CFG_sx1276_radio && arduino --verify --board $(_stm32l0opts projcfg) $THISLIB/examples/header_test_ttn/header_test_ttn.ino
- - _projcfg CFG_au921 CFG_sx1276_radio && arduino --verify --board $(_stm32l0opts projcfg) $THISLIB/examples/header_test_ttn/header_test_ttn.ino
- - _projcfg CFG_as923 CFG_sx1276_radio && arduino --verify --board $(_stm32l0opts projcfg) $THISLIB/examples/header_test_ttn/header_test_ttn.ino
- - _projcfg CFG_as923 LMIC_COUNTRY_CODE=LMIC_COUNTRY_CODE_JP CFG_sx1276_radio && arduino --verify --board $(_stm32l0opts projcfg) $THISLIB/examples/header_test_ttn/header_test_ttn.ino
- - _projcfg CFG_in866 CFG_sx1276_radio && arduino --verify --board $(_stm32l0opts projcfg) $THISLIB/examples/header_test_ttn/header_test_ttn.ino
+ - _projcfg CFG_us915 CFG_sx1276_radio && arduino --verify --board $(_stm32l0opts '' projcfg) $THISLIB/examples/header_test_ttn/header_test_ttn.ino
+ - _projcfg CFG_eu868 CFG_sx1276_radio && arduino --verify --board $(_stm32l0opts '' projcfg) $THISLIB/examples/header_test_ttn/header_test_ttn.ino
+ - _projcfg CFG_au921 CFG_sx1276_radio && arduino --verify --board $(_stm32l0opts '' projcfg) $THISLIB/examples/header_test_ttn/header_test_ttn.ino
+ - _projcfg CFG_as923 CFG_sx1276_radio && arduino --verify --board $(_stm32l0opts '' projcfg) $THISLIB/examples/header_test_ttn/header_test_ttn.ino
+ - _projcfg CFG_as923 LMIC_COUNTRY_CODE=LMIC_COUNTRY_CODE_JP CFG_sx1276_radio && arduino --verify --board $(_stm32l0opts '' projcfg) $THISLIB/examples/header_test_ttn/header_test_ttn.ino
+ - _projcfg CFG_in866 CFG_sx1276_radio && arduino --verify --board $(_stm32l0opts '' projcfg) $THISLIB/examples/header_test_ttn/header_test_ttn.ino
 
 ### end of file ###
