@@ -31,3 +31,8 @@
 # Backup files
 *.BAK
 *.CKP
+
+# PlatformIO working dirs
+.pioenvs/
+.piolibdeps/
+
