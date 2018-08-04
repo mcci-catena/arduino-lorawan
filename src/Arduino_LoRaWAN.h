@@ -429,18 +429,19 @@ public:
 		bool fConfirmed = false
 		);
 
-	typedef void ReceiveBufferCbFn(
+	typedef void ReceivePortBufferCbFn(
 		void *pCtx,
+		uint8_t uPort,
 		const uint8_t *pBuffer,
 		size_t nBuffer
 		);
 
 	void SetReceiveBufferBufferCb(
-		ReceiveBufferCbFn *pReceiveBufferFn,
+		ReceivePortBufferCbFn *pReceivePortBufferFn,
 		void *pCtx = nullptr
 		)
 		{
-		this->m_pReceiveBufferFn = pReceiveBufferFn;
+		this->m_pReceiveBufferFn = pReceivePortBufferFn;
 		this->m_pReceiveBufferCtx = pCtx;
 		}
 
@@ -624,10 +625,9 @@ protected:
 			(*pSendBufferDoneFn)(this->m_pSendBufferDoneCtx, true);
 		};
 
-	ReceiveBufferCbFn *m_pReceiveBufferFn;
-	void *m_pReceiveBufferCtx;
-
 private:
+	ReceivePortBufferCbFn *m_pReceiveBufferFn;
+	void *m_pReceiveBufferCtx;
 
 	// this is a 'global' -- it gives us a way to bootstrap
 	// back into C++ from the LMIC code.
