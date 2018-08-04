@@ -298,10 +298,16 @@ void Arduino_LoRaWAN::NetRxComplete(void)
 	// notify client that RX is available
 	if (LMIC.dataLen)
 		{
+		uint8_t port;
+		port = 0;
+		if (LMIC.txrxFlags & TXRX_PORT)
+			port = LMIC.frame[LMIC.dataBeg - 1];
+
 		if (this->m_pReceiveBufferFn)
 			{
 			this->m_pReceiveBufferFn(
 				this->m_pReceiveBufferCtx,
+				port,
 				LMIC.frame + LMIC.dataBeg,
 				LMIC.dataLen
 				);
