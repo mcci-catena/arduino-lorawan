@@ -8,7 +8,7 @@ matrix:
   # C language tests
     - language: c
       before_install:
-        - sudo apt-get install libc6-i386
+        # sudo apt-get install libc6-i386
         - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_1.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :1 -ac -screen 0 1280x1024x16"
         - sleep 3
         - export DISPLAY=:1.0
@@ -41,6 +41,7 @@ matrix:
         #
         # modify the board manager preferences to point to our BSPs.
         - arduino --pref "boardsmanager.additional.urls=https://github.com/mcci-catena/arduino-boards/raw/master/BoardManagerFiles/package_mcci_index.json" --save-prefs
+        - export MCCI_STM32_OPTS="--pref recipe.hooks.objcopy.postobjcopy.1.pattern=true"
 
       install:
       - git clone --depth=1 https://github.com/mcci-catena/Catena-mcciadk.git $HOME/arduino_ide/libraries/Catena-mcciadk
@@ -54,7 +55,7 @@ matrix:
       - "echo $(_stm32l0opts) $(_stm32l0opts '' projcfg)"
       - "echo $(_samdopts) $(_samdopts '' projcfg)"
 
-      - arduino --verify --board mcci:stm32:mcci_catena_4551:lorawan_region=us915,opt=osstd,xserial=generic,usb=none,upload_method=STLink $THISLIB/examples/header_test/header_test.ino
+      - arduino --verify --board $(_stm32l0opts '' us915) $MCCI_STM32_OPTS $THISLIB/examples/header_test/header_test.ino
       #
       # test each of the regions for SAMD.
       - arduino --verify --board $(_samdopts '' us915) $THISLIB/examples/header_test/header_test.ino
