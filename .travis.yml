@@ -8,6 +8,7 @@ matrix:
   # C language tests
     - language: c
       before_install:
+        # sudo apt-get install libc6-i386
         - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_1.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :1 -ac -screen 0 1280x1024x16"
         - sleep 3
         - export DISPLAY=:1.0
@@ -40,6 +41,7 @@ matrix:
         #
         # modify the board manager preferences to point to our BSPs.
         - arduino --pref "boardsmanager.additional.urls=https://github.com/mcci-catena/arduino-boards/raw/master/BoardManagerFiles/package_mcci_index.json" --save-prefs
+        - export MCCI_STM32_OPTS="--pref recipe.hooks.objcopy.postobjcopy.1.pattern=true"
 
       install:
       - git clone --depth=1 https://github.com/mcci-catena/Catena-mcciadk.git $HOME/arduino_ide/libraries/Catena-mcciadk
@@ -84,27 +86,26 @@ matrix:
 
       #
       # *** TESTS FOR STM32L0 / Catena 4551 ****
-      #  make sure you install the BSP above.
-      - arduino --verify --board $(_stm32l0opts '' us915  ) $THISLIB/examples/header_test/header_test.ino
-      - arduino --verify --board $(_stm32l0opts '' eu868  ) $THISLIB/examples/header_test/header_test.ino
-      - arduino --verify --board $(_stm32l0opts '' au921  ) $THISLIB/examples/header_test/header_test.ino
-      - arduino --verify --board $(_stm32l0opts '' as923  ) $THISLIB/examples/header_test/header_test.ino
-      - arduino --verify --board $(_stm32l0opts '' as923jp) $THISLIB/examples/header_test/header_test.ino
-      - arduino --verify --board $(_stm32l0opts '' in866  ) $THISLIB/examples/header_test/header_test.ino
+      - arduino --verify --board $(_stm32l0opts '' us915  ) $MCCI_STM32_OPTS $THISLIB/examples/header_test/header_test.ino
+      - arduino --verify --board $(_stm32l0opts '' eu868  ) $MCCI_STM32_OPTS $THISLIB/examples/header_test/header_test.ino
+      - arduino --verify --board $(_stm32l0opts '' au921  ) $MCCI_STM32_OPTS $THISLIB/examples/header_test/header_test.ino
+      - arduino --verify --board $(_stm32l0opts '' as923  ) $MCCI_STM32_OPTS $THISLIB/examples/header_test/header_test.ino
+      - arduino --verify --board $(_stm32l0opts '' as923jp) $MCCI_STM32_OPTS $THISLIB/examples/header_test/header_test.ino
+      - arduino --verify --board $(_stm32l0opts '' in866  ) $MCCI_STM32_OPTS $THISLIB/examples/header_test/header_test.ino
 
-      - arduino --verify --board $(_stm32l0opts '' us915  ) $THISLIB/examples/header_test_lmic/header_test_lmic.ino
-      - arduino --verify --board $(_stm32l0opts '' eu868  ) $THISLIB/examples/header_test_lmic/header_test_lmic.ino
-      - arduino --verify --board $(_stm32l0opts '' au921  ) $THISLIB/examples/header_test_lmic/header_test_lmic.ino
-      - arduino --verify --board $(_stm32l0opts '' as923  ) $THISLIB/examples/header_test_lmic/header_test_lmic.ino
-      - arduino --verify --board $(_stm32l0opts '' as923jp) $THISLIB/examples/header_test_lmic/header_test_lmic.ino
-      - arduino --verify --board $(_stm32l0opts '' in866  ) $THISLIB/examples/header_test_lmic/header_test_lmic.ino
+      - arduino --verify --board $(_stm32l0opts '' us915  ) $MCCI_STM32_OPTS $THISLIB/examples/header_test_lmic/header_test_lmic.ino
+      - arduino --verify --board $(_stm32l0opts '' eu868  ) $MCCI_STM32_OPTS $THISLIB/examples/header_test_lmic/header_test_lmic.ino
+      - arduino --verify --board $(_stm32l0opts '' au921  ) $MCCI_STM32_OPTS $THISLIB/examples/header_test_lmic/header_test_lmic.ino
+      - arduino --verify --board $(_stm32l0opts '' as923  ) $MCCI_STM32_OPTS $THISLIB/examples/header_test_lmic/header_test_lmic.ino
+      - arduino --verify --board $(_stm32l0opts '' as923jp) $MCCI_STM32_OPTS $THISLIB/examples/header_test_lmic/header_test_lmic.ino
+      - arduino --verify --board $(_stm32l0opts '' in866  ) $MCCI_STM32_OPTS $THISLIB/examples/header_test_lmic/header_test_lmic.ino
 
-      - arduino --verify --board $(_stm32l0opts '' us915  ) $THISLIB/examples/header_test_ttn/header_test_ttn.ino
-      - arduino --verify --board $(_stm32l0opts '' eu868  ) $THISLIB/examples/header_test_ttn/header_test_ttn.ino
-      - arduino --verify --board $(_stm32l0opts '' au921  ) $THISLIB/examples/header_test_ttn/header_test_ttn.ino
-      - arduino --verify --board $(_stm32l0opts '' as923  ) $THISLIB/examples/header_test_ttn/header_test_ttn.ino
-      - arduino --verify --board $(_stm32l0opts '' as923jp) $THISLIB/examples/header_test_ttn/header_test_ttn.ino
-      - arduino --verify --board $(_stm32l0opts '' in866  ) $THISLIB/examples/header_test_ttn/header_test_ttn.ino
+      - arduino --verify --board $(_stm32l0opts '' us915  ) $MCCI_STM32_OPTS $THISLIB/examples/header_test_ttn/header_test_ttn.ino
+      - arduino --verify --board $(_stm32l0opts '' eu868  ) $MCCI_STM32_OPTS $THISLIB/examples/header_test_ttn/header_test_ttn.ino
+      - arduino --verify --board $(_stm32l0opts '' au921  ) $MCCI_STM32_OPTS $THISLIB/examples/header_test_ttn/header_test_ttn.ino
+      - arduino --verify --board $(_stm32l0opts '' as923  ) $MCCI_STM32_OPTS $THISLIB/examples/header_test_ttn/header_test_ttn.ino
+      - arduino --verify --board $(_stm32l0opts '' as923jp) $MCCI_STM32_OPTS $THISLIB/examples/header_test_ttn/header_test_ttn.ino
+      - arduino --verify --board $(_stm32l0opts '' in866  ) $MCCI_STM32_OPTS $THISLIB/examples/header_test_ttn/header_test_ttn.ino
 
 # PlatformIO dependency test
     - language: python
