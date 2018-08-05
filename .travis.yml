@@ -46,6 +46,7 @@ matrix:
       - git clone --depth=1 https://github.com/mcci-catena/arduino-lmic.git $HOME/arduino_ide/libraries/arduino-lmic
       - arduino --install-boards mcci:samd
       - arduino --install-boards mcci:stm32
+      - ls -lR $HOME/.arduino15/packages/mcci/hardware/stm32/1.1.0/tools/linux
 
       script:
       #
