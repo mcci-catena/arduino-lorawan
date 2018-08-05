@@ -53,6 +53,7 @@ matrix:
       - "echo $(_stm32l0opts) $(_stm32l0opts '' projcfg)"
       - "echo $(_samdopts) $(_samdopts '' projcfg)"
 
+      - arduino --verify --board  --board mcci:stm32:mcci_catena_4551:lorawan_region=us915,opt=osstd,xserial=generic,usb=none,upload_method=STLink $THISLIB/examples/header_test/header_test.ino
       #
       # test each of the regions for SAMD.
       - arduino --verify --board $(_samdopts '' us915) $THISLIB/examples/header_test/header_test.ino
