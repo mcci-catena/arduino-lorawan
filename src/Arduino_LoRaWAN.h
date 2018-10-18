@@ -1,5 +1,3 @@
-/* Arduino_LoRaWAN.h	Tue Oct 25 2016 00:10:57 tmm */
-
 /*
 
 Module:  Arduino_LoRaWAN.h
@@ -7,27 +5,11 @@ Module:  Arduino_LoRaWAN.h
 Function:
 	The base class for arduino-lmic-based LoRaWAN nodes.
 
-Version:
-	V0.1.0	Tue Oct 25 2016 00:10:57 tmm	Edit level 1
-
 Copyright notice:
-	This file copyright (C) 2016 by
-
-		MCCI Corporation
-		3520 Krums Corners Road
-		Ithaca, NY  14850
-
-	An unpublished work.  All rights reserved.
-
-	This file is proprietary information, and may not be disclosed or
-	copied without the prior permission of MCCI Corporation.
+	See LICENSE file accompanying this project.
 
 Author:
 	Terry Moore, MCCI Corporation	October 2016
-
-Revision history:
-   0.1.0  Tue Oct 25 2016 00:10:57  tmm
-	Module created.
 
 */
 
@@ -429,18 +411,19 @@ public:
 		bool fConfirmed = false
 		);
 
-	typedef void ReceiveBufferCbFn(
+	typedef void ReceivePortBufferCbFn(
 		void *pCtx,
+		uint8_t uPort,
 		const uint8_t *pBuffer,
 		size_t nBuffer
 		);
 
 	void SetReceiveBufferBufferCb(
-		ReceiveBufferCbFn *pReceiveBufferFn,
+		ReceivePortBufferCbFn *pReceivePortBufferFn,
 		void *pCtx = nullptr
 		)
 		{
-		this->m_pReceiveBufferFn = pReceiveBufferFn;
+		this->m_pReceiveBufferFn = pReceivePortBufferFn;
 		this->m_pReceiveBufferCtx = pCtx;
 		}
 
@@ -624,10 +607,9 @@ protected:
 			(*pSendBufferDoneFn)(this->m_pSendBufferDoneCtx, true);
 		};
 
-	ReceiveBufferCbFn *m_pReceiveBufferFn;
-	void *m_pReceiveBufferCtx;
-
 private:
+	ReceivePortBufferCbFn *m_pReceiveBufferFn;
+	void *m_pReceiveBufferCtx;
 
 	// this is a 'global' -- it gives us a way to bootstrap
 	// back into C++ from the LMIC code.
