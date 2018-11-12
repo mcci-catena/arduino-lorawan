@@ -117,7 +117,16 @@ matrix:
       install:
         - pip install -U platformio
       script:
+        - mkdir test_platformio_deps
         - cd test_platformio_deps
+        - echo "[env:adafruit_feather_m0]" > platformio.ini
+        - echo "platform = atmelsam" >> platformio.ini
+        - echo "board = adafruit_feather_m0" >> platformio.ini
+        - echo "framework = arduino" >> platformio.ini
+        - echo "lib_deps = SPI, https://github.com/mcci-catena/arduino-lorawan#${TRAVIS_PULL_REQUEST_SHA}" >> platformio.ini
+        - echo "build_flags =" >> platformio.ini
+        - echo "  -DCFG_us915" >> platformio.ini
+        - cat platformio.ini
         - mkdir src
         - echo "int main() {}" > src/main.cpp
         - platformio run
