@@ -123,7 +123,7 @@ matrix:
         - echo "platform = atmelsam" >> platformio.ini
         - echo "board = adafruit_feather_m0" >> platformio.ini
         - echo "framework = arduino" >> platformio.ini
-        - echo "lib_deps = SPI, https://github.com/mcci-catena/arduino-lorawan#${TRAVIS_PULL_REQUEST_SHA}" >> platformio.ini
+        - echo "lib_deps = SPI, https://github.com/${TRAVIS_PULL_REQUEST_SLUG}#${TRAVIS_PULL_REQUEST_BRANCH}" >> platformio.ini
         - echo "build_flags =" >> platformio.ini
         - echo "  -DCFG_us915" >> platformio.ini
         - cat platformio.ini
