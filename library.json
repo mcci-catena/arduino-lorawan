@@ -21,7 +21,7 @@
   "dependencies":
   [
     {
-      "name": "Multi-Bandplan IBM LMIC framework",
+      "name": "MCCI LoRaWAN LMIC library",
       "version": "https://github.com/mcci-catena/arduino-lmic.git",
       "authors": ["Matthijs Kooijman <matthijs@stdin.nl>", "Terry Moore <tmm@mcci.com>"]
     },
