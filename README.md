@@ -61,16 +61,15 @@ MCCI tends to use the this library wrapped by the [Catena Arduino Platform](http
 
 The classes in this library are normally intended to be used inside a class that overrides one or more of the virtual methods.
 
-The stand-alone use pattern is as follows, targeting The Things Network V2.
+The stand-alone use pattern is as follows, targeting The Things Network V2.  This code can be found in the `example/simple_feather/simple_feather.ino` sketch.  Note that this isn't complete, as you have to add code in the indicated places.
 
 ```c++
 #include <Arduino_LoRaWAN_ttn.h>
 
 class cMyLoRaWAN : public Arduino_LoRaWAN_ttn {
-    // ... see below for typical contents
-publc:
-    myLoRaWAN() {};
-    myLoRaWAN(const lmic_pinmap& pinmap) Arduino_LoRaWAN_ttn(pinmap) {};
+public:
+    cMyLoRaWAN() {};
+    cMyLoRaWAN(const lmic_pinmap& pinmap) : Arduino_LoRaWAN_ttn(pinmap) {};
 protected:
     // you'll need to provide implementations for each of the following.
     virtual bool GetOtaaProvisioningInfo(Arduino_LoRaWAN::OtaaProvisioningInfo*) override;
@@ -79,14 +78,14 @@ protected:
     virtual void NetSaveSessionInfo(const SessionInfo &Info, const uint8_t *pExtraInfo, size_t nExtraInfo) override;
 };
 
-// example pinmap - this is for Feather M0 LoRa
-const lmic_pinmap myPinmap = {
+// pinmap - this is for Feather M0 LoRa
+const cMyLoRaWAN::lmic_pinmap myPinMap = {
      .nss = 8,
-     .nss = 8,
-     .rxtx = LMIC_UNUSED_PIN,
+     .rxtx = cMyLoRaWAN::lmic_pinmap::LMIC_UNUSED_PIN,
      .rst = 4,
-     .dio = { 3, 6, LMIC_UNUSED_PIN },
+     .dio = { 3, 6, cMyLoRaWAN::lmic_pinmap::LMIC_UNUSED_PIN },
      .rxtx_rx_active = 0,
+     .rssi_cal = 0,
      .spi_freq = 8000000,
 };
 
@@ -99,6 +98,35 @@ void setup() {
 
 void loop() {
     myLoRaWAN.loop();
+}
+
+// this method is called when the LMIC needs OTAA info.
+// return false to indicate "no provisioning", otherwise
+// fill in the data and return true.
+bool
+cMyLoRaWAN::GetOtaaProvisioningInfo(
+    OtaaProvisioningInfo *pInfo
+    ) {
+    return false;
+}
+
+void
+cMyLoRaWAN::NetSaveFCntDown(uint32_t uFCntDown) {
+    // save uFcntDown somwwhere
+}
+
+void
+cMyLoRaWAN::NetSaveFCntUp(uint32_t uFCntUp) {
+    // save uFCntUp somewhere
+}
+
+void
+cMyLoRaWAN::NetSaveSessionInfo(
+    const SessionInfo &Info,
+    const uint8_t *pExtraInfo,
+    size_t nExtraInfo
+    ) {
+    // save Info somewhere.
 }
 ```
 
