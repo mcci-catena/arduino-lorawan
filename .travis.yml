@@ -117,7 +117,20 @@ matrix:
       install:
         - pip install -U platformio
       script:
+        - mkdir test_platformio_deps
         - cd test_platformio_deps
+        - echo "[env:adafruit_feather_m0]" > platformio.ini
+        - echo "platform = atmelsam" >> platformio.ini
+        - echo "board = adafruit_feather_m0" >> platformio.ini
+        - echo "framework = arduino" >> platformio.ini
+        - if [ "${TRAVIS_PULL_REQUEST_SLUG}" = "" ]; then
+        -   echo "lib_deps = SPI, https://github.com/${TRAVIS_REPO_SLUG}" >> platformio.ini
+        - else
+        -   echo "lib_deps = SPI, https://github.com/${TRAVIS_PULL_REQUEST_SLUG}#${TRAVIS_PULL_REQUEST_BRANCH}" >> platformio.ini
+        - fi
+        - echo "build_flags =" >> platformio.ini
+        - echo "  -DCFG_us915" >> platformio.ini
+        - cat platformio.ini
         - mkdir src
         - echo "int main() {}" > src/main.cpp
         - platformio run
