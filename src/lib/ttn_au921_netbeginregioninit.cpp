@@ -1,33 +1,15 @@
-/* ttn_au921_netbegin.cpp	Mon Aug 07 2017 00:41:05 tmm */
-
 /*
 
-Module:  ttn_au921_netbegin.cpp
+Module:  ttn_au921_netbeginregioninit.cpp
 
 Function:
-	Arduino_LoRaWAN_ttn_au921::NetBegin()
-
-Version:
-	V0.2.4	Mon Aug 07 2017 00:41:05 tmm	Edit level 1
+	Arduino_LoRaWAN_ttn_au921::NetBeginRegionInit()
 
 Copyright notice:
-	This file copyright (C) 2017 by
-
-		MCCI Corporation
-		3520 Krums Corners Road
-		Ithaca, NY  14850
-
-	An unpublished work.  All rights reserved.
-
-	This file is proprietary information, and may not be disclosed or
-	copied without the prior permission of MCCI Corporation.
+        See LICENSE file accompanying this project.
 
 Author:
 	Terry Moore, MCCI Corporation	August 2017
-
-Revision history:
-   0.2.4  Tue Nov  1 2016 05:29:19  tmm
-	Module created.
 
 */
 
@@ -36,7 +18,7 @@ Revision history:
 
 /****************************************************************************\
 |
-|		Manifest constants & typedefs.
+|	Manifest constants & typedefs.
 |
 \****************************************************************************/
 
@@ -52,7 +34,7 @@ Revision history:
 
 /****************************************************************************\
 |
-|	VARIABLES:
+|	Variables.
 |
 \****************************************************************************/
 
