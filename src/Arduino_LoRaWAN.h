@@ -23,6 +23,7 @@ Author:
 #endif
 
 #include <cstring>
+#include <arduino_lmic_hal_configuration.h>
 
 class Arduino_LoRaWAN;
 
@@ -68,22 +69,7 @@ public:
 	// "lmic.h" inside the class. Otherwise we'd
 	// need to have all of lmic.h in scope everywhere,
 	// which could cause naming clashes.
-	struct lmic_pinmap {
-		// Use this for any unused pins.
-		static constexpr uint8_t LMIC_UNUSED_PIN = 0xff;
-		static constexpr int NUM_DIO = 3;
-
-		uint8_t nss;
-		uint8_t rxtx;
-		uint8_t rst;
-		uint8_t dio[NUM_DIO];
-		uint8_t rxtx_rx_active;
-                int8_t rssi_cal;            // byte 7: cal in dB -- added to RSSI
-                                            //   measured prior to decision.
-                                            //   Must include noise guardband!
-                uint32_t spi_freq;          // bytes 8..11: SPI freq in Hz.
-		};
-
+	using lmic_pinmap = Arduino_LMIC::HalPinmap_t;
 
 	enum class ProvisioningStyle
 		{
