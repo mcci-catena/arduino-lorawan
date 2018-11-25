@@ -14,6 +14,8 @@ Author:
 */
 
 #include <Arduino_LoRaWAN.h>
+
+#include <arduino_lmic_hal_boards.h>
 #include <Arduino_LoRaWAN_lmic.h>
 #include <mcciadk_baselib.h>
 #include <hal/hal.h>
@@ -21,7 +23,15 @@ Author:
 /* the global instance pointer */
 Arduino_LoRaWAN *Arduino_LoRaWAN::pLoRaWAN = NULL;
 
+// if called with no arguments, ask the library
 bool Arduino_LoRaWAN::begin()
+    {
+    this->begin(Arduino_LMIC::GetPinmap_ThisBoard());
+    }
+
+bool Arduino_LoRaWAN::begin(
+    const Arduino_LMIC::HalPinmap_t * pPinmap
+    )
     {
     // record self in a static so that we can dispatch events
     ASSERT(Arduino_LoRaWAN::pLoRaWAN == this ||
@@ -31,7 +41,7 @@ bool Arduino_LoRaWAN::begin()
 
     // LMIC init -- need to pass a void* pointer through to the hal,
     // but it must point to an instance of ArduinoLMIC::HalConfiguration_t.
-    if (! os_init_ex(&this->m_lmic_pins))
+    if (! os_init_ex(pPinmap))
         return false;
 
     // Reset the MAC state. Session and pending data transfers will be

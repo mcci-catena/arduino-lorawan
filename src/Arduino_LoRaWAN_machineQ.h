@@ -61,7 +61,6 @@ class Arduino_LoRaWAN_machineQ_base :  public Arduino_LoRaWAN
 public:
 	Arduino_LoRaWAN_machineQ_base() {};
         using Super = Arduino_LoRaWAN;
-        Arduino_LoRaWAN_machineQ_base(const lmic_pinmap & pinmap) : Super(pinmap) {};
 
         virtual const char *GetNetworkName() const
                 {
@@ -92,7 +91,6 @@ class Arduino_LoRaWAN_machineQ_us915 : public Arduino_LoRaWAN_machineQ_base
 public:
         using Super = Arduino_LoRaWAN_machineQ_base;
         Arduino_LoRaWAN_machineQ_us915() {};
-        Arduino_LoRaWAN_machineQ_us915(const lmic_pinmap & pinmap) : Super(pinmap) {};
 
 protected:
 	// the NetBeginRegionInit() function allows us to override the LMIC 
@@ -134,7 +132,6 @@ class Arduino_LoRaWAN_machineQ : public Arduino_LoRaWAN_machineQ_LOCAL(Arduino_L
 public:
         using Super = Arduino_LoRaWAN_machineQ_LOCAL(Arduino_LoRaWAN_REGION_TAG);
         Arduino_LoRaWAN_machineQ() {};
-        Arduino_LoRaWAN_machineQ(const lmic_pinmap & pinmap) : Super(pinmap) {};
 
 private:
 	};
