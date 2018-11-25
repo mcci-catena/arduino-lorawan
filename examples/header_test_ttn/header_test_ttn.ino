@@ -1,6 +1,6 @@
 /*
 
-Module:  header_test_lmic.ino
+Module:  header_test_ttn.ino
 
 Function:
         Simple compile-test app for Arduino_LoRaWAN_ttn.h
@@ -15,19 +15,8 @@ Author:
 
 #include <Arduino_LoRaWAN_ttn.h>
 
-// example pinmap - this is for Feather M0 LoRa
-const Arduino_LoRaWAN::lmic_pinmap myPinmap = {
-     .nss = 8,
-     .rxtx = Arduino_LoRaWAN::lmic_pinmap::LMIC_UNUSED_PIN,
-     .rst = 4,
-     .dio = { 3, 6, Arduino_LoRaWAN::lmic_pinmap::LMIC_UNUSED_PIN },
-     .rxtx_rx_active = 0,
-     .rssi_cal = 0,
-     .spi_freq = 8000000,
-};
-
 // set up the data structures.
-Arduino_LoRaWAN_ttn myLoRaWAN(myPinmap);
+Arduino_LoRaWAN_ttn myLoRaWAN {};
 
 void setup() {
     myLoRaWAN.begin();

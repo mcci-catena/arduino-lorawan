@@ -1,10 +1,10 @@
 /*
 
-Module:  simple_feather.ino
+Module:  simple.ino
 
 Function:
         Example app matching the documentation in the project
-	README.md, showing how to configure a board explicitly
+	README.md, showing how to use built-in LMIC configuration.
 
 Copyright notice and License:
         See LICENSE file accompanying this project.
@@ -37,24 +37,10 @@ protected:
 // set up the data structures.
 cMyLoRaWAN myLoRaWAN {};
 
-// The pinmap. This form is convenient if the LMIC library
-// doesn't support your board and you don't want to add the
-// configuration to the library (perhaps you're just testing).
-// This pinmap matches the FeatherM0 LoRa. See the arduino-lmic
-// docs for more info on how to set this up.
-const cMyLoRaWAN::lmic_pinmap myPinMap = {
-     .nss = 8,
-     .rxtx = cMyLoRaWAN::lmic_pinmap::LMIC_UNUSED_PIN,
-     .rst = 4,
-     .dio = { 3, 6, cMyLoRaWAN::lmic_pinmap::LMIC_UNUSED_PIN },
-     .rxtx_rx_active = 0,
-     .rssi_cal = 0,
-     .spi_freq = 8000000,
-};
-
 void setup() {
-    // simply pass the pinmap to the begin() method.
-    myLoRaWAN.begin(myPinMap);
+    // simply call begin() w/o parameters, and the LMIC's built-in
+    // configuration for this board will be used.
+    myLoRaWAN.begin();
 }
 
 void loop() {

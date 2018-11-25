@@ -297,12 +297,13 @@ public:
 	|| the constructor.
 	*/
 	Arduino_LoRaWAN();
-	Arduino_LoRaWAN(const lmic_pinmap &pinmap) : m_lmic_pins(pinmap) {}
 
 	/*
-	|| the begin function. Call this to start things (the constructor
+	|| the begin function. Call this to start things -- the constructor
 	|| does not!
 	*/
+	bool begin(const Arduino_LMIC::HalPinmap_t *pPinmap);
+	bool begin(const Arduino_LMIC::HalPinmap_t &pinmap) { this->begin(&pinmap); };
 	bool begin(void);
 
 	/*
@@ -425,7 +426,8 @@ public:
 	    uint8_t *pBuf
 	    );
 
-        // return true iff network seems to be provisioned
+        // return true iff network seems to be provisioned.  Make
+	// it virtual so it can be overridden if needed.
         virtual bool IsProvisioned(void)
                 {
                 switch (this->GetProvisioningStyle())
@@ -439,9 +441,6 @@ public:
                         return false;
                         }
                 }
-
-	// the pins
-	lmic_pinmap m_lmic_pins;
 
 protected:
 	// you must have a NetBegin() function or things won't work.

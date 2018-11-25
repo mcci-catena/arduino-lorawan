@@ -59,7 +59,6 @@ class Arduino_LoRaWAN_ttn_base :  public Arduino_LoRaWAN
 public:
 	Arduino_LoRaWAN_ttn_base() {};
         using Super = Arduino_LoRaWAN;
-        Arduino_LoRaWAN_ttn_base(const lmic_pinmap & pinmap) : Super(pinmap) {};
 
         virtual const char *GetNetworkName() const
                 {
@@ -87,7 +86,6 @@ class Arduino_LoRaWAN_ttn_eu868 : public Arduino_LoRaWAN_ttn_base
 public:
         using Super = Arduino_LoRaWAN_ttn_base;
 	Arduino_LoRaWAN_ttn_eu868() {};
-        Arduino_LoRaWAN_ttn_eu868(const lmic_pinmap & pinmap) : Super(pinmap) {};
 
 protected:
         // the NetBeginInit() function does specific work for the common code
@@ -105,7 +103,6 @@ class Arduino_LoRaWAN_ttn_us915 : public Arduino_LoRaWAN_ttn_base
 public:
         using Super = Arduino_LoRaWAN_ttn_base;
         Arduino_LoRaWAN_ttn_us915() {};
-        Arduino_LoRaWAN_ttn_us915(const lmic_pinmap & pinmap) : Super(pinmap) {};
 
 protected:
 	// the NetBeginInit() function does specific work when starting
@@ -124,7 +121,6 @@ class Arduino_LoRaWAN_ttn_au921 : public Arduino_LoRaWAN_ttn_base
 public:
         using Super = Arduino_LoRaWAN_ttn_base;
         Arduino_LoRaWAN_ttn_au921() {};
-        Arduino_LoRaWAN_ttn_au921(const lmic_pinmap & pinmap) : Super(pinmap) {};
 
 protected:
 	// the NetBeginInit() function does specific work when starting
@@ -144,7 +140,6 @@ class Arduino_LoRaWAN_ttn_as923 : public Arduino_LoRaWAN_ttn_base
 public:
         using Super = Arduino_LoRaWAN_ttn_base;
         Arduino_LoRaWAN_ttn_as923() {};
-        Arduino_LoRaWAN_ttn_as923(const lmic_pinmap & pinmap) : Super(pinmap) {};
 
 protected:
 	// the NetBeginInit() function does specific work when starting
@@ -162,7 +157,6 @@ class Arduino_LoRaWAN_ttn_in866 : public Arduino_LoRaWAN_ttn_base
 public:
         using Super = Arduino_LoRaWAN_ttn_base;
         Arduino_LoRaWAN_ttn_in866() {};
-        Arduino_LoRaWAN_ttn_in866(const lmic_pinmap & pinmap) : Super(pinmap) {};
 
 protected:
 	// the NetBeginInit() function does specific work when starting
@@ -201,7 +195,6 @@ class Arduino_LoRaWAN_ttn : public Arduino_LoRaWAN_ttn_LOCAL(Arduino_LoRaWAN_REG
 public:
         using Super = Arduino_LoRaWAN_ttn_LOCAL(Arduino_LoRaWAN_REGION_TAG);
         Arduino_LoRaWAN_ttn() {};
-        Arduino_LoRaWAN_ttn(const lmic_pinmap & pinmap) : Super(pinmap) {};
 
 private:
 	};
