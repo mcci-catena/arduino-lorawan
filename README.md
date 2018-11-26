@@ -2,7 +2,7 @@
 
 **User-friendly library for using the Arduino LMIC library with The Things Network and LoRaWAN™ networks.**
 
-[![GitHub release](https://img.shields.io/github/release/mcci-catena/arduino-lorawan.svg)](https://github.com/mcci-catena/arduino-lorawan/releases/latest) [![GitHub commits](https://img.shields.io/github/commits-since/mcci-catena/arduino-lorawan/latest.svg)](https://github.com/mcci-catena/arduino-lorawan/compare/v0.4.0...master) [![Build Status](https://travis-ci.org/mcci-catena/arduino-lorawan.svg?branch=master)](https://travis-ci.org/mcci-catena/arduino-lorawan)
+[![GitHub release](https://img.shields.io/github/release/mcci-catena/arduino-lorawan.svg)](https://github.com/mcci-catena/arduino-lorawan/releases/latest) [![GitHub commits](https://img.shields.io/github/commits-since/mcci-catena/arduino-lorawan/latest.svg)](https://github.com/mcci-catena/arduino-lorawan/compare/v0.5.0...master) [![Build Status](https://travis-ci.org/mcci-catena/arduino-lorawan.svg?branch=master)](https://travis-ci.org/mcci-catena/arduino-lorawan)
 
 **Contents**
 <!-- TOC depthFrom:2 updateOnSave:true -->
@@ -10,6 +10,8 @@
 - [Overview](#overview)
 - [Required libraries](#required-libraries)
 - [How To Use](#how-to-use)
+	- [Using the LMIC's pre-configured pinmaps](#using-the-lmics-pre-configured-pinmaps)
+	- [Supplying a pinmap](#supplying-a-pinmap)
 	- [Details on use](#details-on-use)
 - [Release History](#release-history)
 - [Notes](#notes)
@@ -165,22 +167,21 @@ void setup() {
 
 ## Release History
 
-- V0.5.0 has necesary changes to support the LMIC built-in pinmaps, while retaining support for user-supplied pinmaps. We moved the pinmap paramter from compile-time initialization to an argument to Arduino_LoRaWAN::begin().  This is, unfortuantely, a breaking change. Either do as we did in the example -- move the pinmap to your begin call -- or add an `m_pinmap` field in your concrete `cMyLoRaWAN`, and initialize it in your `cMyLoRaWAN::cMyLoRaWAN()` constructor.
+- v0.5.0 has necesary changes to support the LMIC built-in pinmaps, while retaining support for user-supplied pinmaps. We moved the pinmap paramter from compile-time initialization to an argument to Arduino_LoRaWAN::begin().  This is, unfortuantely, a breaking change. Either do as we did in the example -- move the pinmap to your begin call -- or add an `m_pinmap` field in your concrete `cMyLoRaWAN`, and initialize it in your `cMyLoRaWAN::cMyLoRaWAN()` constructor. In addition, we added a few example programs (issue [#49](https://github.com/mcci-catena/arduino-lorawan/issues/49)), and fixed handling of downlink messages with port numbers but no payloads (issue [#50](https://github.com/mcci-catena/arduino-lorawan/issues/50)).
 
-- V0.4.0 adds preliminary machineQ support, continuous integration for SAMD and STM32 L0, better PlatformIO support, improved as923jp support, and fixes a defect in the receive-message API.
+- v0.4.0 adds preliminary machineQ support, continuous integration for SAMD and STM32 L0, better PlatformIO support, improved as923jp support, and fixes a defect in the receive-message API.
 
-- V0.3.4 adds a few simple compile tests, improves the library name in `library.properties`, and further improves documentation.
+- v0.3.4 adds a few simple compile tests, improves the library name in `library.properties`, and further improves documentation.
 
-- V0.3.3 adds PlatformIO support and fixes `library.properties`.
+- v0.3.3 adds PlatformIO support and fixes `library.properties`.
 
-- V0.3.2 is just documentation changes.
+- v0.3.2 is just documentation changes.
 
-- V0.3.1 adds documentation (in this file, in the [Required Libraries](#required-libraries) section) describing the need for the [catena-mcciadk](https://github.com/mcci-catena/Catena-mcciadk) library. No code changes.
+- v0.3.1 adds documentation (in this file, in the [Required Libraries](#required-libraries) section) describing the need for the [catena-mcciadk](https://github.com/mcci-catena/Catena-mcciadk) library. No code changes.
 
-- V0.3.0 adds support for the Murata module. It requires V2.1.0 of the arduino-lmic library.
+- v0.3.0 adds support for the Murata module. It requires V2.1.0 of the arduino-lmic library.
 
-- V0.2.5 added support for the extended bandplans, and requires V2.0.2 of the arduino-lmic library.
-
+- v0.2.5 added support for the extended bandplans, and requires V2.0.2 of the arduino-lmic library.
 
 ## Notes
 
