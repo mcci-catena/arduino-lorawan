@@ -268,7 +268,7 @@ void Arduino_LoRaWAN::StandardEventProcessor(
 void Arduino_LoRaWAN::NetRxComplete(void)
 	{
 	// notify client that RX is available
-	if (LMIC.dataLen)
+	if (LMIC.dataLen  != 0 || LMIC.dataBeg != 0)
 		{
 		uint8_t port;
 		port = 0;
