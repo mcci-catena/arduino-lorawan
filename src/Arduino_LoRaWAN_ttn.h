@@ -49,9 +49,7 @@ Revision history:
 /* this is a bit of a hack, but... */
 /* make sure we have the config variables in scope */
 /* Under PlatformIO use build_flags = -DCFG_ etc. in platformio.ini */
-extern "C" {
-#include "../../arduino-lmic/src/lmic/lmic_config_preconditions.h"
-}
+# include <arduino_lmic_user_configuration.h>
 #endif
 
 class Arduino_LoRaWAN_ttn_base :  public Arduino_LoRaWAN

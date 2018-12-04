@@ -2,7 +2,7 @@
 
 **User-friendly library for using the Arduino LMIC library with The Things Network and LoRaWAN™ networks.**
 
-[![GitHub release](https://img.shields.io/github/release/mcci-catena/arduino-lorawan.svg)](https://github.com/mcci-catena/arduino-lorawan/releases/latest) [![GitHub commits](https://img.shields.io/github/commits-since/mcci-catena/arduino-lorawan/latest.svg)](https://github.com/mcci-catena/arduino-lorawan/compare/v0.5.0...master) [![Build Status](https://travis-ci.org/mcci-catena/arduino-lorawan.svg?branch=master)](https://travis-ci.org/mcci-catena/arduino-lorawan)
+[![GitHub release](https://img.shields.io/github/release/mcci-catena/arduino-lorawan.svg)](https://github.com/mcci-catena/arduino-lorawan/releases/latest) [![GitHub commits](https://img.shields.io/github/commits-since/mcci-catena/arduino-lorawan/latest.svg)](https://github.com/mcci-catena/arduino-lorawan/compare/v0.5.1...master) [![Build Status](https://travis-ci.org/mcci-catena/arduino-lorawan.svg?branch=master)](https://travis-ci.org/mcci-catena/arduino-lorawan)
 
 **Contents**
 <!-- TOC depthFrom:2 updateOnSave:true -->
@@ -166,6 +166,8 @@ void setup() {
 4. Implement the required methods.
 
 ## Release History
+
+- v0.5.1 fixes compilation errors when the library manager installs arduino-lmic in a renamed directory (issue [#65](https://github.com/mcci-catena/arduino-lorawan/issues/65)).
 
 - v0.5.0 has necessary changes to support the LMIC built-in pinmaps, while retaining support for user-supplied pinmaps. We moved the pinmap parameter from compile-time initialization to an argument to Arduino_LoRaWAN::begin().  This is, unfortunately, a breaking change. Either do as we did in the example -- move the pinmap to the `begin()` call -- or add an `m_pinmap` field in your concrete `cMyLoRaWAN`, and initialize it in your `cMyLoRaWAN::cMyLoRaWAN()` constructor. In addition, we added a few example programs (issue [#49](https://github.com/mcci-catena/arduino-lorawan/issues/49)), and fixed handling of downlink messages with port numbers but no payloads (issue [#50](https://github.com/mcci-catena/arduino-lorawan/issues/50)).
 
