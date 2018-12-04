@@ -26,7 +26,7 @@ Arduino_LoRaWAN *Arduino_LoRaWAN::pLoRaWAN = NULL;
 // if called with no arguments, ask the library
 bool Arduino_LoRaWAN::begin()
     {
-    this->begin(Arduino_LMIC::GetPinmap_ThisBoard());
+    return this->begin(Arduino_LMIC::GetPinmap_ThisBoard());
     }
 
 bool Arduino_LoRaWAN::begin(
