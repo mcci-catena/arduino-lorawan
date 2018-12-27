@@ -140,7 +140,7 @@ public:
 		
 		void clearAll() 
 			{
-			for (auto i = 0; i < nCh / 8; ++i)
+			for (auto i = 0u; i < nCh / 8; ++i)
 				this->ChannelMask[i] = 0;
 			}
 
@@ -303,7 +303,7 @@ public:
 	|| does not!
 	*/
 	bool begin(const Arduino_LMIC::HalPinmap_t *pPinmap);
-	bool begin(const Arduino_LMIC::HalPinmap_t &pinmap) { this->begin(&pinmap); };
+	bool begin(const Arduino_LMIC::HalPinmap_t &pinmap) { return this->begin(&pinmap); };
 	bool begin(void);
 
 	/*
