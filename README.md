@@ -2,7 +2,7 @@
 
 **User-friendly library for using the Arduino LMIC library with The Things Network and LoRaWAN™ networks.**
 
-[![GitHub release](https://img.shields.io/github/release/mcci-catena/arduino-lorawan.svg)](https://github.com/mcci-catena/arduino-lorawan/releases/latest) [![GitHub commits](https://img.shields.io/github/commits-since/mcci-catena/arduino-lorawan/latest.svg)](https://github.com/mcci-catena/arduino-lorawan/compare/v0.5.1...master) [![Build Status](https://travis-ci.org/mcci-catena/arduino-lorawan.svg?branch=master)](https://travis-ci.org/mcci-catena/arduino-lorawan)
+[![GitHub release](https://img.shields.io/github/release/mcci-catena/arduino-lorawan.svg)](https://github.com/mcci-catena/arduino-lorawan/releases/latest) [![GitHub commits](https://img.shields.io/github/commits-since/mcci-catena/arduino-lorawan/latest.svg)](https://github.com/mcci-catena/arduino-lorawan/compare/v0.5.2...master) [![Build Status](https://travis-ci.org/mcci-catena/arduino-lorawan.svg?branch=master)](https://travis-ci.org/mcci-catena/arduino-lorawan)
 
 **Contents**
 <!-- TOC depthFrom:2 updateOnSave:true -->
@@ -166,6 +166,8 @@ void setup() {
 4. Implement the required methods.
 
 ## Release History
+
+- v0.5.2 incorporates the fix for issue [#68](https://github.com/mcci-catena/arduino-lorawan/issues/68), missing return in `Arduino_LoRaWAN::begin()`.
 
 - v0.5.1 fixes compilation errors when the library manager installs arduino-lmic in a renamed directory (issue [#65](https://github.com/mcci-catena/arduino-lorawan/issues/65)).
 
