@@ -30,8 +30,8 @@ matrix:
         # arduino_lorawan looks for project_config things, so we must put
         # things in the canonical place
         #
-        - export THISLIB="$HOME/arduino_ide/libraries/arduino-lorawan"
-        - ln -s $PWD $THISLIB
+        - export THISLIB="$HOME/${ARDUINO_IDE}/libraries/arduino-lorawan"
+        - ln -sf $PWD $THISLIB
 
         #
         # functions to generate the board settings for SAMD, STM32L0, ...
