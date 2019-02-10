@@ -60,8 +60,8 @@ matrix:
       install:
       - _clonelib github.com mcci-catena/Catena-mcciadk
       - _clonelib github.com mcci-catena/arduino-lmic
-      - arduino --install-boards mcci:samd
-      - arduino --install-boards mcci:stm32
+      - arduino --install-boards mcci:samd || echo "assume mcci:samd already installed, continue"
+      - arduino --install-boards mcci:stm32 || echo "assume mcci:stm32 already installed, continue"
 
       script:
       #
