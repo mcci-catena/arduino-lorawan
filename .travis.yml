@@ -6,16 +6,15 @@ env:
  global:
   - IDE_VERSION=1.8.7
 
-cache:
-  directories:
-  - $HOME/.arduino15
-  - $HOME/arduino_ide
-
 # Thanks, https://stackoverflow.com/questions/27644586/how-to-set-up-travis-ci-with-multiple-languages !
 matrix:
   include:
   # C language tests
     - language: c
+      cache:
+        directories:
+        - $HOME/.arduino15
+        - $HOME/arduino_ide
       before_install:
         # sudo apt-get install libc6-i386
         - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_1.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :1 -ac -screen 0 1280x1024x16"
@@ -32,6 +31,11 @@ matrix:
         #
         - export THISLIB="$HOME/${ARDUINO_IDE}/libraries/arduino-lorawan"
         - ln -sf $PWD $THISLIB
+
+        #
+        # function to clone a git repo for test: $1 == host, $2 == name
+        # get rid of any cached values.
+        - 'function _clonelib { R="https://$1/${2}.git" ; L=$(basename "$2") ; D="$ARDUINO_LIBS/$L" ; rm -rf "$HOME/ARDUINO_IDE/libraries/$L" ; echo git clone "$R" "$D" ; git clone --depth=1 "$R" "$D" ; ls -R "$D" ; }'
 
         #
         # functions to generate the board settings for SAMD, STM32L0, ...
@@ -54,8 +58,8 @@ matrix:
         - export MCCI_STM32_OPTS="--pref recipe.hooks.objcopy.postobjcopy.1.pattern=true"
 
       install:
-      - git clone --depth=1 https://github.com/mcci-catena/Catena-mcciadk.git $HOME/arduino_ide/libraries/Catena-mcciadk
-      - git clone --depth=1 https://github.com/mcci-catena/arduino-lmic.git $HOME/arduino_ide/libraries/arduino-lmic
+      - _clonelib github.com mcci-catena/Catena-mcciadk
+      - _clonelib github.com mcci-catena/arduino-lmic
       - arduino --install-boards mcci:samd
       - arduino --install-boards mcci:stm32
 
