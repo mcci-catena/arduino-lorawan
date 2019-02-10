@@ -4,7 +4,7 @@ sudo: false
 
 env:
  global:
-  - IDE_VERSION=1.8.8
+  - IDE_VERSION=1.8.7
 
 cache:
   directories:
