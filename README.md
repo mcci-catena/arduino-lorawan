@@ -2,7 +2,7 @@
 
 **User-friendly library for using the Arduino LMIC library with The Things Network and LoRaWAN™ networks.**
 
-[![GitHub release](https://img.shields.io/github/release/mcci-catena/arduino-lorawan.svg)](https://github.com/mcci-catena/arduino-lorawan/releases/latest) [![GitHub commits](https://img.shields.io/github/commits-since/mcci-catena/arduino-lorawan/latest.svg)](https://github.com/mcci-catena/arduino-lorawan/compare/v0.5.2...master) [![Build Status](https://travis-ci.org/mcci-catena/arduino-lorawan.svg?branch=master)](https://travis-ci.org/mcci-catena/arduino-lorawan)
+[![GitHub release](https://img.shields.io/github/release/mcci-catena/arduino-lorawan.svg)](https://github.com/mcci-catena/arduino-lorawan/releases/latest) [![GitHub commits](https://img.shields.io/github/commits-since/mcci-catena/arduino-lorawan/latest.svg)](https://github.com/mcci-catena/arduino-lorawan/compare/v0.5.3...master) [![Build Status](https://travis-ci.org/mcci-catena/arduino-lorawan.svg?branch=master)](https://travis-ci.org/mcci-catena/arduino-lorawan)
 
 **Contents**
 <!-- TOC depthFrom:2 updateOnSave:true -->
@@ -166,6 +166,8 @@ void setup() {
 4. Implement the required methods.
 
 ## Release History
+
+- v0.5.3 is a patch release. It fixes a platformio compile warning, and also fixes another missing return for `Arduino_LoRaWAN::begin()` (this time in an overload in the header file.)
 
 - v0.5.2 incorporates the fix for issue [#68](https://github.com/mcci-catena/arduino-lorawan/issues/68), missing return in `Arduino_LoRaWAN::begin()`.
 
