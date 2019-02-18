@@ -395,7 +395,8 @@ public:
 		size_t nBuffer,
 		SendBufferCbFn *pDoneFn = nullptr,
 		void *pCtx = nullptr,
-		bool fConfirmed = false
+		bool fConfirmed = false,
+		uint8_t port = 1
 		);
 
 	typedef void ReceivePortBufferCbFn(

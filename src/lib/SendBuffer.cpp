@@ -74,7 +74,8 @@ bool Arduino_LoRaWAN::SendBuffer(
         size_t nBuffer,
         SendBufferCbFn *pDoneFn,
         void *pDoneCtx,
-	bool fConfirmed
+	bool fConfirmed,
+	uint8_t port
         )
         {
         if (this->m_fTxPending || LMIC.opmode & OP_TXRXPEND)
@@ -85,7 +86,7 @@ bool Arduino_LoRaWAN::SendBuffer(
                 }
 
         const int iResult = LMIC_setTxData2(
-                                /* port: */ 1,
+                                /* port: */ port != 0 ? port : 1,
                                 const_cast<xref2u1_t>(pBuffer),
                                 nBuffer,
                                 /* confirmed? */ fConfirmed
