@@ -36,10 +36,7 @@ Revision history:
 
 /****************************************************************************\
 |
-|		Manifest constants & typedefs.
-|
-|	This is strictly for private types and constants which will not 
-|	be exported.
+|	Manifest constants & typedefs.
 |
 \****************************************************************************/
 
@@ -49,23 +46,13 @@ Revision history:
 |
 |	Read-only data.
 |
-|	If program is to be ROM-able, these must all be tagged read-only 
-|	using the ROM storage class; they may be global.
-|
 \****************************************************************************/
 
 
 
 /****************************************************************************\
 |
-|	VARIABLES:
-|
-|	If program is to be ROM-able, these must be initialized
-|	using the BSS keyword.  (This allows for compilers that require
-|	every variable to have an initializer.)  Note that only those 
-|	variables owned by this module should be declared here, using the BSS
-|	keyword; this allows for linkers that dislike multiple declarations
-|	of objects.
+|	Variables
 |
 \****************************************************************************/
 
