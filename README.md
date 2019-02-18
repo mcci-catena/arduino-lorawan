@@ -13,6 +13,20 @@
 	- [Using the LMIC's pre-configured pinmaps](#using-the-lmics-pre-configured-pinmaps)
 	- [Supplying a pinmap](#supplying-a-pinmap)
 	- [Details on use](#details-on-use)
+- [APIs](#apis)
+	- [Starting operation](#starting-operation)
+	- [Poll and update the LMIC](#poll-and-update-the-lmic)
+	- [Reset the LMIC](#reset-the-lmic)
+	- [Shut down the LMIC](#shut-down-the-lmic)
+	- [Register an event listener](#register-an-event-listener)
+	- [Send an event to all listeners](#send-an-event-to-all-listeners)
+	- [Manipulate the Debug Mask](#manipulate-the-debug-mask)
+	- [Output a formatted log message](#output-a-formatted-log-message)
+	- [Get the configured LoRaWAN region, country code, and network name](#get-the-configured-lorawan-region-country-code-and-network-name)
+	- [Send a buffer](#send-a-buffer)
+	- [Register a Receive-Buffer Callback](#register-a-receive-buffer-callback)
+	- [Get DevEUI, AppEUI, AppKey](#get-deveui-appeui-appkey)
+	- [Test provisioning state](#test-provisioning-state)
 - [Release History](#release-history)
 - [Notes](#notes)
 
@@ -164,6 +178,100 @@ void setup() {
 3. Determine whether you need a pinmap, or whether your arduino-lmic library already directly supports your board. If directly supported, you can call `myLoRaWAN.begin()` without any arguments, and the LMIC default pinmap for your board will be used. Otherwise, you can allocate a pinmap. If you name it `myPinmap`, you can call `myLoRaWAN.begin(myPinmap);`, as in the example.
 
 4. Implement the required methods.
+
+## APIs
+
+### Starting operation
+
+The `begin()` APIs are used to start the LMIC engine. There are three forms.  See ["Details on use,"](#details-on-use) above.
+
+### Poll and update the LMIC
+
+```c++
+void Arduino_LoRaWAN::loop(void);
+```
+
+This method must be called periodically in order to keep the LMIC operating. For class-A devices, this need only be called while actively pushing an uplink, or while a task is pending in the LMIC's time-driven queue.
+
+### Reset the LMIC
+
+```c++
+void Arduino_LoRaWAN::reset(void);
+```
+
+Cancel any pending operations and reinitialize all internal state.
+
+### Shut down the LMIC
+
+```c++
+void Arduino_LoRaWAN::Shutdown(void);
+```
+
+Shut down the LMIC. Any attempt to transmit while shut down will fail.
+
+### Register an event listener
+
+```c++
+typedef void ARDUINO_LORAWAN_EVENT_FN(
+                        void *pUserData,
+                        uint32_t eventCode
+                        );
+
+bool Arduino_LoRaWAN::RegisterListener(
+	ARDUINO_LORAWAN_EVENT_FN *pEvent,
+	void *pUserData
+	);
+```
+
+Clients may register event functions using `RegisterListener`. The event function is called on each event from the LMIC. Up to four listeners may be registered. There's no way to cancel a registration.
+
+### Send an event to all listeners
+
+_To be documented._
+
+### Manipulate the Debug Mask
+
+_To be documented._
+
+### Output a formatted log message
+
+_To be documented._
+
+### Get the configured LoRaWAN region, country code, and network name
+
+_To be documented._
+
+### Send a buffer
+
+```c++
+typedef void Arduino_LoRaWAN::SendBufferCbFn(
+	void *pClientData,
+	bool fSuccess
+	);
+
+bool Arduino_LoRaWAN::SendBuffer(
+	const uint8_t *pBuffer,
+	size_t nBuffer,
+	SendBufferCbFn *pDoneFn = nullptr,
+	void *pClientData = nullptr,
+	bool fConfirmed = false,
+	uint8_t port = 1
+	);
+```
+
+Send message from `pBuffer`; call `pDoneFn(pClientData, status)` when the message has either been transmitted or abandoned.
+
+### Register a Receive-Buffer Callback
+
+_To be documented._
+
+### Get DevEUI, AppEUI, AppKey
+
+_To be documented._
+
+### Test provisioning state
+
+_To be documented._
 
 ## Release History
 
