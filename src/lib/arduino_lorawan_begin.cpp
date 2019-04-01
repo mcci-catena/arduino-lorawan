@@ -226,8 +226,9 @@ void Arduino_LoRaWAN::StandardEventProcessor(
 	    // notify framework that tx is complete
             this->NetTxComplete();
 
-	    // notify client that TX is complete
-            this->completeTx(true);
+	    // notify client that TX is complete; claim success unless
+	    // LMIC.txrxFlags & TXRX_NACK
+            this->completeTx(! (LMIC.txrxFlags & TXRX_NACK));
             break;
 
         case EV_LOST_TSYNC:

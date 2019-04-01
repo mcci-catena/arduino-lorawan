@@ -599,7 +599,7 @@ protected:
 		if (this->m_fTxPending && pSendBufferDoneFn != nullptr)
 			{
 			this->m_fTxPending = false;
-			(*pSendBufferDoneFn)(this->m_pSendBufferDoneCtx, true);
+			(*pSendBufferDoneFn)(this->m_pSendBufferDoneCtx, fStatus);
 			}
 		};
 
