@@ -590,13 +590,17 @@ protected:
 	SendBufferCbFn *m_pSendBufferDoneFn;
 	void *m_pSendBufferDoneCtx;
 
+	// complete transmit.
 	void completeTx(bool fStatus)
 		{
 		SendBufferCbFn * const pSendBufferDoneFn = this->m_pSendBufferDoneFn;
 
 		this->m_pSendBufferDoneFn = nullptr;
-		if (pSendBufferDoneFn != nullptr)
+		if (this->m_fTxPending && pSendBufferDoneFn != nullptr)
+			{
+			this->m_fTxPending = false;
 			(*pSendBufferDoneFn)(this->m_pSendBufferDoneCtx, true);
+			}
 		};
 
 private:
