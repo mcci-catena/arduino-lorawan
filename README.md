@@ -23,6 +23,7 @@
 	- [Manipulate the Debug Mask](#manipulate-the-debug-mask)
 	- [Output a formatted log message](#output-a-formatted-log-message)
 	- [Get the configured LoRaWAN region, country code, and network name](#get-the-configured-lorawan-region-country-code-and-network-name)
+	- [Set link-check mode](#set-link-check-mode)
 	- [Send a buffer](#send-a-buffer)
 	- [Register a Receive-Buffer Callback](#register-a-receive-buffer-callback)
 	- [Get DevEUI, AppEUI, AppKey](#get-deveui-appeui-appkey)
@@ -240,6 +241,20 @@ _To be documented._
 ### Get the configured LoRaWAN region, country code, and network name
 
 _To be documented._
+
+### Set link-check mode
+
+```c++
+bool Arduino_LoRaWAN::SetLinkCheckMode(
+	bool fEnable
+	);
+```
+
+Enable (or disable) link check mode, based on the value of `fEnabled`. If disabled, the device will not try to maintain a connection to the network. If enabled, the device watches for downlinks. If no downlink is seen for 64 messages, the device starts setting the netowrk ADR request in uplinks. If there's no response after 32 messages, the device reduces the data rate and increases power, and continues this loop until there are no more data rates to try. At that point, the device will start inserting join attempts after every uplink without a downlink.
+
+If disabled, the device doesn't try to reduce data rate automatically and won't ever automatically detect network loss or change.
+
+Disabled was formerly the preferred mode of operation, but as of early 2019, it is clear that enabled is the preferred mode for The Things Network.
 
 ### Send a buffer
 

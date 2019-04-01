@@ -443,6 +443,12 @@ public:
                         }
                 }
 
+	// Enable (or disable) link-check mode, which generates uplink ADR
+	// requests and causes automatic rejoin if the network seems not
+	// to be responding.  Without this, downlink ADR settings are
+	// honored, but the device will never try to rejoin.
+	bool SetLinkCheckMode(bool fEnable);
+
 protected:
 	// you must have a NetBegin() function or things won't work.
 	virtual bool NetBegin(void) = 0;
