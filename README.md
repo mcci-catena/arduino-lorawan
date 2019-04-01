@@ -263,7 +263,22 @@ Send message from `pBuffer`; call `pDoneFn(pClientData, status)` when the messag
 
 ### Register a Receive-Buffer Callback
 
-_To be documented._
+```c++
+typedef void
+Arduino_LoRaWAN::ReceivePortBufferCbFn(
+	void *pClientData,
+	uint8_t uPort,
+	const uint8_t *pBuffer,
+	size_t nBuffer
+	);
+
+void Arduino_LoRaWAN::SetReceiveBufferCb(
+	Arduino_LoRaWAN::ReceivePortBufferCbFn *pReceiveBufferFn,
+	void *pUserData = nullptr
+	);
+```
+
+The specified function is called whenever a downlink message is received. `nBuffer` might be zero, and `uPort` might be zero for MAC messages. LMIC.seqnoDn`
 
 ### Get DevEUI, AppEUI, AppKey
 
