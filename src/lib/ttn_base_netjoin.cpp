@@ -59,5 +59,7 @@ Revision history:
 
 void Arduino_LoRaWAN_ttn_base::NetJoin()
 	{
-        LMIC_setLinkCheckMode(0);
+	// we don't want to disable link-check mode on
+	// current TTN networks with the current LMIC.
+	// LMIC_setLinkCheckMode(0);
 	}
