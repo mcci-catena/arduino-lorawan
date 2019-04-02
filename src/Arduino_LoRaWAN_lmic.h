@@ -1,5 +1,3 @@
-/* Arduino_LoRaWAN_lmic.h	Tue Oct 25 2016 06:22:40 tmm */
-
 /*
 
 Module:  Arduino_LoRaWAN_lmic.h
@@ -7,27 +5,11 @@ Module:  Arduino_LoRaWAN_lmic.h
 Function:
 	Wrapper header file for LMIC internals.
 
-Version:
-	V0.1.0	Tue Oct 25 2016 06:22:40 tmm	Edit level 1
-
 Copyright notice:
-	This file copyright (C) 2016 by
-
-		MCCI Corporation
-		3520 Krums Corners Road
-		Ithaca, NY  14850
-
-	An unpublished work.  All rights reserved.
-
-	This file is proprietary information, and may not be disclosed or
-	copied without the prior permission of MCCI Corporation.
+	See accompanying LICENSE file.
 
 Author:
 	Terry Moore, MCCI Corporation	October 2016
-
-Revision history:
-   0.1.0  Tue Oct 25 2016 06:22:40  tmm
-	Module created.
 
 */
 
@@ -79,7 +61,8 @@ public:
 	 "BEACON_TRACKED\0" "JOINING\0" "JOINED\0" "RFU1\0"	\
 	 "JOIN_FAILED\0" "REJOIN_FAILED\0" "TXCOMPLETE\0"	\
 	 "LOST_TSYNC\0" "RESET\0" "RXCOMPLETE\0" "LINK_DEAD\0"	\
-	 "LINK_ALIVE\0" "SCAN_FOUND\0" "TXSTART\0"
+	 "LINK_ALIVE\0" "SCAN_FOUND\0" "TXSTART\0"		\
+	 "TXCANCELED\0" "RXSTART\0" "JOIN_TXCOMPLETE\0"
 
 /**** end of Arduino_LoRaWAN_lmic.h ****/
 #endif /* _ARDUINO_LORAWAN_LMIC_H_ */
