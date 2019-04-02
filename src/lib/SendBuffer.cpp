@@ -65,7 +65,7 @@ bool Arduino_LoRaWAN::SendBuffer(
 	uint8_t port
         )
         {
-        if (this->m_fTxPending || LMIC.opmode & OP_TXRXPEND)
+        if (! this->GetTxReady())
                 {
                 if (pDoneFn)
                         (*pDoneFn)(pDoneCtx, false);

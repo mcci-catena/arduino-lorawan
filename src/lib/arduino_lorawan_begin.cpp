@@ -172,11 +172,7 @@ void Arduino_LoRaWAN::StandardEventProcessor(
             // we need to just reset.
             if (! this->GetOtaaProvisioningInfo(nullptr))
                 {
-                bool txPending = this->m_fTxPending;
-                this->m_fTxPending = false;
-                // notify client that TX is complete
-                if (txPending && this->m_pSendBufferDoneFn)
-                        this->m_pSendBufferDoneFn(this->m_pSendBufferDoneCtx, false);
+                this->completeTx(false);
                 }
             break;
 
@@ -217,7 +213,6 @@ void Arduino_LoRaWAN::StandardEventProcessor(
             break;
 
         case EV_TXCOMPLETE:
-            this->m_fTxPending = false;
 
 	    // notify framework that RX may be available (because this happens
 	    // after every transmit).
