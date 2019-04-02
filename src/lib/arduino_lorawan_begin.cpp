@@ -3,13 +3,13 @@
 Module:  arduino_lorawan_begin.cpp
 
 Function:
-	Arduino_LoRaWAN::begin();
+        Arduino_LoRaWAN::begin();
 
 Copyright notice:
-	See LICENSE file accompanying this project.
+        See LICENSE file accompanying this project.
 
 Author:
-	Terry Moore, MCCI Corporation	October 2016
+        Terry Moore, MCCI Corporation	October 2016
 
 */
 
@@ -133,21 +133,21 @@ Arduino_LoRaWAN::cLMIC::GetEventName(uint32_t ev)
 Name:	Arduino_LoRaWAN::StandardEventProcessor()
 
 Function:
-	Handle LMIC events.
+        Handle LMIC events.
 
 Definition:
-	private: void Arduino_LoRaWAN::StandardEventProcessor(
-			uint32_t ev
-			);
+        private: void Arduino_LoRaWAN::StandardEventProcessor(
+                        uint32_t ev
+                        );
 
 Description:
-	The simple events emitted from the LMIC core are processed, both
-	to arrange for completions and notificatoins for asynchronous events,
-	and to generate notifications to cause data to be pushed to the
-	platform's persistent storage.
+        The simple events emitted from the LMIC core are processed, both
+        to arrange for completions and notificatoins for asynchronous events,
+        and to generate notifications to cause data to be pushed to the
+        platform's persistent storage.
 
 Returns:
-	No explicit result.
+        No explicit result.
 
 */
 
@@ -155,6 +155,7 @@ void Arduino_LoRaWAN::StandardEventProcessor(
     uint32_t ev
     )
     {
+    // update our idea of the downlink counter.
     this->UpdateFCntDown(LMIC.seqnoDn);
 
     switch(ev)
@@ -172,19 +173,15 @@ void Arduino_LoRaWAN::StandardEventProcessor(
             // we need to just reset.
             if (! this->GetOtaaProvisioningInfo(nullptr))
                 {
-                bool txPending = this->m_fTxPending;
-                this->m_fTxPending = false;
-                // notify client that TX is complete
-                if (txPending && this->m_pSendBufferDoneFn)
-                        this->m_pSendBufferDoneFn(this->m_pSendBufferDoneCtx, false);
+                this->completeTx(false);
                 }
             break;
 
         case EV_JOINED:
             {
-	    // announce that we have joined; allows for
-	    // network-specific fixups, and saving keys.
-	    this->NetJoin();
+            // announce that we have joined; allows for
+            // network-specific fixups, and saving keys.
+            this->NetJoin();
             SessionInfo Info;
             Info.V1.Tag = kSessionInfoTag_V1;
             Info.V1.Size = sizeof(Info);
@@ -202,50 +199,48 @@ void Arduino_LoRaWAN::StandardEventProcessor(
             break;
 
         case EV_JOIN_FAILED:
-	    // we failed the join. But we keep trying; client must
-	    // do a reset to stop us.
-	    // TODO(tmm@mcci.com): this->NetJoinFailed(), and/or
+            // we failed the join. But we keep trying; client must
+            // do a reset to stop us.
+            // TODO(tmm@mcci.com): this->NetJoinFailed(), and/or
             // an outcall
             break;
 
         case EV_REJOIN_FAILED:
-	    // after we join, if ABP is enabled (LMIC_setLinkCheck(true)),
-	    // if we don't get downlink messages for a while, we'll try to
-	    // rejoin. This message indicated that the rejoin failed.
-	    // TODO(tmm@mcci.com): this->NetRejoinFailed(), and/or
-	    //	an outcall
+            // after we join, if ABP is enabled (LMIC_setLinkCheck(true)),
+            // if we don't get downlink messages for a while, we'll try to
+            // rejoin. This message indicated that the rejoin failed.
+            // TODO(tmm@mcci.com): this->NetRejoinFailed(), and/or
+            //	an outcall
             break;
 
         case EV_TXCOMPLETE:
-            this->m_fTxPending = false;
+            // notify framework that RX may be available (because this happens
+            // after every transmit).
+            this->NetRxComplete();
 
-	    // notify framework that RX may be available (because this happens
-	    // after every transmit).
-	    this->NetRxComplete();
-
-	    // notify framework that tx is complete
+            // notify framework that tx is complete
             this->NetTxComplete();
 
-	    // notify client that TX is complete; claim success unless
-	    // LMIC.txrxFlags & TXRX_NACK
-            this->completeTx(! (LMIC.txrxFlags & TXRX_NACK));
+            // notify client that TX is complete; claim success unless
+            // it's confirmed and we didn't get an ACK.
+            this->completeTx(! LMIC.pendTxConf || (LMIC.txrxFlags & TXRX_ACK) != 0);
             break;
 
         case EV_LOST_TSYNC:
-	    // only for class-B or class-C: we lost beacon time synch.
+            // only for class-B or class-C: we lost beacon time synch.
             break;
 
         case EV_RESET:
-	    // the LoRaWAN MAC just got reset due to a pending frame rollover
-	    // on FCntDn or actual rollover on FCntUp.
+            // the LoRaWAN MAC just got reset due to a pending frame rollover
+            // on FCntDn or actual rollover on FCntUp.
             break;
 
         case EV_RXCOMPLETE:
             // data received in ping slot
             // see TXCOMPLETE.
 
-	    // follow protocol:
-	    this->NetRxComplete();
+            // follow protocol:
+            this->NetRxComplete();
             break;
 
         case EV_LINK_DEAD:
@@ -258,40 +253,39 @@ void Arduino_LoRaWAN::StandardEventProcessor(
             break;
 
         case EV_TXSTART:
-	    this->NetSaveFCntUp(LMIC.seqnoUp);
+            this->NetSaveFCntUp(LMIC.seqnoUp);
             break;
 
-	default:
-	    break;
-	}
+        case EV_TXCANCELED:
+            this->completeTx(false);
+            break;
+
+        default:
+            break;
+        }
     }
 
 void Arduino_LoRaWAN::NetRxComplete(void)
-	{
-	// notify client that RX is available
-	if (LMIC.dataLen  != 0 || LMIC.dataBeg != 0)
-		{
-		uint8_t port;
-		port = 0;
-		if (LMIC.txrxFlags & TXRX_PORT)
-			port = LMIC.frame[LMIC.dataBeg - 1];
+        {
+        // notify client that RX is available
+        if (LMIC.dataLen  != 0 || LMIC.dataBeg != 0)
+                {
+                uint8_t port;
+                port = 0;
+                if (LMIC.txrxFlags & TXRX_PORT)
+                        port = LMIC.frame[LMIC.dataBeg - 1];
 
-		if (this->m_pReceiveBufferFn)
-			{
-			this->m_pReceiveBufferFn(
-				this->m_pReceiveBufferCtx,
-				port,
-				LMIC.frame + LMIC.dataBeg,
-				LMIC.dataLen
-				);
-			}
-		}
-
-	// Try to save the Rx sequence number.
-	// For efficiency, client should look for changes
-	// since last save.
-	this->UpdateFCntDown(LMIC.seqnoDn);
-	}
+                if (this->m_pReceiveBufferFn)
+                        {
+                        this->m_pReceiveBufferFn(
+                                this->m_pReceiveBufferCtx,
+                                port,
+                                LMIC.frame + LMIC.dataBeg,
+                                LMIC.dataLen
+                                );
+                        }
+                }
+        }
 
 /****************************************************************************\
 |
