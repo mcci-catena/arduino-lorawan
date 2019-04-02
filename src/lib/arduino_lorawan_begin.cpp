@@ -256,6 +256,10 @@ void Arduino_LoRaWAN::StandardEventProcessor(
             this->NetSaveFCntUp(LMIC.seqnoUp);
             break;
 
+        case EV_TXCANCELED:
+            this->completeTx(false);
+            break;
+
         default:
             break;
         }
