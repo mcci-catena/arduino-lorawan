@@ -155,6 +155,7 @@ void Arduino_LoRaWAN::StandardEventProcessor(
     uint32_t ev
     )
     {
+    // update our idea of the downlink counter.
     this->UpdateFCntDown(LMIC.seqnoDn);
 
     switch(ev)
@@ -281,11 +282,6 @@ void Arduino_LoRaWAN::NetRxComplete(void)
 				);
 			}
 		}
-
-	// Try to save the Rx sequence number.
-	// For efficiency, client should look for changes
-	// since last save.
-	this->UpdateFCntDown(LMIC.seqnoDn);
 	}
 
 /****************************************************************************\
