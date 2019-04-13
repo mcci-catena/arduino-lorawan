@@ -77,7 +77,8 @@ bool Arduino_LoRaWAN_ttn_base::NetBegin()
 
     if (this->GetAbpProvisioningInfo(&abpInfo))
         {
-        LMIC_setSession(/* port */ 1,
+        LMIC_setSession(
+                abpInfo.NetID,
                 abpInfo.DevAddr,
                 abpInfo.NwkSKey,
                 abpInfo.AppSKey
