@@ -305,6 +305,18 @@ _To be documented._
 
 ## Release History
 
+- HEAD has the following changes.
+
+   - [#96](https://github.com/mcci-catena/Catena-Arduino-Platform/issues/96) properly restores the NetID from a saved session.
+   - [#93](https://github.com/mcci-catena/Catena-Arduino-Platform/issues/93) adds EV_TXCANCELED support.
+   - [#92](https://github.com/mcci-catena/Catena-Arduino-Platform/issues/92), [#84](https://github.com/mcci-catena/Catena-Arduino-Platform/issues/84), [#85](https://github.com/mcci-catena/Catena-Arduino-Platform/issues/85), [#87](https://github.com/mcci-catena/Catena-Arduino-Platform/issues/87) handles transmit completion status correctly.
+   - [#91](https://github.com/mcci-catena/Catena-Arduino-Platform/issues/91) removes a redundant call to `UpdateFCntDown()`.
+   - [#89](https://github.com/mcci-catena/Catena-Arduino-Platform/issues/89) adds new LMIC event codes added as part of the certification push.
+   - [#5](https://github.com/mcci-catena/Catena-Arduino-Platform/issues/5) enables link-check-mode by default.
+   - [#83](https://github.com/mcci-catena/Catena-Arduino-Platform/issues/83) add `SetLinkCheckMode() method.
+   - [#81](https://github.com/mcci-catena/Catena-Arduino-Platform/issues/81) allows uplinks to arbitrary ports.
+
+
 - v0.5.3 is a patch release. It fixes a platformio compile warning, and also fixes another missing return for `Arduino_LoRaWAN::begin()` (this time in an overload in the header file.)
 
 - v0.5.2 incorporates the fix for issue [#68](https://github.com/mcci-catena/arduino-lorawan/issues/68), missing return in `Arduino_LoRaWAN::begin()`.
