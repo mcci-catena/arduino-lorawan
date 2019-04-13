@@ -25,7 +25,7 @@ Author:
 #include <cstring>
 #include <arduino_lmic_hal_configuration.h>
 
-// Arduino LMIC version
+// Arduino LoRaWAN version
 #define ARDUINO_LORAWAN_VERSION_CALC(major, minor, patch, local)	\
 	(((major) << 24u) | ((minor) << 16u) | ((patch) << 8u) | (local))
 
