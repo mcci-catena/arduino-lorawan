@@ -24,6 +24,10 @@ Author:
 
 #include <lmic.h>
 
+#if ! (defined(ARDUINO_LMIC_VERSION) && ARDUINO_LMIC_VERSION >= ARDUINO_LMIC_VERSION_CALC(2,3,2,50))
+# error lmic library is out of date. Check ARDUINO_LMIC_VERSION.
+#endif
+
 class Arduino_LoRaWAN::cLMIC
 	{
 public:
