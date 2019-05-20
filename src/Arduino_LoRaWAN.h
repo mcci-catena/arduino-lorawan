@@ -278,7 +278,6 @@ public:
 		uint8_t		Size;		// sizeof(SessionInfoV1)
 		uint8_t		Region;		// selected region.
 		uint8_t		LinkADR;	// Current link ADR (per [1.0.2] 5.2)
-		uint8_t		Redundancy;	// NbTrans (in bits 3:0)
 		uint32_t        NetID;          // the network ID
 		uint32_t	DevAddr;	// device address
 		uint8_t		NwkSKey[16];	// network session key
@@ -288,6 +287,8 @@ public:
 		SessionChannelMask Channels;	// info about the enabled
 						// channels.
 		uint16_t	Country;	// Country code
+                int16_t         LinkIntegrity;  // the link-integrity counter.
+		uint8_t		Redundancy;	// NbTrans (in bits 3:0)
 		uint8_t		DutyCycle;	// Duty cycle (per [1.0.2] 5.3)
 		// TODO(tmm@mcci.com) complete		 
 		};
@@ -406,7 +407,7 @@ public:
 
         virtual const char *GetNetworkName() const = 0;
 
-	bool GetTxReady();
+	bool GetTxReady() const;
 
 	typedef void SendBufferCbFn(void *pCtx, bool fSuccess);
 
@@ -468,6 +469,15 @@ public:
 	// to be responding.  Without this, downlink ADR settings are
 	// honored, but the device will never try to rejoin.
 	bool SetLinkCheckMode(bool fEnable);
+
+        // Data about the currently pending transmit.
+        struct SendBufferData_t
+                {
+                Arduino_LoRaWAN *pSelf;
+                SendBufferCbFn *pDoneFn;
+                void *pDoneCtx;
+                bool fTxPending;
+                };
 
 protected:
 	// you must have a NetBegin() function or things won't work.
@@ -605,25 +615,11 @@ protected:
 		}
 
 	uint32_t m_ulDebugMask;
-	bool m_fTxPending;
 
-	SendBufferCbFn *m_pSendBufferDoneFn;
-	void *m_pSendBufferDoneCtx;
-
-	// complete transmit.
-	void completeTx(bool fStatus)
-		{
-		SendBufferCbFn * const pSendBufferDoneFn = this->m_pSendBufferDoneFn;
-
-		this->m_pSendBufferDoneFn = nullptr;
-		if (this->m_fTxPending && pSendBufferDoneFn != nullptr)
-			{
-			this->m_fTxPending = false;
-			(*pSendBufferDoneFn)(this->m_pSendBufferDoneCtx, fStatus);
-			}
-		};
 
 private:
+        SendBufferData_t m_SendBufferData;
+
 	ReceivePortBufferCbFn *m_pReceiveBufferFn;
 	void *m_pReceiveBufferCtx;
 

@@ -40,7 +40,7 @@ Revision history:
 |
 \****************************************************************************/
 
-
+static lmic_txmessage_cb_t localSendBufferCb;
 
 /****************************************************************************\
 |
@@ -55,6 +55,54 @@ Revision history:
 |	Variables
 |
 \****************************************************************************/
+
+/*
+
+Name:   Arduino_LoRaWAN::SendBuffer()
+
+Function:
+        Send a message via the LMIC.
+
+Definition:
+        public typedef void Arduino_LoRaWAN::SendBufferCbFn(
+                                void *pDoneCtx,
+                                bool fSuccess
+                                );
+
+        public bool Arduino_LoRaWAN::SendBuffer(
+                const uint8_t *pBuffer,
+                size_t nBuffer,
+                SendBufferCbFn *pDoneFn,
+                void *pDoneCtx,
+                bool fConfirmed = false,
+                uint8_t port = 1
+                );
+
+Description:
+        The message is submitted to the LMIC for transmission to the network,
+        if possible. When processing is finished, pDoneFn is called as follows:
+
+                (*pDoneFn)(pDoneCtx, fSuccess);
+
+        fSuccess will be true if (as far as we can tell) the message was successfully
+        transmitted. For unconfirmed uplinks, as long as we sent the message, we
+        return true. (Uplinks might be canceled due to link tracking or other issues.)
+
+        If the LMIC is already processing a message, then the request
+        is immediately completed, and this routine returns false.
+
+        We guarantee that pDoneFn will be called once, when message
+        processing is complete.
+
+Returns:
+        The result is not very useful, because of the guarantees around
+        completion processing. However, if false, then the transmit failed,
+        and the completion routine has already been called. If true, then
+        the transmit was started; the completion routine might already have
+        been called.  We don't recommend using this result.
+
+*/
+
 
 bool Arduino_LoRaWAN::SendBuffer(
         const uint8_t *pBuffer,
@@ -72,24 +120,49 @@ bool Arduino_LoRaWAN::SendBuffer(
                 return false;
                 }
 
-        const int iResult = LMIC_setTxData2(
+        this->m_SendBufferData.pDoneFn = pDoneFn;
+        this->m_SendBufferData.pDoneCtx = pDoneCtx;
+        this->m_SendBufferData.fTxPending = true;
+        this->m_SendBufferData.pSelf = this;
+
+        const int iResult = LMIC_sendWithCallback(
                                 /* port: */ port != 0 ? port : 1,
                                 const_cast<xref2u1_t>(pBuffer),
                                 nBuffer,
-                                /* confirmed? */ fConfirmed
+                                /* confirmed? */ fConfirmed,
+                                localSendBufferCb,
+                                (void *)&this->m_SendBufferData
                                 );
 
         if (iResult == 0)
                 {
-                this->m_fTxPending = true;
-                this->m_pSendBufferDoneFn = pDoneFn;
-                this->m_pSendBufferDoneCtx = pDoneCtx;
+                // transmit was queued, will complete.
                 return true;
                 }
         else
                 {
+                this->m_SendBufferData.fTxPending = false;
                 if (pDoneFn)
                         (*pDoneFn)(pDoneCtx, false);
                 return false;
+                }
+        }
+
+static void
+localSendBufferCb(
+        void *pUserData,
+        int fSuccess
+        )
+        {
+        auto const pSendBufferData =
+                (Arduino_LoRaWAN::SendBufferData_t *)pUserData;
+        auto const pDoneFn = pSendBufferData->pDoneFn;
+
+        pSendBufferData->fTxPending = false;
+
+        if (pDoneFn != nullptr)
+                {
+                pSendBufferData->pDoneFn = nullptr;
+                pDoneFn(pSendBufferData->pDoneCtx, fSuccess);
                 }
         }

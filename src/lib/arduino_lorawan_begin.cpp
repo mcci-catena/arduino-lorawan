@@ -169,12 +169,6 @@ void Arduino_LoRaWAN::StandardEventProcessor(
         case EV_BEACON_TRACKED:
             break;
         case EV_JOINING:
-            // if we're joining, try to see if we have OTAA info. If not
-            // we need to just reset.
-            if (! this->GetOtaaProvisioningInfo(nullptr))
-                {
-                this->completeTx(false);
-                }
             break;
 
         case EV_JOINED:
@@ -220,10 +214,6 @@ void Arduino_LoRaWAN::StandardEventProcessor(
 
             // notify framework that tx is complete
             this->NetTxComplete();
-
-            // notify client that TX is complete; claim success unless
-            // it's confirmed and we didn't get an ACK.
-            this->completeTx(! LMIC.pendTxConf || (LMIC.txrxFlags & TXRX_ACK) != 0);
             break;
 
         case EV_LOST_TSYNC:
@@ -257,7 +247,9 @@ void Arduino_LoRaWAN::StandardEventProcessor(
             break;
 
         case EV_TXCANCELED:
-            this->completeTx(false);
+            break;
+
+        case EV_JOIN_TXCOMPLETE:
             break;
 
         default:
