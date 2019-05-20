@@ -70,10 +70,30 @@ Revision history:
 |
 \****************************************************************************/
 
-bool Arduino_LoRaWAN::GetTxReady()
+/*
+
+Name:   Arduino_LoRaWAN::GetTxReady()
+
+Function:
+        Return TRUE if the LMIC can accept a transmit operation.
+
+Definition:
+        public bool Arduino_LoRaWAN::GetTxReady() const;
+
+Description:
+        If the LMIC is already processing a message, or if there's
+        a message in the Arduino_LoRaWAN queue being processed,
+        then transmit is not ready. Otherwise, transmit is ready.
+
+Returns:
+        true if ready for a message, false otherwise.
+
+*/
+
+bool Arduino_LoRaWAN::GetTxReady() const
         {
         if (LMIC.opmode & OP_TXRXPEND)
                 return false;
         else
-                return ! this->m_fTxPending;
+                return ! this->m_SendBufferData.fTxPending;
         }
