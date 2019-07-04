@@ -1,10 +1,24 @@
-# Travis script for test-building this library.
+##############################################################################
+#
+# File: .travis.yml
+#
+# Function:
+#     Travis script for test-building this library.
+#
+# Copyright Notice:
+#     See LICENSE file accompanying this project.
+#
+# Author:
+#     Terry Moore, MCCI Corporation   July 2018
+#
+##############################################################################
+
 dist: trusty
-sudo: false
+sudo: true
 
 env:
  global:
-  - IDE_VERSION=1.8.8
+  - IDE_VERSION=1.8.9
 
 # Thanks, https://stackoverflow.com/questions/27644586/how-to-set-up-travis-ci-with-multiple-languages !
 matrix:
@@ -23,8 +37,18 @@ matrix:
         - export ARDUINO_IDE=arduino_ide/${IDE_VERSION}
         - export ARDUINO_LIBS="$HOME/Arduino/libraries"
         - if [ ! -d "$HOME/arduino_ide" ] ; then mkdir "$HOME/arduino_ide" ; fi
-        - if [ ! -d "$HOME/$ARDUINO_IDE" ] ; then { echo "fetch" && wget http://downloads.arduino.cc/arduino-${IDE_VERSION}-linux64.tar.xz && echo "untar" && tar xf arduino-${IDE_VERSION}-linux64.tar.xz && echo "move" && mv -f arduino-${IDE_VERSION} $HOME/${ARDUINO_IDE} ; } || { echo "IDE install failed"; exit 1; } ; else echo "IDE already installed" ; fi
+        - if [ ! -d "$HOME/$ARDUINO_IDE" ] ; then { echo "fetch" && wget https://downloads.arduino.cc/arduino-${IDE_VERSION}-linux64.tar.xz && echo "untar" && tar xf arduino-${IDE_VERSION}-linux64.tar.xz && echo "move" && mv -f arduino-${IDE_VERSION} $HOME/${ARDUINO_IDE} ; } || { echo "IDE install failed"; exit 1; } ; else echo "IDE already installed" ; fi
         - export PATH="$HOME/${ARDUINO_IDE}:$PATH"
+
+        # Arduino IDE adds a lot of noise caused by network traffic, firewall it off
+        # (see https://github.com/per1234/arduino-ci-script/issues/1#issuecomment-504158113)
+        - sudo iptables -P INPUT DROP
+        - sudo iptables -P FORWARD DROP
+        - sudo iptables -P OUTPUT ACCEPT
+        - sudo iptables -A INPUT -i lo -j ACCEPT
+        - sudo iptables -A OUTPUT -o lo -j ACCEPT
+        - sudo iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+
         #
         # arduino_lorawan looks for project_config things, so we must put
         # things in the canonical place
