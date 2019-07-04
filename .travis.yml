@@ -147,6 +147,9 @@ matrix:
       - arduino --verify --board $(_stm32l0opts 'mcci_catena_4610' us915  )  $MCCI_STM32_OPTS $THISLIB/examples/simple/simple.ino
       - arduino --verify --board $(_stm32l0opts 'mcci_catena_4611' us915  )  $MCCI_STM32_OPTS $THISLIB/examples/simple/simple.ino
       - arduino --verify --board $(_stm32l0opts 'mcci_catena_4612' us915  )  $MCCI_STM32_OPTS $THISLIB/examples/simple/simple.ino
+      - arduino --verify --board $(_stm32l0opts 'mcci_catena_4617' us915  )  $MCCI_STM32_OPTS $THISLIB/examples/simple/simple.ino
+      - arduino --verify --board $(_stm32l0opts 'mcci_catena_4618' us915  )  $MCCI_STM32_OPTS $THISLIB/examples/simple/simple.ino
+      - arduino --verify --board $(_stm32l0opts 'mcci_catena_4630' us915  )  $MCCI_STM32_OPTS $THISLIB/examples/simple/simple.ino
       - arduino --verify --board $(_stm32l0opts 'mcci_catena_4801' us915  )  $MCCI_STM32_OPTS $THISLIB/examples/simple/simple.ino
 
 # PlatformIO dependency test
