@@ -7,33 +7,11 @@ Module:  machineq_us915_netbegin.cpp
 Function:
 	Arduino_LoRaWAN_machineQ_us915::NetBeginRegionInit()
 
-Version:
-	V0.2.3	Fri May 19 2017 23:58:34 tmm	Edit level 3
-
 Copyright notice:
-	This file copyright (C) 2016-2017 by
-
-		MCCI Corporation
-		3520 Krums Corners Road
-		Ithaca, NY  14850
-
-	An unpublished work.  All rights reserved.
-
-	This file is proprietary information, and may not be disclosed or
-	copied without the prior permission of MCCI Corporation.
+        See LICENSE file accompanying this project.
 
 Author:
-	Terry Moore, MCCI Corporation	November 2016
-
-Revision history:
-   0.2.0  Tue Nov  1 2016 05:29:19  tmm
-	Module created.
-
-   0.2.2  Sun Mar 12 2017 16:21:31  tmm
-	Clarify documentation.
-
-   0.2.3  Fri May 19 2017 23:58:34  tmm
-        Refactor for eu868 support as well as us915.
+	Terry Moore, MCCI Corporation	June 2018
 
 */
 
