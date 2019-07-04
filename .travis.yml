@@ -4,7 +4,7 @@ sudo: false
 
 env:
  global:
-  - IDE_VERSION=1.8.8
+  - IDE_VERSION=1.8.9
 
 # Thanks, https://stackoverflow.com/questions/27644586/how-to-set-up-travis-ci-with-multiple-languages !
 matrix:
