@@ -43,16 +43,9 @@ Author:
 void Arduino_LoRaWAN_ttn_us915::NetBeginRegionInit()
     {
     // Set data rate and transmit power
-    // DR_SF7 is US DR3; 14 means 14 dBm
+    // DR_SF7 is US DR3; 21 means 21 dBm
 
-    // XXX (tmm@mcci.com) although LMIC.adrTxpow is set to 14, it's
-    // never used inside the LMIC library. This is because LMIC's radio.c uses
-    // LMIC.txpow, and in US915, lmic.c::updatetx() sets LMIC.txpow to 30
-    // for 125kHz channels, and  26 for 500kHz channels, ignoring
-    // LMIC.adrTxpow.  Then radio.c limits to the value for 10 dBm, and
-    // apparendly doesn't even turn on the +20 dBm option if over 10 dBm.
-
-    LMIC_setDrTxpow(US915_DR_SF7, 14);
+    LMIC_setDrTxpow(US915_DR_SF7, 21);
 
     // Select SubBand prejoin -- saves power for joining
     // This is specific to the US915 bandplan.

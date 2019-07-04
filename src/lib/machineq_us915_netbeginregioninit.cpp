@@ -73,6 +73,6 @@ void Arduino_LoRaWAN_machineQ_us915::NetBeginRegionInit()
         // Set data rate and transmit power -- these ought to
         // be the defaults in lmic, but it's quicker to just
         // set them here.
-        LMIC_setDrTxpow(US915_DR_SF10, 20);
+        LMIC_setDrTxpow(US915_DR_SF10, 21);
         }
 #endif
