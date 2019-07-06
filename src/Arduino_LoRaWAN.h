@@ -127,7 +127,7 @@ public:
 		};
 
 	// US-like regions use a 72-bit mask of enabled channels.
-	// EU-like regions use a a table of 16 frequencies with 
+	// EU-like regions use a a table of 16 frequencies with
 	//    100-Hz resolution (at 24 bits, that's 48 bytes)
 	//    In this encoding, we use zeros to represent disabled channels
 
@@ -136,9 +136,9 @@ public:
 		enum eMaskKind : uint8_t { kEUlike = 0, kUSlike = 1 };
 
 		uint8_t		Tag;
-		uint8_t		Size;	
+		uint8_t		Size;
 		};
-	
+
 	struct SessionChannelMask_US_like
 		{
 		enum : uint32_t { nCh = 64 + 8 };
@@ -157,8 +157,8 @@ public:
 			else
 				return false;
 			}
-		
-		void clearAll() 
+
+		void clearAll()
 			{
 			for (auto i = 0u; i < nCh / 8; ++i)
 				this->ChannelMask[i] = 0;
@@ -208,7 +208,7 @@ public:
 				return (uint32_t(chPtr[0] << 16) |
 				        uint32_t(chPtr[1] << 8) |
 				        uint32_t(chPtr[2])) * 100;
-				} 
+				}
 			}
 
 		// record the frequency of a given channel.
@@ -227,7 +227,7 @@ public:
 			}
 
 		// clear all frequencies
-		void clearAll() 
+		void clearAll()
 			{
 			std::memset(this->ChannelFreq, 0, sizeof(this->ChannelFreq));
 			}
@@ -290,7 +290,7 @@ public:
                 int16_t         LinkIntegrity;  // the link-integrity counter.
 		uint8_t		Redundancy;	// NbTrans (in bits 3:0)
 		uint8_t		DutyCycle;	// Duty cycle (per [1.0.2] 5.3)
-		// TODO(tmm@mcci.com) complete		 
+		// TODO(tmm@mcci.com) complete
 		};
 
 
