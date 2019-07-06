@@ -2,7 +2,7 @@
 
 **User-friendly library for using the Arduino LMIC library with The Things Network and LoRaWAN™ networks.**
 
-[![GitHub release](https://img.shields.io/github/release/mcci-catena/arduino-lorawan.svg)](https://github.com/mcci-catena/arduino-lorawan/releases/latest) [![GitHub commits](https://img.shields.io/github/commits-since/mcci-catena/arduino-lorawan/latest.svg)](https://github.com/mcci-catena/arduino-lorawan/compare/v0.5.3...master) [![Build Status](https://travis-ci.com/mcci-catena/arduino-lorawan.svg?branch=master)](https://travis-ci.com/mcci-catena/arduino-lorawan)
+[![GitHub release](https://img.shields.io/github/release/mcci-catena/arduino-lorawan.svg)](https://github.com/mcci-catena/arduino-lorawan/releases/latest) [![GitHub commits](https://img.shields.io/github/commits-since/mcci-catena/arduino-lorawan/latest.svg)](https://github.com/mcci-catena/arduino-lorawan/compare/v0.6.0...master) [![Build Status](https://travis-ci.com/mcci-catena/arduino-lorawan.svg?branch=master)](https://travis-ci.com/mcci-catena/arduino-lorawan)
 
 **Contents**
 <!-- TOC depthFrom:2 updateOnSave:true -->
@@ -305,17 +305,22 @@ _To be documented._
 
 ## Release History
 
-- HEAD has the following changes.
+- v0.6.0 has the following changes.
 
-   - [#96](https://github.com/mcci-catena/Catena-Arduino-Platform/issues/96) properly restores the NetID from a saved session.
-   - [#93](https://github.com/mcci-catena/Catena-Arduino-Platform/issues/93) adds EV_TXCANCELED support.
-   - [#92](https://github.com/mcci-catena/Catena-Arduino-Platform/issues/92), [#84](https://github.com/mcci-catena/Catena-Arduino-Platform/issues/84), [#85](https://github.com/mcci-catena/Catena-Arduino-Platform/issues/85), [#87](https://github.com/mcci-catena/Catena-Arduino-Platform/issues/87) handles transmit completion status correctly.
-   - [#91](https://github.com/mcci-catena/Catena-Arduino-Platform/issues/91) removes a redundant call to `UpdateFCntDown()`.
-   - [#89](https://github.com/mcci-catena/Catena-Arduino-Platform/issues/89) adds new LMIC event codes added as part of the certification push.
-   - [#5](https://github.com/mcci-catena/Catena-Arduino-Platform/issues/5) enables link-check-mode by default.
-   - [#83](https://github.com/mcci-catena/Catena-Arduino-Platform/issues/83) add `SetLinkCheckMode() method.
-   - [#81](https://github.com/mcci-catena/Catena-Arduino-Platform/issues/81) allows uplinks to arbitrary ports.
-
+   - [#110](https://github.com/mcci-catena/arduino-lorawan/issues/110) tweak initial power settings for US.
+   - [#106](https://github.com/mcci-catena/arduino-lorawan/issues/106), [#107](https://github.com/mcci-catena/arduino-lorawan/issues/107), [#108](https://github.com/mcci-catena/arduino-lorawan/issues/108), [#104](https://github.com/mcci-catena/arduino-lorawan/issues/104)
+CI improvements
+   - [#88](https://github.com/mcci-catena/arduino-lorawan/issues/88) use new LMIC APIs for SendBuffer
+   - [#97](https://github.com/mcci-catena/arduino-lorawan/issues/97) add `ARDUINO_LORAWAN_VERSION` macro.
+   - [#98](https://github.com/mcci-catena/arduino-lorawan/issues/98) check LMIC version at compile time.
+   - [#96](https://github.com/mcci-catena/arduino-lorawan/issues/96) properly restores the NetID from a saved session.
+   - [#93](https://github.com/mcci-catena/arduino-lorawan/issues/93) adds EV_TXCANCELED support.
+   - [#92](https://github.com/mcci-catena/arduino-lorawan/issues/92), [#84](https://github.com/mcci-catena/arduino-lorawan/issues/84), [#85](https://github.com/mcci-catena/arduino-lorawan/issues/85), [#87](https://github.com/mcci-catena/arduino-lorawan/issues/87) handles transmit completion status correctly.
+   - [#91](https://github.com/mcci-catena/arduino-lorawan/issues/91) removes a redundant call to `UpdateFCntDown()`.
+   - [#89](https://github.com/mcci-catena/arduino-lorawan/issues/89) adds new LMIC event codes added as part of the certification push.
+   - [#5](https://github.com/mcci-catena/arduino-lorawan/issues/5) enables link-check-mode by default.
+   - [#83](https://github.com/mcci-catena/arduino-lorawan/issues/83) add `SetLinkCheckMode() method.
+   - [#81](https://github.com/mcci-catena/arduino-lorawan/issues/81) allows uplinks to arbitrary ports.
 
 - v0.5.3 is a patch release. It fixes a platformio compile warning, and also fixes another missing return for `Arduino_LoRaWAN::begin()` (this time in an overload in the header file.)
 
