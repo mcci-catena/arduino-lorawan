@@ -48,17 +48,22 @@ It targets devices that are reasonably capabile, consisting of:
 The reference target for SAMD21G deployments is [Adafruit Feather M0 LoRa][1].
 In addition to the basic Feather M0 LoRa, other products are supported. The [MCCI][3] [Catena 4450][4], [Catena 4460][5], and [Catena 4470][6] products are upward compatible with the Feather M0 LoRa and therefore also can be used with this library.
 
-The reference target for STM32L0 deployments is the Murata CMWX1ZZABZ-078, as deployed in the MCCI [Catena 4551][7], etc., with the MCCI Arduino [board support package][7]. Note that for proper TCXO control, you must use v2.3.0 or later of the arduino-lmic library.
+The reference target for STM32L0 deployments is the Murata CMWX1ZZABZ-078, as deployed in the MCCI [Catena 4610][7], [Catena 4612][9], [Catena 4801][12], [Catena 4617][10], [Catena 4618][11], [Catena 4630][13] etc., with the MCCI Arduino [board support package][8]. Note that for proper TCXO control, you must use v2.3.0 or later of the arduino-lmic library.
 
 [0]: https://github.com/mcci-catena/arduino-lmic
 [1]: https://www.adafruit.com/products/3178
 [2]: https://thethings.nyc/
-[3]: http://www.mcci.com
+[3]: https://mcci.com
 [4]: https://store.mcci.com/collections/lorawan-iot-and-the-things-network/products/catena-4450-lorawan-iot-device
 [5]: https://store.mcci.com/collections/lorawan-iot-and-the-things-network/products/catena-4460-sensor-wing-w-bme680
 [6]: https://store.mcci.com/collections/lorawan-iot-and-the-things-network/products/mcci-catena-4470-modbus-node-for-lorawan-technology
-[7]: https://store.mcci.com/collections/lorawan-iot-and-the-things-network/products/catena-4551-integrated-lorawan-node
+[7]: https://store.mcci.com/products/mcci-catena-4610-integrated-node-for-lorawan-technology
 [8]: https://github.com/mcci-catena/arduino-boards
+[9]: https://store.mcci.com/products/catena-4612-integrated-lorawan-node
+[10]: https://store.mcci.com/products/mcci-catena-4617
+[11]: https://store.mcci.com/products/mcci-catena-4618
+[12]: https://store.mcci.com/products/catena-4801
+[13]: https://store.mcci.com/products/mcci-catena-4630
 
 **arduino-lorawan** attempts to solve three problems.
 
@@ -228,19 +233,47 @@ Clients may register event functions using `RegisterListener`. The event functio
 
 ### Send an event to all listeners
 
-_To be documented._
+```c++
+void Arduino_LoRaWAN::DispatchEvent(uint32_t eventCode);
+```
+
+This routine causes each registered event listener to be called with the specified event code. This is mostly for internal use, and may become `protected` in future releases.
 
 ### Manipulate the Debug Mask
 
-_To be documented._
+_To be documented. This feature is currently only in the header files and not used._
 
 ### Output a formatted log message
 
-_To be documented._
+_To be documented. This feature is currenly only used by the macro `ARDUINO_LORAWAN_PRINTF`, which in turn is only used in one place._
 
 ### Get the configured LoRaWAN region, country code, and network name
 
-_To be documented._
+```c++
+const char *Arduino_LoRaWAN::GetRegionString(char *pBuf, size_t size) const;
+```
+
+Set the buffer at `*pBuf` to the configured network region.  At most `size-1` characters will be copied to the target buffer.
+
+The result is guaranteed to be non-NULL, and is a pointer to a string. If `pBuf` is `nullptr` or `size` is zero, then the result is a constant string `"<<null>>"`. Otherwise, the result is `pBuf`. Since the result might be an immutable string, the result is declared as `const char *`.  The result is guaranteed to be a well-formed string. If the buffer is too small to contain the region string, the region string will be truncated to the right as needed.
+
+```c++
+Arduino_LoRaWAN::Region Arduino_LoRaWAN::GetRegion() const;
+```
+
+Return the region code. `Arduino_LoRaWAN::Region` contains the following values: `unknown`, `eu868`, `us915`, `cn783`, `eu433`, `au921`, `cn490`, `as923`, `kr921`, and `in866`.
+
+```c++
+Arduino_LoRaWAN::CountryCode Arduino_LoRaWAN::GetCountryCode() const;
+```
+
+Return the country code, which might be relevant to the region definiton. The defined values are `none` (in case there are no relevant country-specific variations), and `JP` (which means we must follow Japan listen-before-talk rules).
+
+```c++
+const char *GetNetworkName() const;
+```
+
+Return the network name. Current values include `"The Things Network"` and `"machineQ"`.
 
 ### Set link-check mode
 
@@ -297,19 +330,28 @@ The specified function is called whenever a downlink message is received. `nBuff
 
 ### Get DevEUI, AppEUI, AppKey
 
-_To be documented._
+```c++
+bool Arduino_LoRaWAN::GetDevEUI(uint8_t *pBuf);
+bool Arduino_LoRaWAN::GetAppEUI(uint8_t *pBuf);
+bool Arduino_LoRaWAN::GetAppKey(uint8_t *pBuf);
+```
+
+These three routines fetch the provisioned DevEUI, AppEUI, and AppKey.  `pBuf` points to an 8-byte (DevEUI and AppEUI) or 16-byte (AppKey) buffer. The values are returned in network byte order: DevEUI and AppEUI are returned in little-endian byte order, and AppKey is returned in big-endian byte order.
 
 ### Test provisioning state
 
-_To be documented._
+```c++
+bool Arduino_LoRaWAN::IsProvisioned(void);
+```
+
+Return `true` if the LoRaWAN stack seems to be properly provisioned (provided with a valid DevEui, AppEUI and AppKey for OTAA; or provided with valid DevAddr, AppSKey and NwkSKey for ABP). Returns `false` otherwise.
 
 ## Release History
 
 - v0.6.0 has the following changes.
 
    - [#110](https://github.com/mcci-catena/arduino-lorawan/issues/110) tweak initial power settings for US.
-   - [#106](https://github.com/mcci-catena/arduino-lorawan/issues/106), [#107](https://github.com/mcci-catena/arduino-lorawan/issues/107), [#108](https://github.com/mcci-catena/arduino-lorawan/issues/108), [#104](https://github.com/mcci-catena/arduino-lorawan/issues/104)
-CI improvements
+   - [#106](https://github.com/mcci-catena/arduino-lorawan/issues/106), [#107](https://github.com/mcci-catena/arduino-lorawan/issues/107), [#108](https://github.com/mcci-catena/arduino-lorawan/issues/108), [#104](https://github.com/mcci-catena/arduino-lorawan/issues/104) CI improvements
    - [#88](https://github.com/mcci-catena/arduino-lorawan/issues/88) use new LMIC APIs for SendBuffer
    - [#97](https://github.com/mcci-catena/arduino-lorawan/issues/97) add `ARDUINO_LORAWAN_VERSION` macro.
    - [#98](https://github.com/mcci-catena/arduino-lorawan/issues/98) check LMIC version at compile time.
