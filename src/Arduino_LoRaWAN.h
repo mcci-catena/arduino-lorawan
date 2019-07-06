@@ -29,7 +29,7 @@ Author:
 #define ARDUINO_LORAWAN_VERSION_CALC(major, minor, patch, local)	\
 	(((major) << 24u) | ((minor) << 16u) | ((patch) << 8u) | (local))
 
-#define	ARDUINO_LORAWAN_VERSION	ARDUINO_LORAWAN_VERSION_CALC(0, 5, 3, 50)	/* v0.5.3.50 */
+#define	ARDUINO_LORAWAN_VERSION	ARDUINO_LORAWAN_VERSION_CALC(0, 6, 0, 0)	/* v0.6.0.0 */
 
 #define	ARDUINO_LORAWAN_VERSION_GET_MAJOR(v)	\
 	(((v) >> 24u) & 0xFFu)
