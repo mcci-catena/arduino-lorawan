@@ -4,14 +4,17 @@
 
 [![GitHub release](https://img.shields.io/github/release/mcci-catena/arduino-lorawan.svg)](https://github.com/mcci-catena/arduino-lorawan/releases/latest) [![GitHub commits](https://img.shields.io/github/commits-since/mcci-catena/arduino-lorawan/latest.svg)](https://github.com/mcci-catena/arduino-lorawan/compare/v0.6.0...master) [![Build Status](https://travis-ci.com/mcci-catena/arduino-lorawan.svg?branch=master)](https://travis-ci.com/mcci-catena/arduino-lorawan)
 
-**Contents**
+**Contents:**
+
+<!-- markdownlint-capture -->
+<!-- markdownlint-disable -->
 <!-- TOC depthFrom:2 updateOnSave:true -->
 
 - [Overview](#overview)
 - [Required libraries](#required-libraries)
 - [How To Use](#how-to-use)
-	- [Using the LMIC's pre-configured pinmaps](#using-the-lmics-pre-configured-pinmaps)
-	- [Supplying a pinmap](#supplying-a-pinmap)
+	- [Using the LMIC's pre-configured pin-maps](#using-the-lmics-pre-configured-pin-maps)
+	- [Supplying a pin-map](#supplying-a-pin-map)
 	- [Details on use](#details-on-use)
 - [APIs](#apis)
 	- [Starting operation](#starting-operation)
@@ -32,14 +35,16 @@
 - [Notes](#notes)
 
 <!-- /TOC -->
+<!-- markdownlint-restore -->
+<!-- Due to a bug in Markdown TOC, the table is formatted incorrectly if tab indentation is set other than 4. Due to another bug, this comment must be *after* the TOC entry. -->
 
 ## Overview
 
-The **arduino-lorawan** library provides a structured way of using the [arduino-lmic library][0] to send sensor data over The Things Network or a simlar LoRaWAN-based data network.
+The **arduino-lorawan** library provides a structured way of using the [arduino-lmic library][0] to send sensor data over The Things Network or a similar LoRaWAN-based data network.
 
 This version targets v2.3.0 or later of the arduino-lmic library.
 
-It targets devices that are reasonably capabile, consisting of:
+It targets devices that are reasonably capable, consisting of:
 
 1. A 32-bit processor (ARM, XTENSA, etc.);
 2. An SX1276-based LoRa radio; and
@@ -87,7 +92,7 @@ MCCI tends to use the this library wrapped by the [Catena Arduino Platform](http
 
 The classes in this library are normally intended to be used inside a class that overrides one or more of the virtual methods.
 
-### Using the LMIC's pre-configured pinmaps
+### Using the LMIC's pre-configured pin-maps
 
 The stand-alone use pattern is as follows, targeting The Things Network V2.  This code can be found in the `example/simple_feather/simple.ino` sketch.  Note that this isn't complete, as you have to add code in the indicated places.
 
@@ -147,14 +152,14 @@ cMyLoRaWAN::NetSaveSessionInfo(
 }
 ```
 
-### Supplying a pinmap
+### Supplying a pin-map
 
-If the LMIC library doesn't have a pinmap for your board, and you don't want to add one to the library, you can supply your own.  Simply prepare a pinmap, and pass it to the `begin()` method.
+If the LMIC library doesn't have a pin-map for your board, and you don't want to add one to the library, you can supply your own.  Simply prepare a pin-map, and pass it to the `begin()` method.
 
 A full example can be found in the `example/simple_feather/simple_feather.ino` sketch, but here are the relevant differences.
 
 ```c++
-// The pinmap. This form is convenient if the LMIC library
+// The pin map. This form is convenient if the LMIC library
 // doesn't support your board and you don't want to add the
 // configuration to the library (perhaps you're just testing).
 // This pinmap matches the FeatherM0 LoRa. See the arduino-lmic
@@ -181,7 +186,7 @@ void setup() {
 
 2. Create an instance of your class. We'll call this `myLoRaWAN`.
 
-3. Determine whether you need a pinmap, or whether your arduino-lmic library already directly supports your board. If directly supported, you can call `myLoRaWAN.begin()` without any arguments, and the LMIC default pinmap for your board will be used. Otherwise, you can allocate a pinmap. If you name it `myPinmap`, you can call `myLoRaWAN.begin(myPinmap);`, as in the example.
+3. Determine whether you need a pin-map, or whether your arduino-lmic library already directly supports your board. If directly supported, you can call `myLoRaWAN.begin()` without any arguments, and the LMIC default pin-map for your board will be used. Otherwise, you can allocate a pin-map. If you name it `myPinmap`, you can call `myLoRaWAN.begin(myPinmap);`, as in the example.
 
 4. Implement the required methods.
 
@@ -224,9 +229,9 @@ typedef void ARDUINO_LORAWAN_EVENT_FN(
                         );
 
 bool Arduino_LoRaWAN::RegisterListener(
-	ARDUINO_LORAWAN_EVENT_FN *pEvent,
-	void *pUserData
-	);
+    ARDUINO_LORAWAN_EVENT_FN *pEvent,
+    void *pUserData
+    );
 ```
 
 Clients may register event functions using `RegisterListener`. The event function is called on each event from the LMIC. Up to four listeners may be registered. There's no way to cancel a registration.
@@ -245,7 +250,7 @@ _To be documented. This feature is currently only in the header files and not us
 
 ### Output a formatted log message
 
-_To be documented. This feature is currenly only used by the macro `ARDUINO_LORAWAN_PRINTF`, which in turn is only used in one place._
+_To be documented. This feature is currently only used by the macro `ARDUINO_LORAWAN_PRINTF`, which in turn is only used in one place._
 
 ### Get the configured LoRaWAN region, country code, and network name
 
@@ -261,13 +266,13 @@ The result is guaranteed to be non-NULL, and is a pointer to a string. If `pBuf`
 Arduino_LoRaWAN::Region Arduino_LoRaWAN::GetRegion() const;
 ```
 
-Return the region code. `Arduino_LoRaWAN::Region` contains the following values: `unknown`, `eu868`, `us915`, `cn783`, `eu433`, `au921`, `cn490`, `as923`, `kr921`, and `in866`.
+Return the region code. `Arduino_LoRaWAN::Region` contains the following values: `unknown`, `eu868`, `us915`, `cn783`, `eu433`, `au921`, `cn490`, `as923`, `kr920`, and `in866`.
 
 ```c++
 Arduino_LoRaWAN::CountryCode Arduino_LoRaWAN::GetCountryCode() const;
 ```
 
-Return the country code, which might be relevant to the region definiton. The defined values are `none` (in case there are no relevant country-specific variations), and `JP` (which means we must follow Japan listen-before-talk rules).
+Return the country code, which might be relevant to the region definition. The defined values are `none` (in case there are no relevant country-specific variations), and `JP` (which means we must follow Japan listen-before-talk rules).
 
 ```c++
 const char *GetNetworkName() const;
@@ -279,11 +284,11 @@ Return the network name. Current values include `"The Things Network"` and `"mac
 
 ```c++
 bool Arduino_LoRaWAN::SetLinkCheckMode(
-	bool fEnable
-	);
+    bool fEnable
+    );
 ```
 
-Enable (or disable) link check mode, based on the value of `fEnabled`. If disabled, the device will not try to maintain a connection to the network. If enabled, the device watches for downlinks. If no downlink is seen for 64 messages, the device starts setting the netowrk ADR request in uplinks. If there's no response after 32 messages, the device reduces the data rate and increases power, and continues this loop until there are no more data rates to try. At that point, the device will start inserting join attempts after every uplink without a downlink.
+Enable (or disable) link check mode, based on the value of `fEnabled`. If disabled, the device will not try to maintain a connection to the network. If enabled, the device watches for downlinks. If no downlink is seen for 64 messages, the device starts setting the network ADR request in uplinks. If there's no response after 32 messages, the device reduces the data rate and increases power, and continues this loop until there are no more data rates to try. At that point, the device will start inserting join attempts after every uplink without a downlink.
 
 If disabled, the device doesn't try to reduce data rate automatically and won't ever automatically detect network loss or change.
 
@@ -293,18 +298,18 @@ Disabled was formerly the preferred mode of operation, but as of early 2019, it 
 
 ```c++
 typedef void Arduino_LoRaWAN::SendBufferCbFn(
-	void *pClientData,
-	bool fSuccess
-	);
+    void *pClientData,
+    bool fSuccess
+    );
 
 bool Arduino_LoRaWAN::SendBuffer(
-	const uint8_t *pBuffer,
-	size_t nBuffer,
-	SendBufferCbFn *pDoneFn = nullptr,
-	void *pClientData = nullptr,
-	bool fConfirmed = false,
-	uint8_t port = 1
-	);
+    const uint8_t *pBuffer,
+    size_t nBuffer,
+    SendBufferCbFn *pDoneFn = nullptr,
+    void *pClientData = nullptr,
+    bool fConfirmed = false,
+    uint8_t port = 1
+    );
 ```
 
 Send message from `pBuffer`; call `pDoneFn(pClientData, status)` when the message has either been transmitted or abandoned.
@@ -314,19 +319,19 @@ Send message from `pBuffer`; call `pDoneFn(pClientData, status)` when the messag
 ```c++
 typedef void
 Arduino_LoRaWAN::ReceivePortBufferCbFn(
-	void *pClientData,
-	uint8_t uPort,
-	const uint8_t *pBuffer,
-	size_t nBuffer
-	);
+    void *pClientData,
+    uint8_t uPort,
+    const uint8_t *pBuffer,
+    size_t nBuffer
+    );
 
 void Arduino_LoRaWAN::SetReceiveBufferCb(
-	Arduino_LoRaWAN::ReceivePortBufferCbFn *pReceiveBufferFn,
-	void *pUserData = nullptr
-	);
+    Arduino_LoRaWAN::ReceivePortBufferCbFn *pReceiveBufferFn,
+    void *pUserData = nullptr
+    );
 ```
 
-The specified function is called whenever a downlink message is received. `nBuffer` might be zero, and `uPort` might be zero for MAC messages. LMIC.seqnoDn`
+The specified function is called whenever a downlink message is received. `nBuffer` might be zero, and `uPort` might be zero for MAC messages.
 
 ### Get DevEUI, AppEUI, AppKey
 
@@ -348,29 +353,32 @@ Return `true` if the LoRaWAN stack seems to be properly provisioned (provided wi
 
 ## Release History
 
+- HEAD has the following changes
+  - [#116](https://github.com/mcci-catena/arduino-lorawan/issues/110) adds KR920 support. Vestigial / unused uses of `KR921` were changed to match the official `KR920` name. Cleanup typos in this file. Version is 0.6.0.10, and this requires `arduino-lmic` library version 2.3.2.60 or greater.
+
 - v0.6.0 has the following changes.
 
-   - [#110](https://github.com/mcci-catena/arduino-lorawan/issues/110) tweak initial power settings for US.
-   - [#106](https://github.com/mcci-catena/arduino-lorawan/issues/106), [#107](https://github.com/mcci-catena/arduino-lorawan/issues/107), [#108](https://github.com/mcci-catena/arduino-lorawan/issues/108), [#104](https://github.com/mcci-catena/arduino-lorawan/issues/104) CI improvements
-   - [#88](https://github.com/mcci-catena/arduino-lorawan/issues/88) use new LMIC APIs for SendBuffer
-   - [#97](https://github.com/mcci-catena/arduino-lorawan/issues/97) add `ARDUINO_LORAWAN_VERSION` macro.
-   - [#98](https://github.com/mcci-catena/arduino-lorawan/issues/98) check LMIC version at compile time.
-   - [#96](https://github.com/mcci-catena/arduino-lorawan/issues/96) properly restores the NetID from a saved session.
-   - [#93](https://github.com/mcci-catena/arduino-lorawan/issues/93) adds EV_TXCANCELED support.
-   - [#92](https://github.com/mcci-catena/arduino-lorawan/issues/92), [#84](https://github.com/mcci-catena/arduino-lorawan/issues/84), [#85](https://github.com/mcci-catena/arduino-lorawan/issues/85), [#87](https://github.com/mcci-catena/arduino-lorawan/issues/87) handles transmit completion status correctly.
-   - [#91](https://github.com/mcci-catena/arduino-lorawan/issues/91) removes a redundant call to `UpdateFCntDown()`.
-   - [#89](https://github.com/mcci-catena/arduino-lorawan/issues/89) adds new LMIC event codes added as part of the certification push.
-   - [#5](https://github.com/mcci-catena/arduino-lorawan/issues/5) enables link-check-mode by default.
-   - [#83](https://github.com/mcci-catena/arduino-lorawan/issues/83) add `SetLinkCheckMode() method.
-   - [#81](https://github.com/mcci-catena/arduino-lorawan/issues/81) allows uplinks to arbitrary ports.
+  - [#110](https://github.com/mcci-catena/arduino-lorawan/issues/110) tweak initial power settings for US.
+  - [#106](https://github.com/mcci-catena/arduino-lorawan/issues/106), [#107](https://github.com/mcci-catena/arduino-lorawan/issues/107), [#108](https://github.com/mcci-catena/arduino-lorawan/issues/108), [#104](https://github.com/mcci-catena/arduino-lorawan/issues/104) CI improvements
+  - [#88](https://github.com/mcci-catena/arduino-lorawan/issues/88) use new LMIC APIs for SendBuffer
+  - [#97](https://github.com/mcci-catena/arduino-lorawan/issues/97) add `ARDUINO_LORAWAN_VERSION` macro.
+  - [#98](https://github.com/mcci-catena/arduino-lorawan/issues/98) check LMIC version at compile time.
+  - [#96](https://github.com/mcci-catena/arduino-lorawan/issues/96) properly restores the NetID from a saved session.
+  - [#93](https://github.com/mcci-catena/arduino-lorawan/issues/93) adds EV_TXCANCELED support.
+  - [#92](https://github.com/mcci-catena/arduino-lorawan/issues/92), [#84](https://github.com/mcci-catena/arduino-lorawan/issues/84), [#85](https://github.com/mcci-catena/arduino-lorawan/issues/85), [#87](https://github.com/mcci-catena/arduino-lorawan/issues/87) handles transmit completion status correctly.
+  - [#91](https://github.com/mcci-catena/arduino-lorawan/issues/91) removes a redundant call to `UpdateFCntDown()`.
+  - [#89](https://github.com/mcci-catena/arduino-lorawan/issues/89) adds new LMIC event codes added as part of the certification push.
+  - [#5](https://github.com/mcci-catena/arduino-lorawan/issues/5) enables link-check-mode by default.
+  - [#83](https://github.com/mcci-catena/arduino-lorawan/issues/83) add `SetLinkCheckMode() method.
+  - [#81](https://github.com/mcci-catena/arduino-lorawan/issues/81) allows uplinks to arbitrary ports.
 
-- v0.5.3 is a patch release. It fixes a platformio compile warning, and also fixes another missing return for `Arduino_LoRaWAN::begin()` (this time in an overload in the header file.)
+- v0.5.3 is a patch release. It fixes a PlatformIO compile warning, and also fixes another missing return for `Arduino_LoRaWAN::begin()` (this time in an overload in the header file.)
 
 - v0.5.2 incorporates the fix for issue [#68](https://github.com/mcci-catena/arduino-lorawan/issues/68), missing return in `Arduino_LoRaWAN::begin()`.
 
 - v0.5.1 fixes compilation errors when the library manager installs arduino-lmic in a renamed directory (issue [#65](https://github.com/mcci-catena/arduino-lorawan/issues/65)).
 
-- v0.5.0 has necessary changes to support the LMIC built-in pinmaps, while retaining support for user-supplied pinmaps. We moved the pinmap parameter from compile-time initialization to an argument to Arduino_LoRaWAN::begin().  This is, unfortunately, a breaking change. Either do as we did in the example -- move the pinmap to the `begin()` call -- or add an `m_pinmap` field in your concrete `cMyLoRaWAN`, and initialize it in your `cMyLoRaWAN::cMyLoRaWAN()` constructor. In addition, we added a few example programs (issue [#49](https://github.com/mcci-catena/arduino-lorawan/issues/49)), and fixed handling of downlink messages with port numbers but no payloads (issue [#50](https://github.com/mcci-catena/arduino-lorawan/issues/50)).
+- v0.5.0 has necessary changes to support the LMIC built-in pin-maps, while retaining support for user-supplied pin-maps. We moved the pin-map parameter from compile-time initialization to an argument to Arduino_LoRaWAN::begin().  This is, unfortunately, a breaking change. Either do as we did in the example -- move the pinmap to the `begin()` call -- or add an `m_pinmap` field in your concrete `cMyLoRaWAN`, and initialize it in your `cMyLoRaWAN::cMyLoRaWAN()` constructor. In addition, we added a few example programs (issue [#49](https://github.com/mcci-catena/arduino-lorawan/issues/49)), and fixed handling of downlink messages with port numbers but no payloads (issue [#50](https://github.com/mcci-catena/arduino-lorawan/issues/50)).
 
 - v0.4.0 adds preliminary machineQ support, continuous integration for SAMD and STM32 L0, better PlatformIO support, improved as923jp support, and fixes a defect in the receive-message API.
 
@@ -384,11 +392,11 @@ Return `true` if the LoRaWAN stack seems to be properly provisioned (provided wi
 
 - v0.3.0 adds support for the Murata module. It requires V2.1.0 of the arduino-lmic library.
 
-- v0.2.5 added support for the extended bandplans, and requires V2.0.2 of the arduino-lmic library.
+- v0.2.5 added support for the extended band plans, and requires V2.0.2 of the arduino-lmic library.
 
 ## Notes
 
->  * Terry Moore of MCCI was the principal author of **arduino-lorawan**.
->  * Many thanks to Bob Fendrick for assistance in preparing initial test units.
->  * **MCCI** and **Catena** are registered trademarks of MCCI Corporation. **LoRaWAN** is a trademark of the LoRa Alliance. All other trademarks are the properties of their respective owners.
->  * This document initially composed with [StackEdit](https://stackedit.io/); now maintained using Visual Studio Code.
+> - Terry Moore of MCCI was the principal author of **arduino-lorawan**.
+> - Many thanks to Bob Fendrick for assistance in preparing initial test units.
+> - **MCCI** and **Catena** are registered trademarks of MCCI Corporation. **LoRaWAN** is a trademark of the LoRa Alliance. All other trademarks are the properties of their respective owners.
+> - This document initially composed with [StackEdit](https://stackedit.io/); now maintained using Visual Studio Code.
