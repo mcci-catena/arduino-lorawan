@@ -26,6 +26,7 @@ Author:
 #include <Arduino.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include <type_traits>
 
 // Some Adafruit BSPs implement Serial.dtr(), which immediately returns true if
 // the USB port is connected and enabled. Others don't.  If Serial.dtr() is provided,
