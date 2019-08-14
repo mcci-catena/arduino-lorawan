@@ -128,7 +128,9 @@ matrix:
       - _projcfg CFG_au921 CFG_sx1276_radio && arduino --verify --board $(_samdopts '' projcfg) $THISLIB/examples/header_test_ttn/header_test_ttn.ino
       - arduino --verify --board $(_samdopts '' as923) $THISLIB/examples/header_test_ttn/header_test_ttn.ino
       - arduino --verify --board $(_samdopts '' as923jp) $THISLIB/examples/header_test_ttn/header_test_ttn.ino
-      - arduino --verify --board $(_samdopts '' kr920) $THISLIB/examples/header_test_ttn/header_test_ttn.ino
+      # V2.0.0 of the samd bsp doesn't support kr920 correctly -- test with projcfg
+      # - arduino --verify --board $(_samdopts '' kr920) $THISLIB/examples/header_test_ttn/header_test_ttn.ino
+      - _projcfg CFG_kr920 CFG_sx1276_radio && arduino --verify --board $(_samdopts '' projcfg) $THISLIB/examples/header_test_ttn/header_test_ttn.ino
       - arduino --verify --board $(_samdopts '' in866) $THISLIB/examples/header_test_ttn/header_test_ttn.ino
 
       - arduino --verify --board $(_samdopts '' us915) $THISLIB/examples/simple/simple.ino
