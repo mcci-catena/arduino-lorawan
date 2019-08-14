@@ -150,6 +150,23 @@ protected:
 private:
 	};
 
+class Arduino_LoRaWAN_ttn_kr920 : public Arduino_LoRaWAN_ttn_base
+	{
+public:
+        using Super = Arduino_LoRaWAN_ttn_base;
+        Arduino_LoRaWAN_ttn_kr920() {};
+
+protected:
+	// the NetBeginInit() function does specific work when starting
+	// up. 
+        virtual void NetBeginRegionInit();
+
+	// Implement the NetJoin() operations for as923
+	virtual void NetJoin();
+
+private:
+	};
+
 class Arduino_LoRaWAN_ttn_in866 : public Arduino_LoRaWAN_ttn_base
 	{
 public:
@@ -178,6 +195,8 @@ private:
 # define Arduino_LoRaWAN_REGION_TAG as923
 #elif defined(CFG_in866)
 # define Arduino_LoRaWAN_REGION_TAG in866
+#elif defined(CFG_kr920)
+# define Arduino_LoRaWAN_REGION_TAG kr920
 #else
 # error "Can't define Arduino_LoRaWAN_REGION_TAG"
 #endif
