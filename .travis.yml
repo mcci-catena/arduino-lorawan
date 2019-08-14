@@ -104,7 +104,9 @@ matrix:
       - _projcfg CFG_au921 CFG_sx1276_radio && arduino --verify --board $(_samdopts '' projcfg) $THISLIB/examples/header_test/header_test.ino
       - arduino --verify --board $(_samdopts '' as923) $THISLIB/examples/header_test/header_test.ino
       - arduino --verify --board $(_samdopts '' as923jp) $THISLIB/examples/header_test/header_test.ino
-      - arduino --verify --board $(_samdopts '' kr920) $THISLIB/examples/header_test/header_test.ino
+      # V2.0.0 of the samd bsp doesn't support kr920 correctly -- test with projcfg
+      # - arduino --verify --board $(_samdopts '' kr920) $THISLIB/examples/header_test/header_test.ino
+      - _projcfg CFG_kr920 CFG_sx1276_radio && arduino --verify --board $(_samdopts '' projcfg) $THISLIB/examples/header_test/header_test.ino
       - arduino --verify --board $(_samdopts '' in866) $THISLIB/examples/header_test/header_test.ino
 
       - arduino --verify --board $(_samdopts '' us915) $THISLIB/examples/header_test_lmic/header_test_lmic.ino
@@ -114,7 +116,9 @@ matrix:
       - _projcfg CFG_au921 CFG_sx1276_radio && arduino --verify --board $(_samdopts '' projcfg) $THISLIB/examples/header_test_lmic/header_test_lmic.ino
       - arduino --verify --board $(_samdopts '' as923) $THISLIB/examples/header_test_lmic/header_test_lmic.ino
       - arduino --verify --board $(_samdopts '' as923jp) $THISLIB/examples/header_test_lmic/header_test_lmic.ino
-      - arduino --verify --board $(_samdopts '' kr920) $THISLIB/examples/header_test_lmic/header_test_lmic.ino
+      # V2.0.0 of the samd bsp doesn't support kr920 correctly -- test with projcfg
+      # - arduino --verify --board $(_samdopts '' kr920) $THISLIB/examples/header_test_lmic/header_test_lmic.ino
+      - _projcfg CFG_kr920 CFG_sx1276_radio && arduino --verify --board $(_samdopts '' projcfg) $THISLIB/examples/header_test_lmic/header_test_lmic.ino
       - arduino --verify --board $(_samdopts '' in866) $THISLIB/examples/header_test_lmic/header_test_lmic.ino
 
       - arduino --verify --board $(_samdopts '' us915) $THISLIB/examples/header_test_ttn/header_test_ttn.ino
@@ -134,7 +138,9 @@ matrix:
       - _projcfg CFG_au921 CFG_sx1276_radio && arduino --verify --board $(_samdopts '' projcfg) $THISLIB/examples/simple/simple.ino
       - arduino --verify --board $(_samdopts '' as923) $THISLIB/examples/simple/simple.ino
       - arduino --verify --board $(_samdopts '' as923jp) $THISLIB/examples/simple/simple.ino
-      - arduino --verify --board $(_samdopts '' kr920) $THISLIB/examples/simple/simple.ino
+      # V2.0.0 of the samd bsp doesn't support kr920 correctly -- test with projcfg
+      # - arduino --verify --board $(_samdopts '' kr920) $THISLIB/examples/simple/simple.ino
+      - _projcfg CFG_kr920 CFG_sx1276_radio && arduino --verify --board $(_samdopts '' projcfg) $THISLIB/examples/simple/simple.ino
       - arduino --verify --board $(_samdopts '' in866) $THISLIB/examples/simple/simple.ino
 
       - arduino --verify --board $(_samdopts '' us915) $THISLIB/examples/simple_feather/simple_feather.ino
@@ -144,7 +150,9 @@ matrix:
       - _projcfg CFG_au921 CFG_sx1276_radio && arduino --verify --board $(_samdopts '' projcfg) $THISLIB/examples/simple_feather/simple_feather.ino
       - arduino --verify --board $(_samdopts '' as923) $THISLIB/examples/simple_feather/simple_feather.ino
       - arduino --verify --board $(_samdopts '' as923jp) $THISLIB/examples/simple_feather/simple_feather.ino
-      - arduino --verify --board $(_samdopts '' kr920) $THISLIB/examples/simple_feather/simple_feather.ino
+      # V2.0.0 of the samd bsp doesn't support kr920 correctly -- test with projcfg
+      # - arduino --verify --board $(_samdopts '' kr920) $THISLIB/examples/simple_feather/simple_feather.ino
+      - _projcfg CFG_kr920 CFG_sx1276_radio && arduino --verify --board $(_samdopts '' projcfg) $THISLIB/examples/simple_feather/simple_feather.ino
       - arduino --verify --board $(_samdopts '' in866) $THISLIB/examples/simple_feather/simple_feather.ino
 
       #
@@ -154,7 +162,9 @@ matrix:
       - arduino --verify --board $(_stm32l0opts '' au921  ) $MCCI_STM32_OPTS $THISLIB/examples/header_test/header_test.ino
       - arduino --verify --board $(_stm32l0opts '' as923  ) $MCCI_STM32_OPTS $THISLIB/examples/header_test/header_test.ino
       - arduino --verify --board $(_stm32l0opts '' as923jp) $MCCI_STM32_OPTS $THISLIB/examples/header_test/header_test.ino
-      - arduino --verify --board $(_stm32l0opts '' kr920  ) $MCCI_STM32_OPTS $THISLIB/examples/header_test/header_test.ino
+      # V2.5.0 of the stm32 bsp doesn't support kr920 -- test with projcfg
+      # - arduino --verify --board $(_stm32l0opts '' kr920  ) $MCCI_STM32_OPTS $THISLIB/examples/header_test/header_test.ino
+      - _projcfg CFG_kr920 CFG_sx1276_radio && arduino --verify --board $(_stm32l0opts '' projcfg) $MCCI_STM32_OPTS $THISLIB/examples/header_test/header_test.ino
       - arduino --verify --board $(_stm32l0opts '' in866  ) $MCCI_STM32_OPTS $THISLIB/examples/header_test/header_test.ino
 
       - arduino --verify --board $(_stm32l0opts '' us915  ) $MCCI_STM32_OPTS $THISLIB/examples/header_test_lmic/header_test_lmic.ino
@@ -162,7 +172,9 @@ matrix:
       - arduino --verify --board $(_stm32l0opts '' au921  ) $MCCI_STM32_OPTS $THISLIB/examples/header_test_lmic/header_test_lmic.ino
       - arduino --verify --board $(_stm32l0opts '' as923  ) $MCCI_STM32_OPTS $THISLIB/examples/header_test_lmic/header_test_lmic.ino
       - arduino --verify --board $(_stm32l0opts '' as923jp) $MCCI_STM32_OPTS $THISLIB/examples/header_test_lmic/header_test_lmic.ino
-      - arduino --verify --board $(_stm32l0opts '' kr920  ) $MCCI_STM32_OPTS $THISLIB/examples/header_test_lmic/header_test_lmic.ino
+      # V2.5.0 of the stm32 bsp doesn't support kr920 -- test with projcfg
+      # - arduino --verify --board $(_stm32l0opts '' kr920  ) $MCCI_STM32_OPTS $THISLIB/examples/header_test_lmic/header_test_lmic.ino
+      - _projcfg CFG_kr920 CFG_sx1276_radio && arduino --verify --board $(_stm32l0opts '' projcfg) $MCCI_STM32_OPTS $THISLIB/examples/header_test_lmic/header_test_lmic.ino
       - arduino --verify --board $(_stm32l0opts '' in866  ) $MCCI_STM32_OPTS $THISLIB/examples/header_test_lmic/header_test_lmic.ino
 
       - arduino --verify --board $(_stm32l0opts '' us915  ) $MCCI_STM32_OPTS $THISLIB/examples/header_test_ttn/header_test_ttn.ino
@@ -170,7 +182,9 @@ matrix:
       - arduino --verify --board $(_stm32l0opts '' au921  ) $MCCI_STM32_OPTS $THISLIB/examples/header_test_ttn/header_test_ttn.ino
       - arduino --verify --board $(_stm32l0opts '' as923  ) $MCCI_STM32_OPTS $THISLIB/examples/header_test_ttn/header_test_ttn.ino
       - arduino --verify --board $(_stm32l0opts '' as923jp) $MCCI_STM32_OPTS $THISLIB/examples/header_test_ttn/header_test_ttn.ino
-      - arduino --verify --board $(_stm32l0opts '' kr920  ) $MCCI_STM32_OPTS $THISLIB/examples/header_test_ttn/header_test_ttn.ino
+      # V2.5.0 of the stm32 bsp doesn't support kr920 -- test with projcfg
+      # - arduino --verify --board $(_stm32l0opts '' kr920  ) $MCCI_STM32_OPTS $THISLIB/examples/header_test_ttn/header_test_ttn.ino
+      - _projcfg CFG_kr920 CFG_sx1276_radio && arduino --verify --board $(_stm32l0opts '' projcfg) $MCCI_STM32_OPTS $THISLIB/examples/header_test_ttn/header_test_ttn.ino
       - arduino --verify --board $(_stm32l0opts '' in866  ) $MCCI_STM32_OPTS $THISLIB/examples/header_test_ttn/header_test_ttn.ino
 
       - arduino --verify --board $(_stm32l0opts '' us915  ) $MCCI_STM32_OPTS $THISLIB/examples/simple/simple.ino
