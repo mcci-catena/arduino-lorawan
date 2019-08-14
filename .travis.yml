@@ -216,9 +216,9 @@ matrix:
         - echo "platform = atmelsam" >> platformio.ini
         - echo "board = adafruit_feather_m0" >> platformio.ini
         - echo "framework = arduino" >> platformio.ini
-        - echo "lib_deps ="   >> platformio.ino
-        - echo "  SPI"   >> platformio.ino
-        - echo "  Adafruit Zero DMA Library"   >> platformio.ino
+        - echo "lib_deps ="   >> platformio.ini
+        - echo "  SPI"   >> platformio.ini
+        - echo "  Adafruit Zero DMA Library"   >> platformio.ini
         - if [ "${TRAVIS_PULL_REQUEST_SLUG}" != "" ]; then echo "  https://github.com/${TRAVIS_PULL_REQUEST_SLUG}#${TRAVIS_PULL_REQUEST_BRANCH}" ; elif [ "${TRAVIS_BRANCH}" != "" ]; then echo "  https://github.com/${TRAVIS_REPO_SLUG}#${TRAVIS_BRANCH}"; else echo "  https://github.com/${TRAVIS_REPO_SLUG}" ; fi >> platformio.ini
         - echo "build_flags =" >> platformio.ini
         - echo "  -DCFG_us915" >> platformio.ini
