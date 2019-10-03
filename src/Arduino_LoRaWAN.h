@@ -480,8 +480,9 @@ public:
                 };
 
 protected:
-        // you must have a NetBegin() function or things won't work.
-        virtual bool NetBegin(void) = 0;
+        // NetBeginRegionInit is called after LMIC reset.
+        virtual void NetBeginRegionInit() = 0;
+
 
         // you may have a NetJoin() function.
         // if not, the base function does nothing.
