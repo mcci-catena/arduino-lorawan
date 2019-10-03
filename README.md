@@ -1,6 +1,6 @@
 # MCCI Arduino LoRaWAN Library
 
-**User-friendly library for using the Arduino LMIC library with The Things Network and LoRaWAN™ networks.**
+**User-friendly library for using the Arduino LMIC library with The Things Network and LoRaWAN&reg; networks.**
 
 [![GitHub release](https://img.shields.io/github/release/mcci-catena/arduino-lorawan.svg)](https://github.com/mcci-catena/arduino-lorawan/releases/latest) [![GitHub commits](https://img.shields.io/github/commits-since/mcci-catena/arduino-lorawan/latest.svg)](https://github.com/mcci-catena/arduino-lorawan/compare/v0.6.0...master) [![Build Status](https://travis-ci.com/mcci-catena/arduino-lorawan.svg?branch=master)](https://travis-ci.com/mcci-catena/arduino-lorawan)
 
@@ -40,9 +40,9 @@
 
 ## Overview
 
-The **arduino-lorawan** library provides a structured way of using the [arduino-lmic library][0] to send sensor data over The Things Network or a similar LoRaWAN-based data network.
+The **`arduino-lorawan`** library provides a structured way of using the [`arduino-lmic` library][0] to send sensor data over The Things Network or a similar LoRaWAN-based data network.
 
-This version targets v2.3.0 or later of the arduino-lmic library.
+This version targets v2.3.0 or later of the `arduino-lmic` library.
 
 It targets devices that are reasonably capable, consisting of:
 
@@ -53,7 +53,7 @@ It targets devices that are reasonably capable, consisting of:
 The reference target for SAMD21G deployments is [Adafruit Feather M0 LoRa][1].
 In addition to the basic Feather M0 LoRa, other products are supported. The [MCCI][3] [Catena 4450][4], [Catena 4460][5], and [Catena 4470][6] products are upward compatible with the Feather M0 LoRa and therefore also can be used with this library.
 
-The reference target for STM32L0 deployments is the Murata CMWX1ZZABZ-078, as deployed in the MCCI [Catena 4610][7], [Catena 4612][9], [Catena 4801][12], [Catena 4617][10], [Catena 4618][11], [Catena 4630][13] etc., with the MCCI Arduino [board support package][8]. Note that for proper TCXO control, you must use v2.3.0 or later of the arduino-lmic library.
+The reference target for STM32L0 deployments is the Murata CMWX1ZZABZ-078, as deployed in the MCCI [Catena 4610][7], [Catena 4612][9], [Catena 4801][12], [Catena 4617][10], [Catena 4618][11], [Catena 4630][13] etc., with the MCCI Arduino [board support package][8]. Note that for proper TCXO control, you must use v2.3.0 or later of the `arduino-lmic` library.
 
 [0]: https://github.com/mcci-catena/arduino-lmic
 [1]: https://www.adafruit.com/products/3178
@@ -70,7 +70,7 @@ The reference target for STM32L0 deployments is the Murata CMWX1ZZABZ-078, as de
 [12]: https://store.mcci.com/products/catena-4801
 [13]: https://store.mcci.com/products/mcci-catena-4630
 
-**arduino-lorawan** attempts to solve three problems.
+**`arduino-lorawan`** attempts to solve three problems.
 
 1. It separates network maintenance code from your application.
 2. It separates the common logic of your sensor app from the details about each individual device, allowing you to have a common source base that's used for all sensors.
@@ -85,8 +85,8 @@ MCCI tends to use the this library wrapped by the [Catena Arduino Platform](http
 
 | Library | Version | Comments |
 |---------|:-------:|----------|
-| [arduino-lmic](https://github.com/mcci-catena/arduino-lmic) | 2.3.0 | Earlier versions will fail to compile due to missing `arduino_lmic_hal_boards.h` and `arduino_lmic_hal_configuration.h` |
-| [Catena-mcciadk](https://github.com/mcci-catena/Catena-mcciadk) | 0.1.1 | Needed for miscellaneous definitions |
+| [`arduino-lmic`](https://github.com/mcci-catena/arduino-lmic) | 2.3.0 | Earlier versions will fail to compile due to missing `arduino_lmic_hal_boards.h` and `arduino_lmic_hal_configuration.h`. v2.3.2 is recommended. |
+| [`Catena-mcciadk`](https://github.com/mcci-catena/Catena-mcciadk) | 0.1.1 | Needed for miscellaneous definitions |
 
 ## How To Use
 
@@ -186,7 +186,7 @@ void setup() {
 
 2. Create an instance of your class. We'll call this `myLoRaWAN`.
 
-3. Determine whether you need a pin-map, or whether your arduino-lmic library already directly supports your board. If directly supported, you can call `myLoRaWAN.begin()` without any arguments, and the LMIC default pin-map for your board will be used. Otherwise, you can allocate a pin-map. If you name it `myPinmap`, you can call `myLoRaWAN.begin(myPinmap);`, as in the example.
+3. Determine whether you need a pin-map, or whether your `arduino-lmic` library already directly supports your board. If directly supported, you can call `myLoRaWAN.begin()` without any arguments, and the LMIC default pin-map for your board will be used. Otherwise, you can allocate a pin-map. If you name it `myPinmap`, you can call `myLoRaWAN.begin(myPinmap);`, as in the example.
 
 4. Implement the required methods.
 
@@ -349,11 +349,13 @@ These three routines fetch the provisioned DevEUI, AppEUI, and AppKey.  `pBuf` p
 bool Arduino_LoRaWAN::IsProvisioned(void);
 ```
 
-Return `true` if the LoRaWAN stack seems to be properly provisioned (provided with a valid DevEui, AppEUI and AppKey for OTAA; or provided with valid DevAddr, AppSKey and NwkSKey for ABP). Returns `false` otherwise.
+Return `true` if the LoRaWAN stack seems to be properly provisioned (provided with a valid Device EUI, Application EUI and Application Key for OTAA; or provided with valid Device Address, Application Session Key and Network Session Key for ABP). Returns `false` otherwise.
 
 ## Release History
 
 - HEAD has the following changes
+  - [#100](https://github.com/mcci-catena/arduino-lorawan/issues/100), [#121](https://github.com/mcci-catena/arduino-lorawan/issues/121) introduce `Arduino_LoRaWAN_machine`, a type that maps onto the selected target network and region. Version is 0.6.0.20.
+  - [#126](https://github.com/mcci-catena/arduino-lorawan/issues/126) fixes the setting of RX2 DR9 in EU868 for TTN -- was incorrectly put in US when refactoring.
   - [#116](https://github.com/mcci-catena/arduino-lorawan/issues/110) adds KR920 support. Vestigial / unused uses of `KR921` were changed to match the official `KR920` name. Cleanup typos in this file. Version is 0.6.0.10, and this requires `arduino-lmic` library version 2.3.2.60 or greater.
 
 - v0.6.0 has the following changes.
@@ -364,7 +366,7 @@ Return `true` if the LoRaWAN stack seems to be properly provisioned (provided wi
   - [#97](https://github.com/mcci-catena/arduino-lorawan/issues/97) add `ARDUINO_LORAWAN_VERSION` macro.
   - [#98](https://github.com/mcci-catena/arduino-lorawan/issues/98) check LMIC version at compile time.
   - [#96](https://github.com/mcci-catena/arduino-lorawan/issues/96) properly restores the NetID from a saved session.
-  - [#93](https://github.com/mcci-catena/arduino-lorawan/issues/93) adds EV_TXCANCELED support.
+  - [#93](https://github.com/mcci-catena/arduino-lorawan/issues/93) adds `EV_TXCANCELED` support.
   - [#92](https://github.com/mcci-catena/arduino-lorawan/issues/92), [#84](https://github.com/mcci-catena/arduino-lorawan/issues/84), [#85](https://github.com/mcci-catena/arduino-lorawan/issues/85), [#87](https://github.com/mcci-catena/arduino-lorawan/issues/87) handles transmit completion status correctly.
   - [#91](https://github.com/mcci-catena/arduino-lorawan/issues/91) removes a redundant call to `UpdateFCntDown()`.
   - [#89](https://github.com/mcci-catena/arduino-lorawan/issues/89) adds new LMIC event codes added as part of the certification push.
@@ -376,9 +378,9 @@ Return `true` if the LoRaWAN stack seems to be properly provisioned (provided wi
 
 - v0.5.2 incorporates the fix for issue [#68](https://github.com/mcci-catena/arduino-lorawan/issues/68), missing return in `Arduino_LoRaWAN::begin()`.
 
-- v0.5.1 fixes compilation errors when the library manager installs arduino-lmic in a renamed directory (issue [#65](https://github.com/mcci-catena/arduino-lorawan/issues/65)).
+- v0.5.1 fixes compilation errors when the library manager installs `arduino-lmic` in a renamed directory (issue [#65](https://github.com/mcci-catena/arduino-lorawan/issues/65)).
 
-- v0.5.0 has necessary changes to support the LMIC built-in pin-maps, while retaining support for user-supplied pin-maps. We moved the pin-map parameter from compile-time initialization to an argument to Arduino_LoRaWAN::begin().  This is, unfortunately, a breaking change. Either do as we did in the example -- move the pinmap to the `begin()` call -- or add an `m_pinmap` field in your concrete `cMyLoRaWAN`, and initialize it in your `cMyLoRaWAN::cMyLoRaWAN()` constructor. In addition, we added a few example programs (issue [#49](https://github.com/mcci-catena/arduino-lorawan/issues/49)), and fixed handling of downlink messages with port numbers but no payloads (issue [#50](https://github.com/mcci-catena/arduino-lorawan/issues/50)).
+- v0.5.0 has necessary changes to support the LMIC built-in pin-maps, while retaining support for user-supplied pin-maps. We moved the pin-map parameter from compile-time initialization to an argument to Arduino_LoRaWAN::begin().  This is, unfortunately, a breaking change. Either do as we did in the example -- move the pin-map to the `begin()` call -- or add an `m_pinmap` field in your concrete `cMyLoRaWAN`, and initialize it in your `cMyLoRaWAN::cMyLoRaWAN()` constructor. In addition, we added a few example programs (issue [#49](https://github.com/mcci-catena/arduino-lorawan/issues/49)), and fixed handling of downlink messages with port numbers but no payloads (issue [#50](https://github.com/mcci-catena/arduino-lorawan/issues/50)).
 
 - v0.4.0 adds preliminary machineQ support, continuous integration for SAMD and STM32 L0, better PlatformIO support, improved as923jp support, and fixes a defect in the receive-message API.
 
@@ -388,15 +390,15 @@ Return `true` if the LoRaWAN stack seems to be properly provisioned (provided wi
 
 - v0.3.2 is just documentation changes.
 
-- v0.3.1 adds documentation (in this file, in the [Required Libraries](#required-libraries) section) describing the need for the [catena-mcciadk](https://github.com/mcci-catena/Catena-mcciadk) library. No code changes.
+- v0.3.1 adds documentation (in this file, in the [Required Libraries](#required-libraries) section) describing the need for the [`catena-mcciadk`](https://github.com/mcci-catena/Catena-mcciadk) library. No code changes.
 
-- v0.3.0 adds support for the Murata module. It requires V2.1.0 of the arduino-lmic library.
+- v0.3.0 adds support for the Murata module. It requires V2.1.0 of the `arduino-lmic` library.
 
-- v0.2.5 added support for the extended band plans, and requires V2.0.2 of the arduino-lmic library.
+- v0.2.5 added support for the extended band plans, and requires V2.0.2 of the `arduino-lmic` library.
 
 ## Notes
 
-> - Terry Moore of MCCI was the principal author of **arduino-lorawan**.
+> - Terry Moore of MCCI was the principal author of **`arduino-lorawan`**.
 > - Many thanks to Bob Fendrick for assistance in preparing initial test units.
-> - **MCCI** and **Catena** are registered trademarks of MCCI Corporation. **LoRaWAN** is a trademark of the LoRa Alliance. All other trademarks are the properties of their respective owners.
+> - **MCCI** and **Catena** are registered trademarks of MCCI Corporation. **LoRaWAN** is a registered trademark of the LoRa Alliance. All other trademarks are the properties of their respective owners.
 > - This document initially composed with [StackEdit](https://stackedit.io/); now maintained using Visual Studio Code.
