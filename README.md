@@ -355,7 +355,7 @@ Return `true` if the LoRaWAN stack seems to be properly provisioned (provided wi
 
 - HEAD has the following changes
   - [#100](https://github.com/mcci-catena/arduino-lorawan/issues/100), [#121](https://github.com/mcci-catena/arduino-lorawan/issues/121) introduce `Arduino_LoRaWAN_machine`, a type that maps onto the selected target network and region. Version is 0.6.0.20.
-  - [#126](https://github.com/mcci-catena/arduino-lorawan/issues/126) fixes the setting of RX2 DR9 in EU868 for TTN -- was incorrectly put in US when refactoring.
+  - [#120](https://github.com/mcci-catena/arduino-lorawan/issues/120) fixes the setting of RX2 DR9 in EU868 for TTN -- was incorrectly put in US when refactoring.
   - [#116](https://github.com/mcci-catena/arduino-lorawan/issues/110) adds KR920 support. Vestigial / unused uses of `KR921` were changed to match the official `KR920` name. Cleanup typos in this file. Version is 0.6.0.10, and this requires `arduino-lmic` library version 2.3.2.60 or greater.
 
 - v0.6.0 has the following changes.
