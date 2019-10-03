@@ -48,12 +48,51 @@ bool Arduino_LoRaWAN::begin(
     // discarded.
     LMIC_reset();
 
-    return this->NetBegin();
+    // Set data rate and transmit power, based on regional considerations.
+    // this is redundant if LMIC_reset() sends EV_RESET, but ... this
+    // hasn't been changed yet, and might not be possible to change.
+    this->NetBeginRegionInit();
+
+    //
+    // If no provisining info, return false.
+    //
+    if (this->GetProvisioningStyle() == ProvisioningStyle::kNone)
+        return false;
+
+    //
+    // this will succeed either if provisioned for Abp, or if Otaa and we
+    // have successfully joined.  Note that ABP is just exactly the same
+    // as what happends after a join, so we use this for fetching all the
+    // required information.
+    //
+    AbpProvisioningInfo abpInfo;
+
+    if (this->GetAbpProvisioningInfo(&abpInfo))
+        {
+        LMIC_setSession(
+                abpInfo.NetID,
+                abpInfo.DevAddr,
+                abpInfo.NwkSKey,
+                abpInfo.AppSKey
+                );
+
+        // set the seqnoUp and seqnoDown
+        // presumably if non-zero, somebody is stashing these
+        // in NVR
+        LMIC.seqnoUp = abpInfo.FCntUp;
+        LMIC.seqnoDn = abpInfo.FCntDown;
+
+        // because it's ABP, we need to set up the parameters we'd set
+        // after an OTAA join.
+        this->NetJoin();
+        }
+
+    return true;
     }
 
 /****************************************************************************\
 |
-|	The event dispatcher
+|   The event dispatcher.
 |
 \****************************************************************************/
 
@@ -223,6 +262,9 @@ void Arduino_LoRaWAN::StandardEventProcessor(
         case EV_RESET:
             // the LoRaWAN MAC just got reset due to a pending frame rollover
             // on FCntDn or actual rollover on FCntUp.
+
+            // Set data rate, channels, and transmit power, based on regional considerations.
+            this->NetBeginRegionInit();
             break;
 
         case EV_RXCOMPLETE:

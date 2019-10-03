@@ -35,7 +35,7 @@ Revision history:
 */
 
 #ifndef _ARDUINO_LORAWAN_MACHINEQ_H_		/* prevent multiple includes */
-#define _ARDUINO_LORAWAN_TTN_H_
+#define _ARDUINO_LORAWAN_MACHINEQ_H_
 
 #pragma once
 
@@ -66,20 +66,8 @@ public:
                 };
 
 protected:
-        // the NetBegin() function does specific work when starting
-        // up; this does the common work for all machineQ
-        // variants -- but there's only one; we're just trying to
-        // save typing later.
-        virtual bool NetBegin();
-
-	// The netjoin function does any post-join work -- at present
-	// this can be shared by all networks and is empty for machineQ.
-        // To make this like other subclasses, we use an exernal function
-        // body.
+	// Handle common NetJoin() operations for the network.
 	virtual void NetJoin();
-
-        // every derivative must have a NetBeginRegionInit.
-        virtual void NetBeginRegionInit() = 0;
 
 private:
 	};
@@ -137,4 +125,4 @@ private:
 #endif // defined(Arduino_LoRaWAN_REGION_TAG)
 
 /**** end of Arduino_LoRaWAN_machineQ.h ****/
-#endif /* _ARDUINO_LORAWAN_TTN_H_ */
+#endif /* _ARDUINO_LORAWAN_MACHINEQ_H_ */

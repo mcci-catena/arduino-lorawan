@@ -64,17 +64,8 @@ public:
                 };
 
 protected:
-        // the NetBegin() function does specific work when starting
-        // up; this does the common work for all TTN lorawan
-        // variants
-        virtual bool NetBegin();
-
-	// the netjoin function does any post-join work -- at present
-	// this can be shared by all networks.
-	virtual void NetJoin();
-
-        // every derivative must have a NetBeginInit.
-        virtual void NetBeginRegionInit() = 0;
+        // Implement the NetJoin() operations common to all TTN regions.
+        virtual void NetJoin();
 
 private:
 	};

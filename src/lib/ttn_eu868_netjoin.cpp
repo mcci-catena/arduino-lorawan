@@ -74,4 +74,9 @@ void Arduino_LoRaWAN_ttn_eu868::NetJoin()
 	{
 	// do the common work.
 	this->Super::NetJoin();
+
+	// then, for EU, if ABP, set the RX2 datarate, which is non-standard.
+	// for OTAA, just do what we're told.
+	if (this->GetProvisioningStyle() == this->ProvisioningStyle::kABP)
+		LMIC.dn2Dr = LORAWAN_DR3;	// this is SF9.
 	}
