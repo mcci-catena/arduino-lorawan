@@ -74,8 +74,5 @@ void Arduino_LoRaWAN_ttn_us915::NetJoin()
 	{
 	// do the common work.
 	this->Super::NetJoin();
-
-	// then, for US, set the RX2 window.
-	LMIC.dn2Dr = US915_DR_SF9;
 	}
 #endif // defined(CFG_us915)
