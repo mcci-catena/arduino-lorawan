@@ -13,24 +13,24 @@
 - [Overview](#overview)
 - [Required libraries](#required-libraries)
 - [How To Use](#how-to-use)
-	- [Using the LMIC's pre-configured pin-maps](#using-the-lmics-pre-configured-pin-maps)
-	- [Supplying a pin-map](#supplying-a-pin-map)
-	- [Details on use](#details-on-use)
+    - [Using the LMIC's pre-configured pin-maps](#using-the-lmics-pre-configured-pin-maps)
+    - [Supplying a pin-map](#supplying-a-pin-map)
+    - [Details on use](#details-on-use)
 - [APIs](#apis)
-	- [Starting operation](#starting-operation)
-	- [Poll and update the LMIC](#poll-and-update-the-lmic)
-	- [Reset the LMIC](#reset-the-lmic)
-	- [Shut down the LMIC](#shut-down-the-lmic)
-	- [Register an event listener](#register-an-event-listener)
-	- [Send an event to all listeners](#send-an-event-to-all-listeners)
-	- [Manipulate the Debug Mask](#manipulate-the-debug-mask)
-	- [Output a formatted log message](#output-a-formatted-log-message)
-	- [Get the configured LoRaWAN region, country code, and network name](#get-the-configured-lorawan-region-country-code-and-network-name)
-	- [Set link-check mode](#set-link-check-mode)
-	- [Send a buffer](#send-a-buffer)
-	- [Register a Receive-Buffer Callback](#register-a-receive-buffer-callback)
-	- [Get DevEUI, AppEUI, AppKey](#get-deveui-appeui-appkey)
-	- [Test provisioning state](#test-provisioning-state)
+    - [Starting operation](#starting-operation)
+    - [Poll and update the LMIC](#poll-and-update-the-lmic)
+    - [Reset the LMIC](#reset-the-lmic)
+    - [Shut down the LMIC](#shut-down-the-lmic)
+    - [Register an event listener](#register-an-event-listener)
+    - [Send an event to all listeners](#send-an-event-to-all-listeners)
+    - [Manipulate the Debug Mask](#manipulate-the-debug-mask)
+    - [Output a formatted log message](#output-a-formatted-log-message)
+    - [Get the configured LoRaWAN region, country code, and network name](#get-the-configured-lorawan-region-country-code-and-network-name)
+    - [Set link-check mode](#set-link-check-mode)
+    - [Send a buffer](#send-a-buffer)
+    - [Register a Receive-Buffer Callback](#register-a-receive-buffer-callback)
+    - [Get DevEUI, AppEUI, AppKey](#get-deveui-appeui-appkey)
+    - [Test provisioning state](#test-provisioning-state)
 - [Release History](#release-history)
 - [Notes](#notes)
 
@@ -85,7 +85,7 @@ MCCI tends to use the this library wrapped by the [Catena Arduino Platform](http
 
 | Library | Version | Comments |
 |---------|:-------:|----------|
-| [`arduino-lmic`](https://github.com/mcci-catena/arduino-lmic) | 2.3.0 | Earlier versions will fail to compile due to missing `arduino_lmic_hal_boards.h` and `arduino_lmic_hal_configuration.h`. v2.3.2 is recommended. |
+| [`arduino-lmic`](https://github.com/mcci-catena/arduino-lmic) | 2.3.2.60 | Earlier versions will fail to compile but should give compile-time asserts. |
 | [`Catena-mcciadk`](https://github.com/mcci-catena/Catena-mcciadk) | 0.1.1 | Needed for miscellaneous definitions |
 
 ## How To Use
@@ -354,7 +354,7 @@ Return `true` if the LoRaWAN stack seems to be properly provisioned (provided wi
 ## Release History
 
 - HEAD has the following changes
-  - [#100](https://github.com/mcci-catena/arduino-lorawan/issues/100), [#121](https://github.com/mcci-catena/arduino-lorawan/issues/121) introduce `Arduino_LoRaWAN_machine`, a type that maps onto the selected target network and region. Version is 0.6.0.20.
+  - [#100](https://github.com/mcci-catena/arduino-lorawan/issues/100), [#121](https://github.com/mcci-catena/arduino-lorawan/issues/121) introduce `Arduino_LoRaWAN_machineQ`, a type that maps onto the selected target network and region. Version is 0.6.0.20.
   - [#120](https://github.com/mcci-catena/arduino-lorawan/issues/120) fixes the setting of RX2 DR9 in EU868 for TTN -- was incorrectly put in US when refactoring.
   - [#116](https://github.com/mcci-catena/arduino-lorawan/issues/110) adds KR920 support. Vestigial / unused uses of `KR921` were changed to match the official `KR920` name. Cleanup typos in this file. Version is 0.6.0.10, and this requires `arduino-lmic` library version 2.3.2.60 or greater.
 
