@@ -1,9 +1,9 @@
 /*
 
-Module:  ttn_au921_netbeginregioninit.cpp
+Module:  ttn_au915_netbeginregioninit.cpp
 
 Function:
-	Arduino_LoRaWAN_ttn_au921::NetBeginRegionInit()
+	Arduino_LoRaWAN_ttn_au915::NetBeginRegionInit()
 
 Copyright notice:
         See LICENSE file accompanying this project.
@@ -39,8 +39,8 @@ Author:
 \****************************************************************************/
 
 // protected virtual
-#ifdef CFG_au921
-void Arduino_LoRaWAN_ttn_au921::NetBeginRegionInit()
+#ifdef CFG_au915
+void Arduino_LoRaWAN_ttn_au915::NetBeginRegionInit()
     {
     // Set data rate and transmit power
     // DR_SF7 is US DR3; 14 means 14 dBm
@@ -53,7 +53,7 @@ void Arduino_LoRaWAN_ttn_au921::NetBeginRegionInit()
     // apparently doesn't even turn on the +20 dBm option if over 10 dBm.
     // Really, this step should be eliminated and the library should do the
     // right thing at join time.
-    LMIC_setDrTxpow(AU921_DR_SF7, 30);
+    LMIC_setDrTxpow(AU915_DR_SF7, 30);
 
     // Select SubBand prejoin -- saves power for joining
     // This is specific to the AU923 bandplan.

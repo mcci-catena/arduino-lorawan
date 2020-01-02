@@ -266,7 +266,7 @@ The result is guaranteed to be non-NULL, and is a pointer to a string. If `pBuf`
 Arduino_LoRaWAN::Region Arduino_LoRaWAN::GetRegion() const;
 ```
 
-Return the region code. `Arduino_LoRaWAN::Region` contains the following values: `unknown`, `eu868`, `us915`, `cn783`, `eu433`, `au921`, `cn490`, `as923`, `kr920`, and `in866`.
+Return the region code. `Arduino_LoRaWAN::Region` contains the following values: `unknown`, `eu868`, `us915`, `cn783`, `eu433`, `au915`, `cn490`, `as923`, `kr920`, and `in866`.
 
 ```c++
 Arduino_LoRaWAN::CountryCode Arduino_LoRaWAN::GetCountryCode() const;

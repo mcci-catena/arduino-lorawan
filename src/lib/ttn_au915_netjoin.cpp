@@ -1,11 +1,11 @@
-/* ttn_au921_netjoin.cpp	Mon Aug 07 2017 00:41:05 tmm */
+/* ttn_au915_netjoin.cpp	Mon Aug 07 2017 00:41:05 tmm */
 
 /*
 
-Module:  ttn_au921_netjoin.cpp
+Module:  ttn_au915_netjoin.cpp
 
 Function:
-	Arduino_LoRaWAN_ttn_au921::NetJoin()
+	Arduino_LoRaWAN_ttn_au915::NetJoin()
 
 Version:
 	V0.2.4	Mon Aug 07 2017 00:41:05 tmm	Edit level 1
@@ -69,8 +69,8 @@ Revision history:
 |
 \****************************************************************************/
 
-#if defined(CFG_au921)
-void Arduino_LoRaWAN_ttn_au921::NetJoin()
+#if defined(CFG_au915)
+void Arduino_LoRaWAN_ttn_au915::NetJoin()
 	{
 	// do the common work.
 	this->Super::NetJoin();
@@ -78,4 +78,4 @@ void Arduino_LoRaWAN_ttn_au921::NetJoin()
 	// then, for US, set the RX2 datarate.
 	LMIC.dn2Dr = LORAWAN_DR8;
 	}
-#endif // defined(CFG_au921)
+#endif // defined(CFG_au915)
