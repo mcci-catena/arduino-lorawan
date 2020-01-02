@@ -105,15 +105,15 @@ protected:
 private:
 	};
 
-class Arduino_LoRaWAN_ttn_au921 : public Arduino_LoRaWAN_ttn_base
+class Arduino_LoRaWAN_ttn_au915 : public Arduino_LoRaWAN_ttn_base
 	{
 public:
         using Super = Arduino_LoRaWAN_ttn_base;
-        Arduino_LoRaWAN_ttn_au921() {};
+        Arduino_LoRaWAN_ttn_au915() {};
 
 protected:
 	// the NetBeginInit() function does specific work when starting
-	// up. For au921, we need to turn off the link check mode, and
+	// up. For au915, we need to turn off the link check mode, and
 	// select the subband.
         virtual void NetBeginRegionInit();
 
@@ -180,8 +180,8 @@ private:
 # define Arduino_LoRaWAN_REGION_TAG eu868
 #elif defined(CFG_us915)
 # define Arduino_LoRaWAN_REGION_TAG us915
-#elif defined(CFG_au921)
-# define Arduino_LoRaWAN_REGION_TAG au921
+#elif defined(CFG_au915)
+# define Arduino_LoRaWAN_REGION_TAG au915
 #elif defined(CFG_as923)
 # define Arduino_LoRaWAN_REGION_TAG as923
 #elif defined(CFG_in866)

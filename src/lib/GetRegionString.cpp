@@ -35,7 +35,7 @@ Arduino_LoRaWAN::GetRegionString(char *pBuf, size_t nBuf) const
         case LMIC_REGION_us915: pString = "us915"; break;
         case LMIC_REGION_cn783: pString = "cn783"; break;
         case LMIC_REGION_eu433: pString = "eu433"; break;
-        case LMIC_REGION_au921: pString = "au921"; break;
+        case LMIC_REGION_au915: pString = "au915"; break;
         case LMIC_REGION_cn490: pString = "cn490"; break;
         case LMIC_REGION_as923:
                 if (LMIC_COUNTRY_CODE == LMIC_COUNTRY_CODE_JP)

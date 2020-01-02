@@ -1,33 +1,15 @@
-/* ttn_us915_netjoin.cpp	Sat Mar 11 2017 18:42:29 tmm */
-
 /*
 
-Module:  ttn_us915_netjoin.cpp
+Module:  ttn_au915_netjoin.cpp
 
 Function:
-	Arduino_LoRaWAN_ttn_us915::NetJoin()
-
-Version:
-	V0.2.2	Sat Mar 11 2017 18:42:29 tmm	Edit level 2
+	Arduino_LoRaWAN_ttn_au915::NetJoin()
 
 Copyright notice:
-	This file copyright (C) 2016-2017 by
+        See LICENSE file accompanying this project.
 
-		MCCI Corporation
-		3520 Krums Corners Road
-		Ithaca, NY  14850
-
-	An unpublished work.  All rights reserved.
-	
-	This file is proprietary information, and may not be disclosed or
-	copied without the prior permission of MCCI Corporation.
- 
 Author:
-	Terry Moore, MCCI Corporation	November 2016
-
-Revision history:
-   0.2.0  Tue Nov  1 2016 06:19:25  tmm
-	Module created.
+	Terry Moore, MCCI Corporation	August 2017
 
 */
 
@@ -56,10 +38,10 @@ Revision history:
 |
 \****************************************************************************/
 
-#if defined(CFG_us915)
-void Arduino_LoRaWAN_ttn_us915::NetJoin()
+#if defined(CFG_au915)
+void Arduino_LoRaWAN_ttn_au915::NetJoin()
 	{
 	// do the common work.
 	this->Super::NetJoin();
 	}
-#endif // defined(CFG_us915)
+#endif // defined(CFG_au915)
