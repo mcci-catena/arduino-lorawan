@@ -43,8 +43,5 @@ void Arduino_LoRaWAN_ttn_au915::NetJoin()
 	{
 	// do the common work.
 	this->Super::NetJoin();
-
-	// then, for US, set the RX2 datarate.
-	LMIC.dn2Dr = LORAWAN_DR8;
 	}
 #endif // defined(CFG_au915)
