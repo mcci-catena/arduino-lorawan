@@ -91,11 +91,17 @@ public:
         // which could cause naming clashes.
         using lmic_pinmap = Arduino_LMIC::HalPinmap_t;
 
+        /*
+        || provisioning things:
+        */
+
+        // the provisioning styles.
         enum class ProvisioningStyle
                 {
                 kNone, kABP, kOTAA
                 };
 
+        // information provided for ABP provisioning
         struct AbpProvisioningInfo
                 {
                 uint8_t         NwkSKey[16];
@@ -106,6 +112,7 @@ public:
                 uint32_t        FCntDown;
                 };
 
+        // information provided for OTAA provisioning
         struct OtaaProvisioningInfo
                 {
                 uint8_t         AppKey[16];
@@ -113,6 +120,7 @@ public:
                 uint8_t         AppEUI[8];
                 };
 
+        // the provisioning blob.
         struct ProvisioningInfo
                 {
                 ProvisioningStyle       Style;
@@ -127,6 +135,7 @@ public:
                 };
 
         // US-like regions use a 72-bit mask of enabled channels.
+        // CN474-like regions use a 96-bit mask of enabled channels.
         // EU-like regions use a a table of 16 frequencies with
         //    100-Hz resolution (at 24 bits, that's 48 bytes)
         //    In this encoding, we use zeros to represent disabled channels
@@ -141,7 +150,7 @@ public:
 
         struct SessionChannelMask_US_like
                 {
-                enum : uint32_t { nCh = 64 + 8 };
+                static constexpr uint32_t nCh = 64 + 8;
 
                 // the fields
                 SessionChannelMask_Header       Header;
@@ -189,7 +198,7 @@ public:
 
         struct SessionChannelMask_EU_like
                 {
-                enum : uint32_t { nCh = 16 };
+                static constexpr uint32_t nCh = 16;
 
                 // the fields
                 SessionChannelMask_Header       Header;
