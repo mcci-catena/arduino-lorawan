@@ -91,6 +91,36 @@ public:
         // which could cause naming clashes.
         using lmic_pinmap = Arduino_LMIC::HalPinmap_t;
 
+        // the networks that we support
+        enum class TargetNetwork_t : std::uint32_t
+                {
+                TheThingsNetwork,
+                Actility,
+                Helium,
+                machineQ,
+                Senet,
+                Senra,
+                Swisscom,
+                ChirpStack,
+                Generic
+                };
+
+        // change network code to text
+        static constexpr const char * getTargetNetworkName(TargetNetwork_t net)
+                {
+                return  (net == TargetNetwork_t::TheThingsNetwork) ?    "The Things Network" :
+                        (net == TargetNetwork_t::Actility) ?            "Actility" :
+                        (net == TargetNetwork_t::Helium)   ?            "Helium" :
+                        (net == TargetNetwork_t::machineQ) ?            "machineQ" :
+                        (net == TargetNetwork_t::Senet)    ?            "Senet" :
+                        (net == TargetNetwork_t::Senra)    ?            "Senra" :
+                        (net == TargetNetwork_t::Swisscom) ?            "Swisscom" :
+                        (net == TargetNetwork_t::ChirpStack) ?          "ChirpStack" :
+                        (net == TargetNetwork_t::Generic)  ?            "Generic" :
+                        "<<unknown network>>"
+                        ;
+                }
+
         /*
         || provisioning things:
         */
