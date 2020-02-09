@@ -1,36 +1,16 @@
-/* Arduino_LoRaWAN_machineQ.h	Fri May 19 2017 23:58:34 tmm */
-
 /*
 
 Module:  Arduino_LoRaWAN_machineQ.h
 
 Function:
-	LoRaWAN-variants for The Things Network.
-
-Version:
-	V0.2.3	Fri May 19 2017 23:58:34 tmm	Edit level 2
+	LoRaWAN network object for machineQ.
 
 Copyright notice:
-	This file copyright (C) 2016-2017 by
-
-		MCCI Corporation
-		3520 Krums Corners Road
-		Ithaca, NY  14850
-
-	An unpublished work.  All rights reserved.
-
-	This file is proprietary information, and may not be disclosed or
-	copied without the prior permission of MCCI Corporation.
+	This file copyright (C) 2016-2017, 2020. See accompanying
+	LICENSE file for license information.
 
 Author:
 	Terry Moore, MCCI Corporation	October 2016
-
-Revision history:
-   0.2.0  Mon Oct 31 2016 15:44:49  tmm
-	Module created.
-
-   0.2.3  Fri May 19 2017 23:58:34  tmm
-        Support eu868.
 
 */
 
