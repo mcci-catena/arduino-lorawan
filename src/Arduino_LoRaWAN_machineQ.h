@@ -3,14 +3,14 @@
 Module:  Arduino_LoRaWAN_machineQ.h
 
 Function:
-	LoRaWAN network object for machineQ.
+        LoRaWAN network object for machineQ.
 
 Copyright notice:
-	This file copyright (C) 2016-2017, 2020. See accompanying
-	LICENSE file for license information.
+        This file copyright (C) 2016-2017, 2020. See accompanying
+        LICENSE file for license information.
 
 Author:
-	Terry Moore, MCCI Corporation	October 2016
+        Terry Moore, MCCI Corporation	October 2016
 
 */
 
@@ -35,46 +35,46 @@ Author:
 #endif
 
 class Arduino_LoRaWAN_machineQ_base :  public Arduino_LoRaWAN
-	{
+        {
 public:
-	Arduino_LoRaWAN_machineQ_base() {};
+        Arduino_LoRaWAN_machineQ_base() {};
         using Super = Arduino_LoRaWAN;
-	static constexpr NetworkID_t NetworkID = NetworkID_t::machineQ;
-	
+        static constexpr NetworkID_t NetworkID = NetworkID_t::machineQ;
+
         virtual const char *GetNetworkName() const override
                 {
                 return NetworkID_t_GetName(NetworkID);
                 };
 
-	virtual NetworkID_t GetNetworkID() const override
-		{
-		return NetworkID;
-		}
+        virtual NetworkID_t GetNetworkID() const override
+                {
+                return NetworkID;
+                }
 
 protected:
-	// Handle common NetJoin() operations for the network.
-	virtual void NetJoin();
+        // Handle common NetJoin() operations for the network.
+        virtual void NetJoin();
 
 private:
-	};
+        };
 
 class Arduino_LoRaWAN_machineQ_us915 : public Arduino_LoRaWAN_machineQ_base
-	{
+        {
 public:
         using Super = Arduino_LoRaWAN_machineQ_base;
         Arduino_LoRaWAN_machineQ_us915() {};
 
 protected:
-	// the NetBeginRegionInit() function allows us to override the LMIC 
+        // the NetBeginRegionInit() function allows us to override the LMIC
         // defaults when initalizing for a region. Only provide code if LMIC
         // is doing something wrong.
         virtual void NetBeginRegionInit();
 
-	// Implement the NetJoin() operations for US915
-	virtual void NetJoin();
+        // Implement the NetJoin() operations for US915
+        virtual void NetJoin();
 
 private:
-	};
+        };
 
 
 #if defined(CFG_us915)
@@ -86,10 +86,10 @@ private:
 #endif
 
 #define Arduino_LoRaWAN_machineQ_LOCAL_(Region)		\
-	Arduino_LoRaWAN_machineQ_ ## Region
+        Arduino_LoRaWAN_machineQ_ ## Region
 
 #define Arduino_LoRaWAN_machineQ_LOCAL(Region)		\
-	Arduino_LoRaWAN_machineQ_LOCAL_(Region)
+        Arduino_LoRaWAN_machineQ_LOCAL_(Region)
 
 //
 // This header file might get compiled all the time ... and it's not
@@ -100,13 +100,13 @@ private:
 #if defined(Arduino_LoRaWAN_REGION_TAG)
 
 class Arduino_LoRaWAN_machineQ : public Arduino_LoRaWAN_machineQ_LOCAL(Arduino_LoRaWAN_REGION_TAG)
-	{
+        {
 public:
         using Super = Arduino_LoRaWAN_machineQ_LOCAL(Arduino_LoRaWAN_REGION_TAG);
         Arduino_LoRaWAN_machineQ() {};
 
 private:
-	};
+        };
 
 #endif // defined(Arduino_LoRaWAN_REGION_TAG)
 
