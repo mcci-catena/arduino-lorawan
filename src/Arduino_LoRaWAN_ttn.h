@@ -57,11 +57,17 @@ class Arduino_LoRaWAN_ttn_base :  public Arduino_LoRaWAN
 public:
 	Arduino_LoRaWAN_ttn_base() {};
         using Super = Arduino_LoRaWAN;
-
-        virtual const char *GetNetworkName() const
+	static constexpr NetworkID_t NetworkID = NetworkID_t::TheThingsNetwork;
+	
+        virtual const char *GetNetworkName() const override
                 {
-                return "The Things Network";
+                return NetworkID_t_GetName(NetworkID);
                 };
+
+	virtual NetworkID_t GetNetworkID() const override
+		{
+		return NetworkID;
+		}
 
 protected:
         // Implement the NetJoin() operations common to all TTN regions.

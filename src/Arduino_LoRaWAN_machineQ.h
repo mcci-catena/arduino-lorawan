@@ -39,11 +39,17 @@ class Arduino_LoRaWAN_machineQ_base :  public Arduino_LoRaWAN
 public:
 	Arduino_LoRaWAN_machineQ_base() {};
         using Super = Arduino_LoRaWAN;
-
-        virtual const char *GetNetworkName() const
+	static constexpr NetworkID_t NetworkID = NetworkID_t::machineQ;
+	
+        virtual const char *GetNetworkName() const override
                 {
-                return "machineQ";
+                return NetworkID_t_GetName(NetworkID);
                 };
+
+	virtual NetworkID_t GetNetworkID() const override
+		{
+		return NetworkID;
+		}
 
 protected:
 	// Handle common NetJoin() operations for the network.

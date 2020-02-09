@@ -275,10 +275,21 @@ Arduino_LoRaWAN::CountryCode Arduino_LoRaWAN::GetCountryCode() const;
 Return the country code, which might be relevant to the region definition. The defined values are `none` (in case there are no relevant country-specific variations), and `JP` (which means we must follow Japan listen-before-talk rules).
 
 ```c++
+enum class Arduino_LoRaWAN::NetworkID_t : std::uint32_t {
+    TheThingsNetwork, Actility, Helium, machineQ, Senet, Senra, Swisscom,
+    ChirpStack, Generic
+};
+
+Arduino_LoRaWAN::NetworkID_t Arduino_LoRaWAN::GetNetworkID() const;
+```
+
+Return the network ID, indicating the network for which the stack is currently configured.
+
+```c++
 const char *GetNetworkName() const;
 ```
 
-Return the network name. Current values include `"The Things Network"` and `"machineQ"`.
+Return the network name. Values are `"The Things Network"`, `"Actility"`, `"Helium"`, `"machineQ"`, `"Senet"`, `"Senra"`, `"ChirpStack"`, and `"Generic"`.
 
 ### Set link-check mode
 

@@ -92,7 +92,7 @@ public:
         using lmic_pinmap = Arduino_LMIC::HalPinmap_t;
 
         // the networks that we support
-        enum class TargetNetwork_t : std::uint32_t
+        enum class NetworkID_t : std::uint32_t
                 {
                 TheThingsNetwork,
                 Actility,
@@ -106,17 +106,17 @@ public:
                 };
 
         // change network code to text
-        static constexpr const char * getTargetNetworkName(TargetNetwork_t net)
+        static constexpr const char * NetworkID_t_GetName(NetworkID_t net)
                 {
-                return  (net == TargetNetwork_t::TheThingsNetwork) ?    "The Things Network" :
-                        (net == TargetNetwork_t::Actility) ?            "Actility" :
-                        (net == TargetNetwork_t::Helium)   ?            "Helium" :
-                        (net == TargetNetwork_t::machineQ) ?            "machineQ" :
-                        (net == TargetNetwork_t::Senet)    ?            "Senet" :
-                        (net == TargetNetwork_t::Senra)    ?            "Senra" :
-                        (net == TargetNetwork_t::Swisscom) ?            "Swisscom" :
-                        (net == TargetNetwork_t::ChirpStack) ?          "ChirpStack" :
-                        (net == TargetNetwork_t::Generic)  ?            "Generic" :
+                return  (net == NetworkID_t::TheThingsNetwork) ?    "The Things Network" :
+                        (net == NetworkID_t::Actility) ?            "Actility" :
+                        (net == NetworkID_t::Helium)   ?            "Helium" :
+                        (net == NetworkID_t::machineQ) ?            "machineQ" :
+                        (net == NetworkID_t::Senet)    ?            "Senet" :
+                        (net == NetworkID_t::Senra)    ?            "Senra" :
+                        (net == NetworkID_t::Swisscom) ?            "Swisscom" :
+                        (net == NetworkID_t::ChirpStack) ?          "ChirpStack" :
+                        (net == NetworkID_t::Generic)  ?            "Generic" :
                         "<<unknown network>>"
                         ;
                 }
@@ -444,6 +444,7 @@ public:
                 };
         CountryCode GetCountryCode() const;
 
+        virtual NetworkID_t GetNetworkID() const = 0;
         virtual const char *GetNetworkName() const = 0;
 
         bool GetTxReady() const;
