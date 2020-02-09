@@ -78,9 +78,12 @@ private:
 
 
 #if defined(CFG_us915)
+# if defined(ARDUINO_LMIC_CFG_SUBBAND) && ! (ARDUINO_LMIC_CFG_SUBBAND == -1)
+#  error "machineQ is a 64-channel network; selecting a subband is not supported"
+# endif
 # define Arduino_LoRaWAN_REGION_TAG us915
 #elif ARDUINO_LMIC_CFG_NETWORK_MACHINEQ
-# warning "Configured region not supported for machineQ: can't define Arduino_LoRaWAN_REGION_TAG"
+# error "Configured region not supported for machineQ: can't define Arduino_LoRaWAN_REGION_TAG"
 #else
 // just be silent if we don't think we're targeting MachineQ
 #endif

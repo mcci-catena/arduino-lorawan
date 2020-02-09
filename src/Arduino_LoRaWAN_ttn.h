@@ -185,8 +185,14 @@ private:
 #if defined(CFG_eu868)
 # define Arduino_LoRaWAN_REGION_TAG eu868
 #elif defined(CFG_us915)
+# if defined(ARDUINO_LMIC_CFG_SUBBAND) && ! (ARDUINO_LMIC_CFG_SUBBAND == -1 || ARRDUINO_LMIC_CFG_SUBBAND == 1)
+#  error "The Things Network network in US915 region is fixed at subband channels 8~15/65"
+# endif
 # define Arduino_LoRaWAN_REGION_TAG us915
 #elif defined(CFG_au915)
+# if defined(ARDUINO_LMIC_CFG_SUBBAND) && ! (ARDUINO_LMIC_CFG_SUBBAND == -1 || ARRDUINO_LMIC_CFG_SUBBAND == 1)
+#  error "The Things Network network in AU915 region is fixed at subband channels 8~15/65"
+# endif
 # define Arduino_LoRaWAN_REGION_TAG au915
 #elif defined(CFG_as923)
 # define Arduino_LoRaWAN_REGION_TAG as923
