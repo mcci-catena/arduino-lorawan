@@ -12,7 +12,11 @@
 
 - [Overview](#overview)
 - [Required libraries](#required-libraries)
-- [How To Use](#how-to-use)
+- [Compile-time Configuration](#compile-time-configuration)
+    - [Region Selection](#region-selection)
+    - [Network selection](#network-selection)
+    - [Join Subband Selection](#join-subband-selection)
+- [Writing Code With This Library](#writing-code-with-this-library)
     - [Using the LMIC's pre-configured pin-maps](#using-the-lmics-pre-configured-pin-maps)
     - [Supplying a pin-map](#supplying-a-pin-map)
     - [Details on use](#details-on-use)
@@ -88,7 +92,37 @@ MCCI tends to use the this library wrapped by the [Catena Arduino Platform](http
 | [`arduino-lmic`](https://github.com/mcci-catena/arduino-lmic) | 2.3.2.60 | Earlier versions will fail to compile but should give compile-time asserts. |
 | [`Catena-mcciadk`](https://github.com/mcci-catena/Catena-mcciadk) | 0.1.1 | Needed for miscellaneous definitions |
 
-## How To Use
+## Compile-time Configuration
+
+### Region Selection
+
+This library uses the same configuration variables as the Arduino LMIC for selecting the target region.
+
+### Network selection
+
+The following compile-time defines select the network that will be used. Exactly one should be defined. The value shall be 1.
+
+| Symbol                                | Network               | Regions Supported
+|---------------------------------------|-----------------------|--------------
+| `ARDUINO_LMIC_CFG_NETWORK_TTN`        | The Things Network    | EU868, US915 (subband 1), AU915 (subband 1), AS923, AS923 Japan, KR920, IN866
+| `ARDUINO_LMIC_CFG_NETWORK_ACTILITY`   | Actility              | EU868, US915, AU915, AS923, AS923 Japan, KR920, IN866
+| `ARDUINO_LMIC_CFG_NETWORK_HELIUM`     | Helium                | US915 (subband 6)
+| `ARDUINO_LMIC_CFG_NETWORK_MACHINEQ`   | machineQ              | US915
+| `ARDUINO_LMIC_CFG_NETWORK_SENET`      | Senet                 | US915
+| `ARDUINO_LMIC_CFG_NETWORK_SENRA`      | Senra                 | IN866
+| `ARDUINO_LMIC_CFG_NETWORK_SWISSCOM`   | Swisscom              | EU868
+| `ARDUINO_LMIC_CFG_NETWORK_CHIRPSTACK` | ChirpStack.io         | EU868, US915, AU915, AS923, AS923 Japan, KR920, IN866
+| `ARDUINO_LMIC_CFG_NETWORK_GENERIC`    | Generic               | EU868, US915, AU915, AS923, AS923 Japan, KR920, IN866
+
+### Join Subband Selection
+
+Three regional plans (US915, AU915 and CN470) have fixed channel frequencies, and many more channels than are supported by most gateways. In these regions, it's common to reduce the OTAA join channels to a subset of the available channels -- networks often configure gateways to support a maximum of 8 channels. The exact choice of 8 channels is called the subband.
+
+The symbol `ARDUINO_LMIC_CFG_SUBBAND`, if defined, configures the subband to be used. If set to -1, no subband choice is made; all channels are used for joining. Otherwise, the value is multiplied by 8 and used as the base channel for joining. Channels `ARDUINO_LMIC_CFG_SUBBAND` through `ARDUINO_LMIC_CFG_SUBBAND + 7` are used for the join process.  In the US915 and AU915 regions `ARDUINO_LMIC_CFG_SUBBAND` can be any value between 0 and 7, inclusive.  In the CN470 region, `ARDUINO_LMIC_CFG_SUBBAND` can be any value between 0 and 11, inclusive.
+
+Some networks (The Things Network, Helium) pre-define the subband to be used; in that case, `ARDUINO_LMIC_CFG_SUBBAND` is not used.
+
+## Writing Code With This Library
 
 The classes in this library are normally intended to be used inside a class that overrides one or more of the virtual methods.
 
@@ -289,7 +323,7 @@ Return the network ID, indicating the network for which the stack is currently c
 const char *GetNetworkName() const;
 ```
 
-Return the network name. Values are `"The Things Network"`, `"Actility"`, `"Helium"`, `"machineQ"`, `"Senet"`, `"Senra"`, `"ChirpStack"`, and `"Generic"`.
+Return the network name. Values are `"The Things Network"`, `"Actility"`, `"Helium"`, `"machineQ"`, `"Senet"`, `"Senra"`, `"Swisscom"`, `"ChirpStack"`, and `"Generic"`.
 
 ### Set link-check mode
 
@@ -365,6 +399,7 @@ Return `true` if the LoRaWAN stack seems to be properly provisioned (provided wi
 ## Release History
 
 - HEAD has the following changes
+  - [#136](https://github.com/mcci-catena/arduino-lorawan/issues/136) adds support for UI control of target network and subband, for the following networks: The Things Network, Actility, Helium, machineQ, Senet, Senra, Swisscom, ChirpStack, and Generic. Version is 0.6.0.99.
   - [#100](https://github.com/mcci-catena/arduino-lorawan/issues/100), [#121](https://github.com/mcci-catena/arduino-lorawan/issues/121) introduce `Arduino_LoRaWAN_machineQ`, a type that maps onto the selected target network and region. Version is 0.6.0.20.
   - [#120](https://github.com/mcci-catena/arduino-lorawan/issues/120) fixes the setting of RX2 DR9 in EU868 for TTN -- was incorrectly put in US when refactoring.
   - [#116](https://github.com/mcci-catena/arduino-lorawan/issues/110) adds KR920 support. Vestigial / unused uses of `KR921` were changed to match the official `KR920` name. Cleanup typos in this file. Version is 0.6.0.10, and this requires `arduino-lmic` library version 2.3.2.60 or greater.
