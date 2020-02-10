@@ -2,7 +2,7 @@
 
 **User-friendly library for using the Arduino LMIC library with The Things Network and LoRaWAN&reg; networks.**
 
-[![GitHub release](https://img.shields.io/github/release/mcci-catena/arduino-lorawan.svg)](https://github.com/mcci-catena/arduino-lorawan/releases/latest) [![GitHub commits](https://img.shields.io/github/commits-since/mcci-catena/arduino-lorawan/latest.svg)](https://github.com/mcci-catena/arduino-lorawan/compare/v0.6.0...master) [![Build Status](https://travis-ci.com/mcci-catena/arduino-lorawan.svg?branch=master)](https://travis-ci.com/mcci-catena/arduino-lorawan)
+[![GitHub release](https://img.shields.io/github/release/mcci-catena/arduino-lorawan.svg)](https://github.com/mcci-catena/arduino-lorawan/releases/latest) [![GitHub commits](https://img.shields.io/github/commits-since/mcci-catena/arduino-lorawan/latest.svg)](https://github.com/mcci-catena/arduino-lorawan/compare/v0.7.0...master) [![Build Status](https://travis-ci.com/mcci-catena/arduino-lorawan.svg?branch=master)](https://travis-ci.com/mcci-catena/arduino-lorawan)
 
 **Contents:**
 
@@ -398,11 +398,13 @@ Return `true` if the LoRaWAN stack seems to be properly provisioned (provided wi
 
 ## Release History
 
-- HEAD has the following changes
-  - [#136](https://github.com/mcci-catena/arduino-lorawan/issues/136) adds support for UI control of target network and subband, for the following networks: The Things Network, Actility, Helium, machineQ, Senet, Senra, Swisscom, ChirpStack, and Generic. Version is 0.6.0.99.
-  - [#100](https://github.com/mcci-catena/arduino-lorawan/issues/100), [#121](https://github.com/mcci-catena/arduino-lorawan/issues/121) introduce `Arduino_LoRaWAN_machineQ`, a type that maps onto the selected target network and region. Version is 0.6.0.20.
+- v0.7.0 has the following changes.
+
+  - `library.properties` updated to refer to the required libraries for the Arduino 1.8.10 IDE.
+  - [#136](https://github.com/mcci-catena/arduino-lorawan/issues/136) adds support for UI control of target network and subband, for the following networks: The Things Network, Actility, Helium, machineQ, Senet, Senra, Swisscom, ChirpStack, and Generic.
+  - [#100](https://github.com/mcci-catena/arduino-lorawan/issues/100), [#121](https://github.com/mcci-catena/arduino-lorawan/issues/121) introduce `Arduino_LoRaWAN_machineQ`, a type that maps onto the selected target network and region.
   - [#120](https://github.com/mcci-catena/arduino-lorawan/issues/120) fixes the setting of RX2 DR9 in EU868 for TTN -- was incorrectly put in US when refactoring.
-  - [#116](https://github.com/mcci-catena/arduino-lorawan/issues/110) adds KR920 support. Vestigial / unused uses of `KR921` were changed to match the official `KR920` name. Cleanup typos in this file. Version is 0.6.0.10, and this requires `arduino-lmic` library version 2.3.2.60 or greater.
+  - [#116](https://github.com/mcci-catena/arduino-lorawan/issues/110) adds KR920 support. Vestigial / unused uses of `KR921` were changed to match the official `KR920` name. Cleanup typos in this file. This requires `arduino-lmic` library version 2.3.2.60 or greater.
 
 - v0.6.0 has the following changes.
 
