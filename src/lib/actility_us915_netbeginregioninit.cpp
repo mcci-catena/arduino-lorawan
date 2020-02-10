@@ -43,7 +43,11 @@ void Arduino_LoRaWAN_Actility_us915::NetBeginRegionInit()
     {
     // Select SubBand prejoin -- saves power for joining
     // This is specific to the US915 bandplan.
-# if defined(ARDUINO_LMIC_CFG_SUBBAND) && ARDUINO_LMIC_CFG_SUBBAND != -1
+#if defined(ARDUINO_LMIC_CFG_SUBBAND) && ARDUINO_LMIC_CFG_SUBBAND != -1
+# if 0 <= ARDUINO_LMIC_CFG_SUBBAND && ARDUINO_LMIC_CFG_SUBBAND < 8
     LMIC_selectSubBand(ARDUINO_LMIC_CFG_SUBBAND);
-# endif // defined(ARDUINO_LMIC_CFG_SUBBAND) && ARDUINO_LMIC_CFG_SUBBAND != -1
+# elif ARDUINO_LMIC_CFG_NETWORK_ACTILITY && defined(CFG_us915)
+#   error "Subband out of range for US915"
+# endif
+#endif // defined(ARDUINO_LMIC_CFG_SUBBAND) && ARDUINO_LMIC_CFG_SUBBAND != -1
     }
