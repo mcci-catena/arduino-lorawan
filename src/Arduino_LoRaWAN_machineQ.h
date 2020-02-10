@@ -77,7 +77,7 @@ private:
         };
 
 
-#if defined(CFG_us915)
+#if ARDUINO_LMIC_CFG_NETWORK_MACHINEQ && defined(CFG_us915)
 # if defined(ARDUINO_LMIC_CFG_SUBBAND) && ! (ARDUINO_LMIC_CFG_SUBBAND == -1)
 #  error "machineQ is a 64-channel network; selecting a subband is not supported"
 # endif

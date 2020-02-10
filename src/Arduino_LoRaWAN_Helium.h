@@ -77,7 +77,7 @@ private:
     };
 
 
-#if defined(CFG_us915)
+#if ARDUINO_LMIC_CFG_NETWORK_HELIUM && defined(CFG_us915)
 # if defined(ARDUINO_LMIC_CFG_SUBBAND) && ! (ARDUINO_LMIC_CFG_SUBBAND == -1 || ARRDUINO_LMIC_CFG_SUBBAND == 6)
 #   error "Helium network in US915 region is fixed at subband channels 48~55/70"
 # endif
