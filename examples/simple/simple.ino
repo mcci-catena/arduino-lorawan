@@ -3,25 +3,25 @@
 Module:  simple.ino
 
 Function:
-        Example app matching the documentation in the project
-	README.md, showing how to use built-in LMIC configuration.
+    Example app matching the documentation in the project
+    README.md, showing how to use built-in LMIC configuration.
 
 Copyright notice and License:
-        See LICENSE file accompanying this project.
+    See LICENSE file accompanying this project.
 
 Author:
-        Terry Moore, MCCI Corporation	November 2018
+    Terry Moore, MCCI Corporation	November 2018
 
 Notes:
-	This app is not complete -- it only presents skeleton
-	code for the methods you must provide in order to
-	use this library. However, it compiles!
+    This app is not complete -- it only presents skeleton
+    code for the methods you must provide in order to
+    use this library. However, it compiles!
 
 */
 
-#include <Arduino_LoRaWAN_ttn.h>
+#include <Arduino_LoRaWAN_network.h>
 
-class cMyLoRaWAN : public Arduino_LoRaWAN_ttn {
+class cMyLoRaWAN : public Arduino_LoRaWAN_network {
 public:
     cMyLoRaWAN() {};
 

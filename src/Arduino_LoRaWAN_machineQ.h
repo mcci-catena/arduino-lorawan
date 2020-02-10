@@ -1,36 +1,16 @@
-/* Arduino_LoRaWAN_machineQ.h	Fri May 19 2017 23:58:34 tmm */
-
 /*
 
 Module:  Arduino_LoRaWAN_machineQ.h
 
 Function:
-	LoRaWAN-variants for The Things Network.
-
-Version:
-	V0.2.3	Fri May 19 2017 23:58:34 tmm	Edit level 2
+        LoRaWAN network object for machineQ.
 
 Copyright notice:
-	This file copyright (C) 2016-2017 by
-
-		MCCI Corporation
-		3520 Krums Corners Road
-		Ithaca, NY  14850
-
-	An unpublished work.  All rights reserved.
-
-	This file is proprietary information, and may not be disclosed or
-	copied without the prior permission of MCCI Corporation.
+        This file copyright (C) 2016-2017, 2020. See accompanying
+        LICENSE file for license information.
 
 Author:
-	Terry Moore, MCCI Corporation	October 2016
-
-Revision history:
-   0.2.0  Mon Oct 31 2016 15:44:49  tmm
-	Module created.
-
-   0.2.3  Fri May 19 2017 23:58:34  tmm
-        Support eu868.
+        Terry Moore, MCCI Corporation	October 2016
 
 */
 
@@ -55,55 +35,64 @@ Revision history:
 #endif
 
 class Arduino_LoRaWAN_machineQ_base :  public Arduino_LoRaWAN
-	{
+        {
 public:
-	Arduino_LoRaWAN_machineQ_base() {};
+        Arduino_LoRaWAN_machineQ_base() {};
         using Super = Arduino_LoRaWAN;
+        static constexpr NetworkID_t NetworkID = NetworkID_t::machineQ;
 
-        virtual const char *GetNetworkName() const
+        virtual const char *GetNetworkName() const override
                 {
-                return "machineQ";
+                return NetworkID_t_GetName(NetworkID);
                 };
 
+        virtual NetworkID_t GetNetworkID() const override
+                {
+                return NetworkID;
+                }
+
 protected:
-	// Handle common NetJoin() operations for the network.
-	virtual void NetJoin();
+        // Handle common NetJoin() operations for the network.
+        virtual void NetJoin();
 
 private:
-	};
+        };
 
 class Arduino_LoRaWAN_machineQ_us915 : public Arduino_LoRaWAN_machineQ_base
-	{
+        {
 public:
         using Super = Arduino_LoRaWAN_machineQ_base;
         Arduino_LoRaWAN_machineQ_us915() {};
 
 protected:
-	// the NetBeginRegionInit() function allows us to override the LMIC 
+        // the NetBeginRegionInit() function allows us to override the LMIC
         // defaults when initalizing for a region. Only provide code if LMIC
         // is doing something wrong.
         virtual void NetBeginRegionInit();
 
-	// Implement the NetJoin() operations for US915
-	virtual void NetJoin();
+        // Implement the NetJoin() operations for US915
+        virtual void NetJoin();
 
 private:
-	};
+        };
 
 
-#if defined(CFG_us915)
+#if ARDUINO_LMIC_CFG_NETWORK_MACHINEQ && defined(CFG_us915)
+# if defined(ARDUINO_LMIC_CFG_SUBBAND) && ! (ARDUINO_LMIC_CFG_SUBBAND == -1)
+#  error "machineQ is a 64-channel network; selecting a subband is not supported"
+# endif
 # define Arduino_LoRaWAN_REGION_TAG us915
-#elif defined(ARDUINO_LORAWAN_NETWORK_MACHINEQ)
-# warning "Configured region not supported for machineQ: can't define Arduino_LoRaWAN_REGION_TAG"
+#elif ARDUINO_LMIC_CFG_NETWORK_MACHINEQ
+# error "Configured region not supported for machineQ: can't define Arduino_LoRaWAN_REGION_TAG"
 #else
 // just be silent if we don't think we're targeting MachineQ
 #endif
 
 #define Arduino_LoRaWAN_machineQ_LOCAL_(Region)		\
-	Arduino_LoRaWAN_machineQ_ ## Region
+        Arduino_LoRaWAN_machineQ_ ## Region
 
 #define Arduino_LoRaWAN_machineQ_LOCAL(Region)		\
-	Arduino_LoRaWAN_machineQ_LOCAL_(Region)
+        Arduino_LoRaWAN_machineQ_LOCAL_(Region)
 
 //
 // This header file might get compiled all the time ... and it's not
@@ -114,13 +103,13 @@ private:
 #if defined(Arduino_LoRaWAN_REGION_TAG)
 
 class Arduino_LoRaWAN_machineQ : public Arduino_LoRaWAN_machineQ_LOCAL(Arduino_LoRaWAN_REGION_TAG)
-	{
+        {
 public:
         using Super = Arduino_LoRaWAN_machineQ_LOCAL(Arduino_LoRaWAN_REGION_TAG);
         Arduino_LoRaWAN_machineQ() {};
 
 private:
-	};
+        };
 
 #endif // defined(Arduino_LoRaWAN_REGION_TAG)
 

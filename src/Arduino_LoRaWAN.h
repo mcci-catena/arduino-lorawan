@@ -16,7 +16,7 @@ Author:
 #ifndef _ARDUINO_LORAWAN_H_             /* prevent multiple includes */
 #define _ARDUINO_LORAWAN_H_
 
-#include <stdint.h>
+#include <cstdint>
 #include <Arduino.h>
 #ifndef _MCCIADK_ENV_H_
 # include <mcciadk_env.h>
@@ -29,7 +29,7 @@ Author:
 #define ARDUINO_LORAWAN_VERSION_CALC(major, minor, patch, local)        \
         (((major) << 24u) | ((minor) << 16u) | ((patch) << 8u) | (local))
 
-#define ARDUINO_LORAWAN_VERSION ARDUINO_LORAWAN_VERSION_CALC(0, 6, 0, 20)        /* v0.6.0.20 */
+#define ARDUINO_LORAWAN_VERSION ARDUINO_LORAWAN_VERSION_CALC(0, 6, 0, 99)        /* v0.6.0.99 */
 
 #define ARDUINO_LORAWAN_VERSION_GET_MAJOR(v)    \
         (((v) >> 24u) & 0xFFu)
@@ -91,11 +91,47 @@ public:
         // which could cause naming clashes.
         using lmic_pinmap = Arduino_LMIC::HalPinmap_t;
 
+        // the networks that we support
+        enum class NetworkID_t : std::uint32_t
+                {
+                TheThingsNetwork,
+                Actility,
+                Helium,
+                machineQ,
+                Senet,
+                Senra,
+                Swisscom,
+                ChirpStack,
+                Generic
+                };
+
+        // change network code to text
+        static constexpr const char * NetworkID_t_GetName(NetworkID_t net)
+                {
+                return  (net == NetworkID_t::TheThingsNetwork) ?    "The Things Network" :
+                        (net == NetworkID_t::Actility) ?            "Actility" :
+                        (net == NetworkID_t::Helium)   ?            "Helium" :
+                        (net == NetworkID_t::machineQ) ?            "machineQ" :
+                        (net == NetworkID_t::Senet)    ?            "Senet" :
+                        (net == NetworkID_t::Senra)    ?            "Senra" :
+                        (net == NetworkID_t::Swisscom) ?            "Swisscom" :
+                        (net == NetworkID_t::ChirpStack) ?          "ChirpStack" :
+                        (net == NetworkID_t::Generic)  ?            "Generic" :
+                        "<<unknown network>>"
+                        ;
+                }
+
+        /*
+        || provisioning things:
+        */
+
+        // the provisioning styles.
         enum class ProvisioningStyle
                 {
                 kNone, kABP, kOTAA
                 };
 
+        // information provided for ABP provisioning
         struct AbpProvisioningInfo
                 {
                 uint8_t         NwkSKey[16];
@@ -106,6 +142,7 @@ public:
                 uint32_t        FCntDown;
                 };
 
+        // information provided for OTAA provisioning
         struct OtaaProvisioningInfo
                 {
                 uint8_t         AppKey[16];
@@ -113,6 +150,7 @@ public:
                 uint8_t         AppEUI[8];
                 };
 
+        // the provisioning blob.
         struct ProvisioningInfo
                 {
                 ProvisioningStyle       Style;
@@ -127,6 +165,7 @@ public:
                 };
 
         // US-like regions use a 72-bit mask of enabled channels.
+        // CN474-like regions use a 96-bit mask of enabled channels.
         // EU-like regions use a a table of 16 frequencies with
         //    100-Hz resolution (at 24 bits, that's 48 bytes)
         //    In this encoding, we use zeros to represent disabled channels
@@ -141,7 +180,7 @@ public:
 
         struct SessionChannelMask_US_like
                 {
-                enum : uint32_t { nCh = 64 + 8 };
+                static constexpr uint32_t nCh = 64 + 8;
 
                 // the fields
                 SessionChannelMask_Header       Header;
@@ -189,7 +228,7 @@ public:
 
         struct SessionChannelMask_EU_like
                 {
-                enum : uint32_t { nCh = 16 };
+                static constexpr uint32_t nCh = 16;
 
                 // the fields
                 SessionChannelMask_Header       Header;
@@ -405,6 +444,7 @@ public:
                 };
         CountryCode GetCountryCode() const;
 
+        virtual NetworkID_t GetNetworkID() const = 0;
         virtual const char *GetNetworkName() const = 0;
 
         bool GetTxReady() const;
