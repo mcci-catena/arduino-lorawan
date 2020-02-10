@@ -16,7 +16,7 @@ Author:
 #ifndef _ARDUINO_LORAWAN_H_             /* prevent multiple includes */
 #define _ARDUINO_LORAWAN_H_
 
-#include <stdint.h>
+#include <cstdint>
 #include <Arduino.h>
 #ifndef _MCCIADK_ENV_H_
 # include <mcciadk_env.h>
