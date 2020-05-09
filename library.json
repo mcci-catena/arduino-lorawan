@@ -31,7 +31,7 @@
       "authors": ["Terry Moore <tmm@mcci.com>"]
     }
   ],
-  "version": "0.7.0",
+  "version": "0.8.0",
   "frameworks": "arduino",
   "platforms": "*"
 }
