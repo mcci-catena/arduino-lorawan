@@ -2,7 +2,7 @@
 
 **User-friendly library for using the Arduino LMIC library with The Things Network and LoRaWAN&reg; networks.**
 
-[![GitHub release](https://img.shields.io/github/release/mcci-catena/arduino-lorawan.svg)](https://github.com/mcci-catena/arduino-lorawan/releases/latest) [![GitHub commits](https://img.shields.io/github/commits-since/mcci-catena/arduino-lorawan/latest.svg)](https://github.com/mcci-catena/arduino-lorawan/compare/v0.7.0...master) [![Build Status](https://travis-ci.com/mcci-catena/arduino-lorawan.svg?branch=master)](https://travis-ci.com/mcci-catena/arduino-lorawan)
+[![GitHub release](https://img.shields.io/github/release/mcci-catena/arduino-lorawan.svg)](https://github.com/mcci-catena/arduino-lorawan/releases/latest) [![GitHub commits](https://img.shields.io/github/commits-since/mcci-catena/arduino-lorawan/latest.svg)](https://github.com/mcci-catena/arduino-lorawan/compare/v0.8.0...master) [![Build Status](https://travis-ci.com/mcci-catena/arduino-lorawan.svg?branch=master)](https://travis-ci.com/mcci-catena/arduino-lorawan)
 
 **Contents:**
 
@@ -13,28 +13,28 @@
 - [Overview](#overview)
 - [Required libraries](#required-libraries)
 - [Compile-time Configuration](#compile-time-configuration)
-    - [Region Selection](#region-selection)
-    - [Network selection](#network-selection)
-    - [Join Subband Selection](#join-subband-selection)
+        - [Region Selection](#region-selection)
+        - [Network selection](#network-selection)
+        - [Join Subband Selection](#join-subband-selection)
 - [Writing Code With This Library](#writing-code-with-this-library)
-    - [Using the LMIC's pre-configured pin-maps](#using-the-lmics-pre-configured-pin-maps)
-    - [Supplying a pin-map](#supplying-a-pin-map)
-    - [Details on use](#details-on-use)
+        - [Using the LMIC's pre-configured pin-maps](#using-the-lmics-pre-configured-pin-maps)
+        - [Supplying a pin-map](#supplying-a-pin-map)
+        - [Details on use](#details-on-use)
 - [APIs](#apis)
-    - [Starting operation](#starting-operation)
-    - [Poll and update the LMIC](#poll-and-update-the-lmic)
-    - [Reset the LMIC](#reset-the-lmic)
-    - [Shut down the LMIC](#shut-down-the-lmic)
-    - [Register an event listener](#register-an-event-listener)
-    - [Send an event to all listeners](#send-an-event-to-all-listeners)
-    - [Manipulate the Debug Mask](#manipulate-the-debug-mask)
-    - [Output a formatted log message](#output-a-formatted-log-message)
-    - [Get the configured LoRaWAN region, country code, and network name](#get-the-configured-lorawan-region-country-code-and-network-name)
-    - [Set link-check mode](#set-link-check-mode)
-    - [Send a buffer](#send-a-buffer)
-    - [Register a Receive-Buffer Callback](#register-a-receive-buffer-callback)
-    - [Get DevEUI, AppEUI, AppKey](#get-deveui-appeui-appkey)
-    - [Test provisioning state](#test-provisioning-state)
+        - [Starting operation](#starting-operation)
+        - [Poll and update the LMIC](#poll-and-update-the-lmic)
+        - [Reset the LMIC](#reset-the-lmic)
+        - [Shut down the LMIC](#shut-down-the-lmic)
+        - [Register an event listener](#register-an-event-listener)
+        - [Send an event to all listeners](#send-an-event-to-all-listeners)
+        - [Manipulate the Debug Mask](#manipulate-the-debug-mask)
+        - [Output a formatted log message](#output-a-formatted-log-message)
+        - [Get the configured LoRaWAN region, country code, and network name](#get-the-configured-lorawan-region-country-code-and-network-name)
+        - [Set link-check mode](#set-link-check-mode)
+        - [Send a buffer](#send-a-buffer)
+        - [Register a Receive-Buffer Callback](#register-a-receive-buffer-callback)
+        - [Get DevEUI, AppEUI, AppKey](#get-deveui-appeui-appkey)
+        - [Test provisioning state](#test-provisioning-state)
 - [Release History](#release-history)
 - [Notes](#notes)
 
@@ -397,6 +397,10 @@ bool Arduino_LoRaWAN::IsProvisioned(void);
 Return `true` if the LoRaWAN stack seems to be properly provisioned (provided with a valid Device EUI, Application EUI and Application Key for OTAA; or provided with valid Device Address, Application Session Key and Network Session Key for ABP). Returns `false` otherwise.
 
 ## Release History
+
+- v0.8.0 has the following change.
+
+  - [#139](https://github.com/mcci-catena/arduino-lorawan/issues/139) changes the subband for Helium, who move to channels 8-15/65 (subband 2) on [May 12, 2020](https://engineering.helium.com/2020/05/05/lorawan-network-upgrade-potential-disruption-mitigation.html).
 
 - v0.7.0 has the following changes.
 
