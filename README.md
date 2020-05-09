@@ -106,7 +106,7 @@ The following compile-time defines select the network that will be used. Exactly
 |---------------------------------------|-----------------------|--------------
 | `ARDUINO_LMIC_CFG_NETWORK_TTN`        | The Things Network    | EU868, US915 (subband 1), AU915 (subband 1), AS923, AS923 Japan, KR920, IN866
 | `ARDUINO_LMIC_CFG_NETWORK_ACTILITY`   | Actility              | EU868, US915, AU915, AS923, AS923 Japan, KR920, IN866
-| `ARDUINO_LMIC_CFG_NETWORK_HELIUM`     | Helium                | US915 (subband 6)
+| `ARDUINO_LMIC_CFG_NETWORK_HELIUM`     | Helium                | US915 (subband 1)
 | `ARDUINO_LMIC_CFG_NETWORK_MACHINEQ`   | machineQ              | US915
 | `ARDUINO_LMIC_CFG_NETWORK_SENET`      | Senet                 | US915
 | `ARDUINO_LMIC_CFG_NETWORK_SENRA`      | Senra                 | IN866

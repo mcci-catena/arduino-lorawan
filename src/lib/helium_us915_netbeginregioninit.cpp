@@ -43,10 +43,10 @@ Author:
 void Arduino_LoRaWAN_Helium_us915::NetBeginRegionInit()
     {
     //
-    // Helium is an 8-channel network on subband 6 of [0..7]. Pre-join
-    // we therefore want to limit to probing channels 48~55 / 70.
+    // Helium is an 8-channel network on subband 1 of [0..7]. Pre-join
+    // we therefore want to limit to probing channels 8~15 / 65.
     //
-    cLMIC::SelectSubBand(cLMIC::SubBand::SubBand_7);
+    cLMIC::SelectSubBand(cLMIC::SubBand::SubBand_2);
 
     //
     // Set data rate and transmit power -- these ought to
