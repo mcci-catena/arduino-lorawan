@@ -684,7 +684,7 @@ private:
                 };
 
         Listener m_RegisteredListeners[4];
-        uint32_t m_nRegisteredListeners;
+        uint32_t m_nRegisteredListeners = 0;
 
         // since the LMIC code is not really obvious as to which events
         // update the downlink count, we simply watch for changes.
