@@ -25,11 +25,16 @@ Author:
 #include <cstring>
 #include <arduino_lmic_hal_configuration.h>
 
-// Arduino LoRaWAN version
+/// \brief construct Arduino LoRaWAN semantic version
 #define ARDUINO_LORAWAN_VERSION_CALC(major, minor, patch, local)        \
         (((major) << 24u) | ((minor) << 16u) | ((patch) << 8u) | (local))
 
-#define ARDUINO_LORAWAN_VERSION ARDUINO_LORAWAN_VERSION_CALC(0, 8, 0, 0)        /* v0.8.0.0 */
+/// \brief library semantic version
+/// \note local "0" is *greater than* any local non-zero; use
+///     \ref ARDUINO_LORAWAN_VERSION_COMPARE_LT() to compare relative versions.
+///
+#define ARDUINO_LORAWAN_VERSION \
+        ARDUINO_LORAWAN_VERSION_CALC(0, 9, 0, 10) /* v0.9.0-10 */
 
 #define ARDUINO_LORAWAN_VERSION_GET_MAJOR(v)    \
         (((v) >> 24u) & 0xFFu)
@@ -43,7 +48,19 @@ Author:
 #define ARDUINO_LORAWAN_VERSION_GET_LOCAL(v)    \
         ((v) & 0xFFu)
 
+/// \brief convert a semantic version to an integer.
+#define ARDUINO_LORAWAN_VERSION_TO_INT(v)       \
+        (((v) & 0xFFFFFF00u) | (((v) - 1) & 0xFFu))
 
+/// \brief compare two semantic versions
+/// \return \c true if \b a is less than \b b (as a semantic version).
+#define ARDUINO_LORAWAN_VERSION_COMPARE_LT(a, b)   \
+        (ARDUINO_LORAWAN_VERSION_TO_INT(a) < ARDUINO_LORAWAN_VERSION_TO_INT(b))
+
+/// \brief compare two semantic versions
+/// \return \c true if \b a is greater than \b b (as a semantic version).
+#define ARDUINO_LORAWAN_VERSION_COMPARE_GT(a, b)   \
+        (ARDUINO_LORAWAN_VERSION_TO_INT(a) > ARDUINO_LORAWAN_VERSION_TO_INT(b))
 
 class Arduino_LoRaWAN;
 
