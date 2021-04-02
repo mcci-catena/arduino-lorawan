@@ -7,7 +7,7 @@ Function:
 
 Copyright notice:
         See LICENSE file accompanying this project.
- 
+
 Author:
 	Terry Moore, MCCI Corporation	November 2016
 
@@ -42,6 +42,6 @@ Author:
 void Arduino_LoRaWAN_ttn_as923::NetBeginRegionInit()
     {
     //
-    // for as923, we don't need to do any special setup. 
+    // for as923, we don't need to do any special setup.
     //
     }

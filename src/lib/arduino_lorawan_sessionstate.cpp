@@ -44,7 +44,7 @@ Returns:
 	No explicit result.
 
 Notes:
-	
+
 
 */
 
@@ -167,7 +167,7 @@ Returns:
     No explicit result.
 
 Notes:
-    
+
 
 */
 
@@ -206,7 +206,7 @@ Returns:
     No explicit result.
 
 Notes:
-    
+
 
 */
 
@@ -241,7 +241,7 @@ Returns:
     `true` if the state could be applied, `false` otherwise.
 
 Notes:
-    
+
 
 */
 
@@ -253,7 +253,7 @@ Arduino_LoRaWAN::ApplySessionState(
     )
     {
     // do not apply the session state unless it rougly matches our configuration.
-    if (State.Header.Tag == kSessionStateTag_V1 && 
+    if (State.Header.Tag == kSessionStateTag_V1 &&
         Arduino_LoRaWAN::Region(State.V1.Region) == this->GetRegion() &&
         State.V1.Country == uint16_t(this->GetCountryCode())
         )
@@ -310,7 +310,7 @@ Arduino_LoRaWAN::ApplySessionState(
 
 #if CFG_LMIC_EU_like
         // don't turn off bits: user can't fool us here.
-        // we can get the immutable channels from the 
+        // we can get the immutable channels from the
         // channelMap value after reset.
         auto const resetMap = LMIC.channelMap;
         auto const & euLike = State.V1.Channels.EUlike;
@@ -340,7 +340,7 @@ Arduino_LoRaWAN::ApplySessionState(
             LMIC.bands[band].lastchnl = euLike.Bands[band].lastChannel;
             // Heuristic; we don't know how long has passed since we saved
             // this, because we don't currently have GPS time available.
-            // Conservatively reserve time from now. 
+            // Conservatively reserve time from now.
             LMIC.bands[band].avail = tNow + euLike.Bands[band].ostimeAvail;
             }
 

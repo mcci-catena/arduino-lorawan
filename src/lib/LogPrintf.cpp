@@ -13,9 +13,9 @@ Copyright notice:
 		Ithaca, NY  14850
 
 	An unpublished work.  All rights reserved.
-	
+
 	See accompanying LICENSE file.
- 
+
 Author:
 	Terry Moore, MCCI Corporation	November 2016
 
@@ -78,7 +78,7 @@ static bool CheckDtr(TMap& m)
 
 void
 Arduino_LoRaWAN::LogPrintf(
-	const char *fmt, 
+	const char *fmt,
 	...
 	)
 	{
