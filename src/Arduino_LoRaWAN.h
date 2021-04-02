@@ -198,7 +198,7 @@ public:
         template <uint32_t a_nCh>
         struct SessionChannelMask_US_like
                 {
-                static constexpr uint32_t nCh = a_nCh; 
+                static constexpr uint32_t nCh = a_nCh;
                 static_assert(
                         1 <= a_nCh && a_nCh <= 96,
                         "number of channels must be in [1..96]"
@@ -293,7 +293,7 @@ public:
                 uint8_t                         UplinkFreq[nCh * 3];            ///< packed downlink frequencies for each channel (100 Hz units)
                 uint8_t                         DownlinkFreq[nCh * 3];          ///< packed uplink frequencies for each channel.
                 SessionChannelBand              Bands[nBands];                  ///< band limiting info
-        
+
                 // useful methods
                 ///
                 /// \brief set the band number for a given channel
@@ -308,7 +308,7 @@ public:
 
                         this->ChannelBands ^= (this->ChannelBands ^ v) & mask;
                         }
-                
+
                 ///
                 /// \brief get the band for a given channel
                 ///
@@ -427,7 +427,7 @@ public:
         ///
         /// \details
         /// This structure is stored persistenly if
-        /// possible, and represents the result of a join. We allow for 
+        /// possible, and represents the result of a join. We allow for
         /// versioning, primarily so that (if we
         /// choose) we can accommodate older versions and very simple
         /// storage schemes.
@@ -893,7 +893,7 @@ private:
                 if (this->m_savedSessionState.Header.Tag == kSessionStateTag_V1 &&
                     this->m_savedSessionState.V1.FCntDown == newFCntDown)
                         return;
-                
+
                 this->SaveSessionState();
                 }
 
@@ -913,7 +913,7 @@ private:
         ///
         /// \brief apply session state data to current LMIC session
         ///
-        /// \param [in] State 
+        /// \param [in] State
         bool ApplySessionState(const SessionState &State);
 
         ///
