@@ -173,13 +173,11 @@ void
 Arduino_LoRaWAN::SaveSessionInfo()
     {
     SessionInfo Info;
-    Info.V1.Tag = kSessionInfoTag_V1;
+    Info.V1.Tag = kSessionInfoTag_V2;
     Info.V1.Size = sizeof(Info);
     Info.V1.Rsv2 = 0;
     Info.V1.Rsv3 = 0;
     LMIC_getSessionKeys(&Info.V1.NetID, &Info.V1.DevAddr, Info.V1.NwkSKey, Info.V1.AppSKey);
-    Info.V1.FCntUp = LMIC.seqnoUp;
-    Info.V1.FCntDown = LMIC.seqnoDn;
     this->NetSaveSessionInfo(Info, nullptr, 0);
     }
 
