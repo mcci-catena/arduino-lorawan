@@ -26,12 +26,12 @@ public:
     cMyLoRaWAN() {};
 
 protected:
-    // you'll need to provide implementations for each of the following.
+    // you'll need to provide implementation for this.
     virtual bool GetOtaaProvisioningInfo(Arduino_LoRaWAN::OtaaProvisioningInfo*) override;
-    virtual void NetSaveFCntUp(uint32_t uFCntUp) override;
-    virtual void NetSaveFCntDown(uint32_t uFCntDown) override;
+    // if you have persistent storage, you can provide implementations for these:
     virtual void NetSaveSessionInfo(const SessionInfo &Info, const uint8_t *pExtraInfo, size_t nExtraInfo) override;
-
+    virtual void NetSaveSessionState(const SessionState &State) override;
+    virtual bool NetGetSessionState(SessionState &State) override;
 };
 
 // set up the data structures.
@@ -58,20 +58,23 @@ cMyLoRaWAN::GetOtaaProvisioningInfo(
 }
 
 void
-cMyLoRaWAN::NetSaveFCntDown(uint32_t uFCntDown) {
-    // save uFcntDown somwwhere
-}
-
-void
-cMyLoRaWAN::NetSaveFCntUp(uint32_t uFCntUp) {
-    // save uFCntUp somewhere
-}
-
-void
 cMyLoRaWAN::NetSaveSessionInfo(
     const SessionInfo &Info,
     const uint8_t *pExtraInfo,
     size_t nExtraInfo
     ) {
     // save Info somewhere.
+}
+
+
+void
+cMyLoRaWAN::NetSaveSessionState(const SessionState &State) {
+    // save State somwwhere. Note that it's often the same;
+    // often only the frame counters change.
+}
+
+bool
+cMyLoRaWAN::NetGetSessionState(SessionState &State) {
+    // either fetch SessionState from somewhere and return true or...
+    return false;
 }

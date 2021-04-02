@@ -48,10 +48,12 @@ bool Arduino_LoRaWAN::begin(
     // discarded.
     LMIC_reset();
 
-    // Set data rate and transmit power, based on regional considerations.
-    // this is redundant if LMIC_reset() sends EV_RESET, but ... this
-    // hasn't been changed yet, and might not be possible to change.
-    this->NetBeginRegionInit();
+    // if we can get saved state, go on.
+    if (! this->RestoreSessionState())
+        {
+        // Otherwise set data rate and transmit power, based on regional considerations.
+        this->NetBeginRegionInit();
+        }
 
     //
     // If no provisining info, return false.
@@ -166,6 +168,20 @@ Arduino_LoRaWAN::cLMIC::GetEventName(uint32_t ev)
     else
         return p;
     }
+
+void
+Arduino_LoRaWAN::SaveSessionInfo()
+    {
+    SessionInfo Info;
+    Info.V1.Tag = kSessionInfoTag_V1;
+    Info.V1.Size = sizeof(Info);
+    Info.V1.Rsv2 = 0;
+    Info.V1.Rsv3 = 0;
+    LMIC_getSessionKeys(&Info.V1.NetID, &Info.V1.DevAddr, Info.V1.NwkSKey, Info.V1.AppSKey);
+    Info.V1.FCntUp = LMIC.seqnoUp;
+    Info.V1.FCntDown = LMIC.seqnoDn;
+    this->NetSaveSessionInfo(Info, nullptr, 0);
+    }
 
 /*
 
@@ -215,16 +231,11 @@ void Arduino_LoRaWAN::StandardEventProcessor(
             // announce that we have joined; allows for
             // network-specific fixups, and saving keys.
             this->NetJoin();
-            SessionInfo Info;
-            Info.V1.Tag = kSessionInfoTag_V1;
-            Info.V1.Size = sizeof(Info);
-            Info.V1.Rsv2 = 0;
-            Info.V1.Rsv3 = 0;
-            LMIC_getSessionKeys(&Info.V1.NetID, &Info.V1.DevAddr, Info.V1.NwkSKey, Info.V1.AppSKey);
-            Info.V1.FCntUp = LMIC.seqnoUp;
-            Info.V1.FCntDown = LMIC.seqnoDn;
 
-            this->NetSaveSessionInfo(Info, nullptr, 0);
+            this->SaveSessionInfo();
+
+            // save everything else of interest.
+            this->SaveSessionState();
             }
             break;
 
@@ -247,6 +258,8 @@ void Arduino_LoRaWAN::StandardEventProcessor(
             break;
 
         case EV_TXCOMPLETE:
+            this->SaveSessionState();
+
             // notify framework that RX may be available (because this happens
             // after every transmit).
             this->NetRxComplete();
@@ -263,13 +276,17 @@ void Arduino_LoRaWAN::StandardEventProcessor(
             // the LoRaWAN MAC just got reset due to a pending frame rollover
             // on FCntDn or actual rollover on FCntUp.
 
-            // Set data rate, channels, and transmit power, based on regional considerations.
+            // Set default data rate, channels, and transmit power, based on regional considerations.
+            // If we're configured for ABP, we're done; but if we're configured for OTAA, we'll
+            // rejoin and the session data will be saved (again) at EV_JOIN.
             this->NetBeginRegionInit();
+            this->SaveSessionState();
             break;
 
         case EV_RXCOMPLETE:
             // data received in ping slot
             // see TXCOMPLETE.
+            this->SaveSessionState();
 
             // follow protocol:
             this->NetRxComplete();
@@ -285,10 +302,10 @@ void Arduino_LoRaWAN::StandardEventProcessor(
             break;
 
         case EV_TXSTART:
-            this->NetSaveFCntUp(LMIC.seqnoUp);
             break;
 
         case EV_TXCANCELED:
+            this->SaveSessionState();
             break;
 
         case EV_JOIN_TXCOMPLETE:

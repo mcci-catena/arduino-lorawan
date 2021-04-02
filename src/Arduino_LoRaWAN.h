@@ -29,7 +29,7 @@ Author:
 #define ARDUINO_LORAWAN_VERSION_CALC(major, minor, patch, local)        \
         (((major) << 24u) | ((minor) << 16u) | ((patch) << 8u) | (local))
 
-#define ARDUINO_LORAWAN_VERSION ARDUINO_LORAWAN_VERSION_CALC(0, 8, 0, 0)        /* v0.7.0.0 */
+#define ARDUINO_LORAWAN_VERSION ARDUINO_LORAWAN_VERSION_CALC(0, 8, 0, 0)        /* v0.8.0.0 */
 
 #define ARDUINO_LORAWAN_VERSION_GET_MAJOR(v)    \
         (((v) >> 24u) & 0xFFu)
@@ -174,13 +174,18 @@ public:
                 {
                 enum eMaskKind : uint8_t { kEUlike = 0, kUSlike = 1 };
 
-                uint8_t         Tag;
-                uint8_t         Size;
+                uint8_t         Tag;    ///< discriminator, eMaskKind.
+                uint8_t         Size;   ///< size of SessionChannelMask, in bytes
                 };
 
+        template <uint32_t a_nCh>
         struct SessionChannelMask_US_like
                 {
-                static constexpr uint32_t nCh = 64 + 8;
+                static constexpr uint32_t nCh = a_nCh; 
+                static_assert(
+                        1 <= a_nCh && a_nCh <= 96,
+                        "number of channels must be in [1..96]"
+                        );
 
                 // the fields
                 SessionChannelMask_Header       Header;
@@ -226,32 +231,103 @@ public:
                         }
                 };
 
+        ///
+        /// \brief "band" data for rate limiting in an EU-like configuration
+        ///
+        struct SessionChannelBand
+                {
+                // the fields
+                uint16_t        txDutyDenom;    ///< duty cycle limitation: 1/txDutyDenom
+                uint8_t         txPower;        ///< maximum TX power, this band
+                uint8_t         lastChannel;    ///< last used channel in this band
+                uint32_t        ostimeAvail;    ///< when will it be available relative to
+                                                ///  GPStime in ostime_t ticks.
+                };
+
+        ///
+        /// \brief session data for channels in an EU-like configuration
+        ///
+        /// \param a_nCh specifies the number of channels this class instance
+        ///     should handle. Must be in 1..16.
+        ///
+        /// \param a_nBands specifies the maximum number of bands to be supported.
+        ///
+        template <uint32_t a_nCh = 16, uint32_t a_nBands = 4>
         struct SessionChannelMask_EU_like
                 {
-                static constexpr uint32_t nCh = 16;
+                /// \brief number of channels declared for this class instance
+                static constexpr uint32_t nCh = a_nCh;
+                static_assert(
+                        1 <= a_nCh && a_nCh <= 16,
+                        "number of channels must be in [1..16]"
+                        );
+                /// \brief number of bands declared for this class instance
+                static constexpr uint32_t nBands = a_nBands;
+                static_assert(
+                        1 <= a_nBands && a_nBands <= 4,
+                        "number of channels must be in [1..4]"
+                        );
 
                 // the fields
-                SessionChannelMask_Header       Header;
-                uint8_t                         ChannelFreq[nCh * 3];
-
+                SessionChannelMask_Header       Header;                         ///< the header
+                uint32_t                        ChannelBands;                   ///< band number for each channel
+                uint16_t                        ChannelMap;                     ///< mask of enabled channels, one bit per channel
+                uint16_t                        ChannelDrMap[nCh];              ///< data rates for each channel
+                uint8_t                         UplinkFreq[nCh * 3];            ///< packed downlink frequencies for each channel (100 Hz units)
+                uint8_t                         DownlinkFreq[nCh * 3];          ///< packed uplink frequencies for each channel.
+                SessionChannelBand              Bands[nBands];                  ///< band limiting info
+        
                 // useful methods
+                ///
+                /// \brief set the band number for a given channel
+                ///
+                /// \param [in] ch channel
+                /// \param [in] band band (in 0..3)
+                ///
+                void setBand(unsigned ch, unsigned band)
+                        {
+                        uint32_t mask = 0x3 << (2 * ch);
+                        uint32_t v = band << (2 * ch);
 
-                // fetch the recorded frequency of a given channel.
-                uint32_t getFrequency(unsigned iCh) const
+                        this->ChannelBands ^= (this->ChannelBands ^ v) & mask;
+                        }
+                
+                ///
+                /// \brief get the band for a given channel
+                ///
+                /// \param [in] ch channel
+                ///
+                /// \return band number, in 0..3.
+                ///
+                uint32_t getBand(unsigned ch) const
+                        {
+                        return (this->ChannelBands >> (2 * ch)) & 0x3u;
+                        }
+
+                /// \brief return the recorded frequency of a given channel in Hz from a given table
+                uint32_t getFrequency(const uint8_t (&freq)[nCh * 3], unsigned iCh) const
                         {
                         if (iCh > nCh)
                                 return 0;
                         else
                                 {
-                                auto const chPtr = this->ChannelFreq + iCh * 3;
+                                auto const chPtr = freq + iCh * 3;
                                 return (uint32_t(chPtr[0] << 16) |
                                         uint32_t(chPtr[1] << 8) |
                                         uint32_t(chPtr[2])) * 100;
                                 }
                         }
 
-                // record the frequency of a given channel.
-                bool setFrequency(unsigned iCh, uint32_t frequency)
+                ///
+                /// \brief record the frequency of a given channel.
+                /// \param [in] freq packed table of frequencies
+                /// \param [in] iCh channel index
+                /// \param [in] freq frequency in Hertz
+                ///
+                /// \return true if channel number and frequency were valid,
+                ///     false otherwise.
+                ///
+                bool setFrequency(uint8_t (&freq)[nCh * 3], unsigned iCh, uint32_t frequency)
                         {
                         if (iCh > nCh)
                                 return false;
@@ -259,45 +335,51 @@ public:
                         if (reducedFreq > 0xFFFFFFu)
                                 return false;
 
-                        auto const chPtr = this->ChannelFreq + iCh * 3;
+                        auto const chPtr = freq + iCh * 3;
                         chPtr[0] = uint8_t(reducedFreq >> 16);
                         chPtr[1] = uint8_t(reducedFreq >> 8);
                         chPtr[2] = uint8_t(reducedFreq);
                         }
 
-                // clear all frequencies
+                /// \brief clear all entries in the channel table.
                 void clearAll()
                         {
-                        std::memset(this->ChannelFreq, 0, sizeof(this->ChannelFreq));
+                        this->ChannelMap = 0;
+                        std::memset(this->ChannelDrMap, 0, sizeof(this->ChannelDrMap));
+                        std::memset(this->UplinkFreq, 0, sizeof(this->UplinkFreq));
+                        std::memset(this->DownlinkFreq, 0, sizeof(this->DownlinkFreq));
                         }
                 };
 
-        union SessionChannelMask
+        typedef union SessionChannelMask_u
                 {
-                SessionChannelMask_Header       Header;
-                SessionChannelMask_EU_like      EUlike;
-                SessionChannelMask_US_like      USlike;
-                };
+                SessionChannelMask_Header               Header;
+                SessionChannelMask_EU_like<16>          EUlike;
+                SessionChannelMask_US_like<64 + 8>      USlike;
+                SessionChannelMask_US_like<96>          CNlike;
+                } SessionChannelMask;
 
-        // discriminate SessionInfo variants
+        /// \brief discriminate SessionInfo variants
         enum SessionInfoTag : uint8_t
                 {
-                kSessionInfoTag_Null = 0x00,    // indicates that there's no info.
-                kSessionInfoTag_V1 = 0x01,      // indicates the V1 structure, which was written but never read.
-                kSessionInfoTag_V2 = 0x02,      // indicates the V2 structure, which is first version written and read.
+                kSessionInfoTag_Null = 0x00,    ///< indicates that there's no info.
+                kSessionInfoTag_V1 = 0x01,      ///< indicates the V1 structure
+                kSessionInfoTag_V2 = 0x02,      ///< indicates the V1 structure
                 };
 
+        /// \brief Header for SessionInfo; allows versioning.
         struct SessionInfoHeader
                 {
-                uint8_t Tag;                    // the discriminator
+                SessionInfoTag Tag;             // the discriminator
                 uint8_t Size;                   // size of the overall structure
                 };
 
-        // Version 1 of session info.
+        /// \brief Version 1 of session info.
+        /// We send this up after a join.
         struct SessionInfoV1
                 {
                 // to ensure packing, we just repeat the header.
-                uint8_t         Tag;            // kSessionInfoTag_V1
+                SessionInfoTag  Tag;            // kSessionInfoTag_V1
                 uint8_t         Size;           // sizeof(SessionInfoV1)
                 uint8_t         Rsv2;           // reserved
                 uint8_t         Rsv3;           // reserved
@@ -309,50 +391,116 @@ public:
                 uint32_t        FCntDown;       // downlink frame count
                 };
 
-        // Version 2 of session info.
+        /// \brief Version 2 of session info; used in conjunction with.
+        /// `SessionState`. Omits duplicated info.
         struct SessionInfoV2
                 {
                 // to ensure packing, we just repeat the header.
                 uint8_t         Tag;            // kSessionInfoTag_V1
                 uint8_t         Size;           // sizeof(SessionInfoV1)
-                uint8_t         Region;         // selected region.
-                uint8_t         LinkADR;        // Current link ADR (per [1.0.2] 5.2)
+                uint8_t         Rsv2;           // reserved
+                uint8_t         Rsv3;           // reserved
                 uint32_t        NetID;          // the network ID
                 uint32_t        DevAddr;        // device address
                 uint8_t         NwkSKey[16];    // network session key
                 uint8_t         AppSKey[16];    // app session key
-                uint32_t        FCntUp;         // uplink frame count
-                uint32_t        FCntDown;       // downlink frame count
-                SessionChannelMask Channels;    // info about the enabled
-                                                // channels.
-                uint16_t        Country;        // Country code
-                int16_t         LinkIntegrity;  // the link-integrity counter.
-                uint8_t         Redundancy;     // NbTrans (in bits 3:0)
-                uint8_t         DutyCycle;      // Duty cycle (per [1.0.2] 5.3)
-                // TODO(tmm@mcci.com) complete
                 };
 
-
-        // information about the curent session, stored persistenly if
-        // possible. We allow for versioning, primarily so that (if we
-        // choose) we can accommodate older versions and very simple
-        // storage schemes. However, this is just future-proofing.
-        union SessionInfo
+        /// \brief information about the curent session.
+        ///
+        /// \details
+        /// This structure is stored persistenly if
+        /// possible, and represents the result of a join. We allow for 
+        /// versioning, primarily so that (if we
+        /// choose) we can accommodate older versions and very simple
+        /// storage schemes.
+        ///
+        /// Older versions of Arduino_LoRaWAN sent version 1 at join,
+        /// including the frame counts. Newer versions send version 2
+        /// at join, followed by a SessionState message (which includes
+        /// the frame counts).
+        ///
+        /// \see SessionState
+        ///
+        typedef union SessionInfo_u
                 {
-                // the header, same for all versions
+                /// the header, same for all versions
                 SessionInfoHeader       Header;
 
-                // the V1 version was never used by MCCI, but is
-                // maintained for reference, since it shipped and
-                // probably has been written to NVRAM
+                /// the V1 form used through v0.8 of the Arduino_LoraWAN.
                 SessionInfoV1   V1;
 
-                // SessionInfo::V2 is used as of June 2018 for MCCI
-                // products to save session info in NVRAM. Layout is
-                // extended from SessionInfo::V1.
+                /// SessionInfo::V2 is used as v0.9 of the Arduino_LoRaWAN,
+                /// in conjunction with the SessionState message
                 SessionInfoV2   V2;
+                } SessionInfo;
+
+
+        /// \brief discriminate SessionState variants
+        enum SessionStateTag : uint8_t
+                {
+                kSessionStateTag_Null = 0x00,   ///< indicates that there's no info.
+                kSessionStateTag_V1 = 0x01,     ///< indicates the V1 structure
                 };
 
+        ///
+        /// \brief Session state information
+        ///
+        /// \details
+        /// Arduino_LoRaWAN sends this whenever the underlying state might
+        /// have changed (in particular, after each EV_TXCOMPLETE). The client
+        /// may store this in non-volatile storage in order to allow for
+        /// power interruption. This is not nessarily a complete image of
+        /// MAC state, but is reasonably comprehensive.
+        ///
+        /// This should be taken as an opaque blob by most clients.
+        ///
+        struct SessionStateHeader
+                {
+                SessionStateTag Tag;            ///< versioning info
+                uint8_t         Size;           ///< size of embedded data
+                };
+
+        ///
+        /// \brief the first version of SessionState
+        ///
+        struct SessionStateV1
+                {
+                // to ensure packing, we just repeat the header.
+                SessionStateTag Tag;            ///< kSessionStateTag_V1
+                uint8_t         Size;           ///< sizeof(SessionStateV1)
+                uint8_t         Region;         ///< selected region.
+                uint8_t         LinkDR;         ///< Current link DR (per [1.0.2] 5.2)
+                uint32_t        FCntUp;         ///< uplink frame count
+                uint32_t        FCntDown;       ///< downlink frame count
+                uint32_t        gpsTime;        ///< if non-zero, "as-of" time.
+                uint32_t        globalAvail;    ///< osticks to global avail time.
+                uint32_t        Rx2Frequency;   ///< RX2 Frequency (in Hz)
+                uint32_t        PingFrequency;  ///< class B: ping frequency
+                uint16_t        Country;        ///< Country code
+                int16_t         LinkIntegrity;  ///< the link-integrity counter.
+                uint8_t         TxPower;        ///< Current TX power (per LinkADR)
+                uint8_t         Redundancy;     ///< NbTrans (in bits 3:0)
+                uint8_t         DutyCycle;      ///< Duty cycle (per [1.0.2] 5.3)
+                uint8_t         Rx1DRoffset;    ///< RX1 datarate offset
+                uint8_t         Rx2DataRate;    ///< RX2 data rate
+                uint8_t         RxDelay;        ///< RX window dlay
+                uint8_t         TxParam;        ///< saved TX param
+                uint8_t         BeaconChannel;  ///< class B: beackon channel.
+                uint8_t         PingDr;         ///< class B: ping datarate
+                uint8_t         MacRxParamAns;  ///< saved LMIC.dn2Ans
+                uint8_t         MacDlChannelAns;///< saved LMIC.macDlChannelAns
+                uint8_t         MacRxTimingSetupAns;    ///< saved LMIC.macRxTimingSetupAns;
+                SessionChannelMask Channels;    ///< info about the enabled channels
+                };
+
+        static_assert(sizeof(SessionStateV1) < 256, "SessionStateV1 is too large");
+
+        typedef union SessionState_u
+                {
+                SessionStateHeader      Header;
+                SessionStateV1          V1;
+                } SessionState;
         /*
         || the constructor.
         */
@@ -520,39 +668,57 @@ public:
                 };
 
 protected:
-        // NetBeginRegionInit is called after LMIC reset.
+        /// \brief client-provided method for region initialization.
+        ///
+        /// \details
+        /// NetBeginRegionInit is called after LMIC reset.
+        /// The client must provide this. Normally it's provided by
+        /// the network-specific derived class.
+        ///
         virtual void NetBeginRegionInit() = 0;
 
-
-        // you may have a NetJoin() function.
-        // if not, the base function does nothing.
+        /// \brief notify client about network joine.
+        ///
+        /// \details
+        /// you may have a \c NetJoin() function.
+        /// if not, the base function does nothing.
         virtual void NetJoin(void)
                 { /* NOTHING */ };
 
-        // You may have a NetRxComplete() function; this is called
-        // when receive data *may* be available.
-        // If not, the base class function calls this->m_pReceiveBufferFn,
-        // and then calls this->NetSaveFCntDown().
+        /// \brief request client to check whether RX data is available.
+        ///
+        /// \details
+        /// You may have a \c NetRxComplete() function; this is called
+        /// when receive data *may* be available.
+        /// If not, the base class function calls \c this->m_pReceiveBufferFn
+        /// if and only if receive data actually is available.
+        ///
         virtual void NetRxComplete(void);
 
-        // you may have a NetTxComplete() function.
-        // if not, the base function does nothing.
+        /// \brief notify client that trnsmission has compileted.
+        /// you may have a NetTxComplete() function.
+        /// if not, the base function does nothing.
         virtual void NetTxComplete(void)
                 { /* NOTHING */ };
 
-        // you should provide a function that returns the provisioning
-        // style from stable storage; if you don't yet have provisioning
-        // info, return ProvisioningStyle::kNone
+        /// \brief return the configured provisioning style.
+        ///
+        /// you should provide a function that returns the provisioning
+        /// style from stable storage; if you don't yet have provisioning
+        /// info, return ProvisioningStyle::kNone
         virtual ProvisioningStyle GetProvisioningStyle(void)
                 {
                 return ProvisioningStyle::kOTAA;
                 }
 
-        // you should provide a function that returns provisioning info from
-        // persistent storage. Called during initialization. If this returns
-        // false, OTAA will be forced. If this returns true (as it should for
-        // a saved session), then a call with a non-null pointer will get teh
-        // filled-in provisioning info.
+        /// \brief return ABP provisioning info.
+        ///
+        /// Your sketch (or something outside the Arduino_LoRaWAN library)
+        /// should provide a function that returns provisioning info from
+        /// persistent storage. Called during initialization. If this returns
+        /// false, OTAA will be forced. If this returns true (as it should for
+        /// a saved session), then a call with a non-null pointer will get teh
+        /// filled-in provisioning info.
         virtual bool GetAbpProvisioningInfo(
                         AbpProvisioningInfo *pProvisioningInfo
                         )
@@ -569,9 +735,12 @@ protected:
                 return false;
                 }
 
-        // you should provide a function that returns
-        // OTAA provisioning info from persistent storage. Only called
-        // if you return ProvisioningStyle::kOtaa to GetProvisioningStyle().
+        /// \brief return OTAA provisioning info.
+        ///
+        /// you should provide a function that returns
+        /// OTAA provisioning info from persistent storage. Only called
+        /// if you return ProvisioningStyle::kOtaa to GetProvisioningStyle().
+        ///
         virtual bool GetOtaaProvisioningInfo(
                         OtaaProvisioningInfo *pProvisioningInfo
                         )
@@ -588,27 +757,27 @@ protected:
                 return false;
                 }
 
-        // if you have persistent storage, you should provide a function
-        // that gets the saved session info from persistent storage, or
-        // indicate that there isn't a valid saved session. Note that
-        // the saved info is opaque to the higher level. The number of
-        // bytes actually stored into pSessionInfo is returned. FCntUp
-        // and FCntDown are stored separately.
+        /// \brief Return saved session info (keys)
+        ///
+        /// if you have persistent storage, you should provide a function
+        /// that gets the saved session info from persistent storage, or
+        /// indicate that there isn't a valid saved session. Note that
+        /// the saved info is opaque to the higher level.
+        ///
+        /// \return true if \p sessionInfo was filled in, false otherwise.
+        ///
         virtual bool GetSavedSessionInfo(
-                        SessionInfo *pSessionInfo,
+                        SessionInfo &sessionInfo,
                         uint8_t *pExtraSessionInfo,
                         size_t nExtraSessionInfo,
                         size_t *pnExtraSessionActual
                         )
                 {
                 // if not provided, default zeros buf and returns false.
+                memset(&sessionInfo, 0, sizeof(sessionInfo));
                 if (pExtraSessionInfo)
                         {
                         memset(pExtraSessionInfo, 0, nExtraSessionInfo);
-                        }
-                if (pSessionInfo)
-                        {
-                        memset(pSessionInfo, 0, sizeof(*pSessionInfo));
                         }
                 if (pnExtraSessionActual)
                         {
@@ -617,9 +786,13 @@ protected:
                 return false;
                 }
 
-        // if you have persistent storage, you shold provide a function that
-        // saves session info to persistent storage. This will be called
-        // after a successful join or a MAC message update.
+        /// \brief save session info (after join)
+        ///
+        /// \details
+        /// if you have persistent storage, you shold provide a function that
+        /// saves session info to persistent storage. This will be called
+        /// after a successful join.
+        ///
         virtual void NetSaveSessionInfo(
                         const SessionInfo &SessionInfo,
                         const uint8_t *pExtraSessionInfo,
@@ -629,34 +802,35 @@ protected:
                 // default: do nothing.
                 }
 
-        // Save FCntUp value (the uplink frame counter) (spelling matches
-        // LoRaWAN spec).
-        // If you have persistent storage, you should provide this function
-        virtual void NetSaveFCntUp(
-                        uint32_t uFcntUp
-                        )
+        /// \brief get the session state
+        ///
+        /// \return true if a valid session state was found.
+        virtual bool NetGetSessionState(
+                SessionState &State
+                )
+                {
+                // default: not implemented.
+                return false;
+                }
+
+        /// \brief save the session state
+        ///
+        /// If not provided, the default does nothing.
+        ///
+        virtual void NetSaveSessionState(
+                const SessionState &State
+                )
                 {
                 // default: do nothing.
                 }
 
-        // save FCntDown value (the downlink frame counter) (spelling matches
-        // LoRaWAN spec).  If you have persistent storage, you should provide
-        // this function.
-        virtual void NetSaveFCntDown(
-                        uint32_t uFcntDown
-                        )
-                {
-                // default: do nothing.
-                }
-
-        // return true if verbose logging is enabled.
+        /// \brief return true if verbose logging is enabled.
         bool LogVerbose()
                 {
                 return (this->m_ulDebugMask & LOG_VERBOSE) != 0;
                 }
 
         uint32_t m_ulDebugMask;
-
 
 private:
         SendBufferData_t m_SendBufferData;
@@ -686,18 +860,56 @@ private:
         Listener m_RegisteredListeners[4];
         uint32_t m_nRegisteredListeners;
 
-        // since the LMIC code is not really obvious as to which events
-        // update the downlink count, we simply watch for changes.
-        uint32_t m_savedFCntDown;
-
+        ///
+        /// \brief Update the downlink frame counter.
+        /// \param [in] newFCntDown the most recently observed downlink counter.
+        ///
+        /// \details
+        /// To save effort for the client, we want to avoid upcalls for changes
+        /// in the downlink count unless it really seems to have changed.
+        /// Since the LMIC code is not really obvious as to which events
+        /// update the downlink count, we simply call this on every event, and
+        /// watch for changes.
+        ///
         void UpdateFCntDown(uint32_t newFCntDown)
                 {
-                if (this->m_savedFCntDown != newFCntDown)
-                        {
-                        this->m_savedFCntDown = newFCntDown;
-                        this->NetSaveFCntDown(newFCntDown);
-                        }
+                if (this->m_savedSessionState.Header.Tag == kSessionStateTag_V1 &&
+                    this->m_savedSessionState.V1.FCntDown == newFCntDown)
+                        return;
+                
+                this->SaveSessionState();
                 }
+
+        /// \brief Internal routine for saving state after join
+        void SaveSessionInfo();
+
+        /// \brief Internal routine to save session state as appropriate
+        void SaveSessionState();
+
+        ///
+        /// \brief build session state object
+        ///
+        /// \param [in] State reference to the session state object to be initalized.
+        ///
+        void BuildSessionState(SessionState &State) const;
+
+        ///
+        /// \brief apply session state data to current LMIC session
+        ///
+        /// \param [in] State 
+        bool ApplySessionState(const SessionState &State);
+
+        ///
+        /// \brief get session state and apply to the LMIC
+        ///
+        /// \return true if valid session state was found and applied.
+        ///
+        bool RestoreSessionState();
+
+        /// \brief the internal copy of the session state, used to
+        ///     reduce the number of saves to a minimum. It's initially
+        ///     marked as "not valid".
+        SessionState m_savedSessionState { .Header = { .Tag = kSessionStateTag_Null } };
         };
 
 /****************************************************************************\
