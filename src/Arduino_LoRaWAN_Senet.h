@@ -78,7 +78,7 @@ private:
 
 
 #if ARDUINO_LMIC_CFG_NETWORK_SENET && defined(CFG_us915)
-# if defined(ARDUINO_LMIC_CFG_SUBBAND) && ! (ARDUINO_LMIC_CFG_SUBBAND == -1 || ARRDUINO_LMIC_CFG_SUBBAND == 0)
+# if defined(ARDUINO_LMIC_CFG_SUBBAND) && ! (ARDUINO_LMIC_CFG_SUBBAND == -1 || ARDUINO_LMIC_CFG_SUBBAND == 0)
 #   warning "Senet network in US915 region should use generic subband or subband zero (channels 0~7/64)"
 # endif
 # define Arduino_LoRaWAN_REGION_TAG us915
