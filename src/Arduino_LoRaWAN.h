@@ -205,15 +205,18 @@ public:
                         );
 
                 // the fields
-                SessionChannelMask_Header       Header;
-                uint8_t                         ChannelMask[nCh / 8];
+                SessionChannelMask_Header Header;                                       ///< the common header
+                uint8_t                   ChannelMap[2 * ((nCh + 15) / 16)];            ///< the channel enable mask
+                uint8_t                   ChannelShuffleMap[2 * ((nCh + 15) / 16)];     ///< the channel shuffle mask;
+                                                                                        ///  a multiple of 16 bits to match
+                                                                                        ///  the LMIC.
 
                 // the methods
                 bool isEnabled(unsigned iCh) const
                         {
                         if (iCh < nCh)
                                 {
-                                return this->ChannelMask[iCh / 8] & (1 << (iCh & 7));
+                                return this->ChannelMap[iCh / 8] & (1 << (iCh & 7));
                                 }
                         else
                                 return false;
@@ -221,8 +224,11 @@ public:
 
                 void clearAll()
                         {
-                        for (auto i = 0u; i < nCh / 8; ++i)
-                                this->ChannelMask[i] = 0;
+                        for (auto i = 0u; i < (nCh + 7) / 8; ++i)
+                                {
+                                this->ChannelMap[i] = 0;
+                                this->ChannelShuffleMap[i] = 0;
+                                }
                         }
 
                 // change enable state of indicated channel
@@ -231,7 +237,7 @@ public:
                         {
                         if (iCh < nCh)
                                 {
-                                auto pByte = this->ChannelMask + iCh/8;
+                                auto pByte = this->ChannelMap + iCh/8;
                                 uint8_t mask = 1 << (iCh & 7);
                                 auto v = *pByte;
                                 bool fResult = (v & mask) != 0;
@@ -289,6 +295,7 @@ public:
                 SessionChannelMask_Header       Header;                         ///< the header
                 uint32_t                        ChannelBands;                   ///< band number for each channel
                 uint16_t                        ChannelMap;                     ///< mask of enabled channels, one bit per channel
+                uint16_t                        ChannelShuffleMap;              ///< the channel re-use shuffle bitmap
                 uint16_t                        ChannelDrMap[nCh];              ///< data rates for each channel
                 uint8_t                         UplinkFreq[nCh * 3];            ///< packed downlink frequencies for each channel (100 Hz units)
                 uint8_t                         DownlinkFreq[nCh * 3];          ///< packed uplink frequencies for each channel.
@@ -362,6 +369,7 @@ public:
                 void clearAll()
                         {
                         this->ChannelMap = 0;
+                        this->ChannelShuffleMap = 0;
                         std::memset(this->ChannelDrMap, 0, sizeof(this->ChannelDrMap));
                         std::memset(this->UplinkFreq, 0, sizeof(this->UplinkFreq));
                         std::memset(this->DownlinkFreq, 0, sizeof(this->DownlinkFreq));
@@ -488,26 +496,37 @@ public:
                 uint8_t         Size;           ///< sizeof(SessionStateV1)
                 uint8_t         Region;         ///< selected region.
                 uint8_t         LinkDR;         ///< Current link DR (per [1.0.2] 5.2)
+                // above 4 entries make one uint32_t.
+
+                // keep uint32_t values together for alignment
                 uint32_t        FCntUp;         ///< uplink frame count
                 uint32_t        FCntDown;       ///< downlink frame count
                 uint32_t        gpsTime;        ///< if non-zero, "as-of" time.
                 uint32_t        globalAvail;    ///< osticks to global avail time.
                 uint32_t        Rx2Frequency;   ///< RX2 Frequency (in Hz)
                 uint32_t        PingFrequency;  ///< class B: ping frequency
+
+                // next, the uint16_t values, again for alignment
                 uint16_t        Country;        ///< Country code
                 int16_t         LinkIntegrity;  ///< the link-integrity counter.
+
+                // finally, the uint8_t values
                 uint8_t         TxPower;        ///< Current TX power (per LinkADR)
                 uint8_t         Redundancy;     ///< NbTrans (in bits 3:0)
                 uint8_t         DutyCycle;      ///< Duty cycle (per [1.0.2] 5.3)
                 uint8_t         Rx1DRoffset;    ///< RX1 datarate offset
+
                 uint8_t         Rx2DataRate;    ///< RX2 data rate
                 uint8_t         RxDelay;        ///< RX window dlay
                 uint8_t         TxParam;        ///< saved TX param
                 uint8_t         BeaconChannel;  ///< class B: beackon channel.
+
                 uint8_t         PingDr;         ///< class B: ping datarate
                 uint8_t         MacRxParamAns;  ///< saved LMIC.dn2Ans
                 uint8_t         MacDlChannelAns;///< saved LMIC.macDlChannelAns
                 uint8_t         MacRxTimingSetupAns;    ///< saved LMIC.macRxTimingSetupAns;
+
+                // at the very end
                 SessionChannelMask Channels;    ///< info about the enabled channels
                 };
 

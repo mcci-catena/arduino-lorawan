@@ -103,6 +103,10 @@ Arduino_LoRaWAN::BuildSessionState(
     State.V1.Channels.EUlike.clearAll();
     constexpr unsigned maxCh = MAX_CHANNELS < State.V1.Channels.EUlike.nCh ? MAX_CHANNELS : State.V1.Channels.EUlike.nCh;
     State.V1.Channels.EUlike.ChannelMap = LMIC.channelMap;
+#if ARDUINO_LMIC_VERSION_COMPARE_GE(ARDUINO_LMIC_VERSION, ARDUINO_LMIC_VERSION_CALC(3,99,0,1))
+    State.V1.Channels.EUlike.ChannelShuffleMap = LMIC.channelShuffleMap;
+#endif
+
     // EU: save channel settings
     for (unsigned ch = 0; ch < maxCh; ++ch)
         {
@@ -133,6 +137,14 @@ Arduino_LoRaWAN::BuildSessionState(
 #elif CFG_LMIC_US_like
     State.V1.Channels.Header.Tag = State.V1.Channels.Header.kEUlike;
     State.V1.Channels.Header.Tag = sizeof(State.V1.Channels.USlike);
+
+#if ARDUINO_LMIC_VERSION_COMPARE_GE(ARDUINO_LMIC_VERSION, ARDUINO_LMIC_VERSION_CALC(3,99,0,1))
+    static_assert(
+        sizeof(State.V1.Channels.USlike.ChannelShuffleMap) == sizeof(LMIC.channelShuffleMap),
+        "USlink.ChannelShuffleMap size is wrong"
+        );
+    memcpy(State.V1.Channels.USlike.ChannelShuffleMap, LMIC.channelShuffleMap, sizeof(State.V1.Channels.USlike.ChannelShuffleMap));
+#endif
 
     State.V1.Channels.USlike.clearAll();
     for (unsigned ch = 0; ch < State.V1.Channels.USlike.nCh; ++ch)
@@ -315,7 +327,9 @@ Arduino_LoRaWAN::ApplySessionState(
         auto const resetMap = LMIC.channelMap;
         auto const & euLike = State.V1.Channels.EUlike;
         LMIC.channelMap |= euLike.ChannelMap;
-
+#if ARDUINO_LMIC_VERSION_COMPARE_GE(ARDUINO_LMIC_VERSION, ARDUINO_LMIC_VERSION_CALC(3,99,0,1))
+        LMIC.channelShuffleMap = euLike.ChannelShuffleMap;
+#endif
         for (unsigned ch = 0; ch < MAX_CHANNELS; ++ch)
             {
             if ((resetMap & (decltype(resetMap)(1) << ch)) == 0)
@@ -345,6 +359,12 @@ Arduino_LoRaWAN::ApplySessionState(
             }
 
 #elif CFG_LMIC_US_like
+# if ARDUINO_LMIC_VERSION_COMPARE_GE(ARDUINO_LMIC_VERSION, ARDUINO_LMIC_VERSION_CALC(3,99,0,1))
+        static_assert(sizeof(LMIC.channelShuffleMap) == sizeof(State.V1.Channels.USlike.ChannelShuffleMap),
+            "shuffle map doesn't match");
+        // copy the shuffle map bits
+        memcpy(LMIC.channelShuffleMap, State.V1.Channels.USlike.ChannelShuffleMap, sizeof(LMIC.channelShuffleMap));
+# endif
         // copy the enabled states
         for (unsigned ch = 0; ch < State.V1.Channels.USlike.nCh; ++ch)
             {
