@@ -7,7 +7,7 @@ Function:
 
 Copyright notice:
     See LICENSE file accompanying this project.
- 
+
 Author:
     Terry Moore, MCCI Corporation	February 2020
 
@@ -42,6 +42,6 @@ Author:
 void Arduino_LoRaWAN_Generic_eu868::NetBeginRegionInit()
     {
     //
-    // for eu868, we don't need to do any special setup. 
+    // for eu868, we don't need to do any special setup.
     //
     }

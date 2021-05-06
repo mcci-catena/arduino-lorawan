@@ -7,7 +7,7 @@ Function:
 
 Copyright notice:
         See LICENSE file accompanying this project.
- 
+
 Author:
 	Terry Moore, MCCI Corporation	February 2020
 
@@ -42,6 +42,6 @@ Author:
 void Arduino_LoRaWAN_Actility_in866::NetBeginRegionInit()
     {
     //
-    // for in866, we don't need to do any special setup. 
+    // for in866, we don't need to do any special setup.
     //
     }

@@ -128,7 +128,7 @@ The classes in this library are normally intended to be used inside a class that
 
 ### Using the LMIC's pre-configured pin-maps
 
-The stand-alone use pattern is as follows, targeting The Things Network V2.  This code can be found in the `example/simple_feather/simple.ino` sketch.  Note that this isn't complete, as you have to add code in the indicated places.
+The stand-alone use pattern is as follows, targeting The Things Network V3 (also works with V2).  This code can be found in the `example/simple_feather/simple.ino` sketch.  Note that this isn't complete, as you have to add code in the indicated places.
 
 ```c++
 #include <Arduino_LoRaWAN_ttn.h>
@@ -138,11 +138,12 @@ public:
     cMyLoRaWAN() {};
 
 protected:
-    // you'll need to provide implementations for each of the following.
+    // you'll need to provide implementations for this.
     virtual bool GetOtaaProvisioningInfo(Arduino_LoRaWAN::OtaaProvisioningInfo*) override;
-    virtual void NetSaveFCntUp(uint32_t uFCntUp) override;
-    virtual void NetSaveFCntDown(uint32_t uFCntDown) override;
+    // if you have persistent storage, you can provide implementations for these:
     virtual void NetSaveSessionInfo(const SessionInfo &Info, const uint8_t *pExtraInfo, size_t nExtraInfo) override;
+    virtual void NetSaveSessionState(const SessionState &State) override;
+    virtual bool NetGetSessionState(SessionState &State) override;
 };
 
 // set up the data structures.
@@ -167,16 +168,6 @@ cMyLoRaWAN::GetOtaaProvisioningInfo(
 }
 
 void
-cMyLoRaWAN::NetSaveFCntDown(uint32_t uFCntDown) {
-    // save uFcntDown somwwhere
-}
-
-void
-cMyLoRaWAN::NetSaveFCntUp(uint32_t uFCntUp) {
-    // save uFCntUp somewhere
-}
-
-void
 cMyLoRaWAN::NetSaveSessionInfo(
     const SessionInfo &Info,
     const uint8_t *pExtraInfo,
@@ -184,6 +175,19 @@ cMyLoRaWAN::NetSaveSessionInfo(
     ) {
     // save Info somewhere.
 }
+
+void
+cMyLoRaWAN::NetSaveSessionState(const SessionState &State) {
+    // save State somwwhere. Note that it's often the same;
+    // often only the frame counters change.
+}
+
+bool
+cMyLoRaWAN::NetGetSessionState(SessionState &State) {
+    // either fetch SessionState from somewhere and return true or...
+    return false;
+}
+
 ```
 
 ### Supplying a pin-map

@@ -78,12 +78,10 @@ private:
 
 
 #if ARDUINO_LMIC_CFG_NETWORK_HELIUM && defined(CFG_us915)
-# if defined(ARDUINO_LMIC_CFG_SUBBAND) && ! (ARDUINO_LMIC_CFG_SUBBAND == -1 || ARRDUINO_LMIC_CFG_SUBBAND == 6)
-#   error "Helium network in US915 region is fixed at subband channels 48~55/70"
+# if defined(ARDUINO_LMIC_CFG_SUBBAND) && ! (ARDUINO_LMIC_CFG_SUBBAND == -1 || ARDUINO_LMIC_CFG_SUBBAND == 1)
+#   error "Helium network in US915 region is fixed at subband channels 8~15/65"
 # endif
 # define Arduino_LoRaWAN_REGION_TAG us915
-#elif ARDUINO_LMIC_CFG_NETWORK_HELIUM
-# error "Configured region not supported for Helium: can't define Arduino_LoRaWAN_REGION_TAG"
 #else
 // just be silent if we don't think we're targeting Helium
 #endif
