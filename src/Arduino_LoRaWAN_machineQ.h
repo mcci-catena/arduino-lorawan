@@ -66,7 +66,7 @@ public:
 
 protected:
         // the NetBeginRegionInit() function allows us to override the LMIC
-        // defaults when initalizing for a region. Only provide code if LMIC
+        // defaults when initializing for a region. Only provide code if LMIC
         // is doing something wrong.
         virtual void NetBeginRegionInit();
 

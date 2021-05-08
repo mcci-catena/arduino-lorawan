@@ -33,7 +33,7 @@ Author:
 // we want to use it; if not, we want to fall back to the boolean approach (!! Serial).
 //
 // To do this, we use the approach given by https://stackoverflow.com/questions/87372/check-if-a-class-has-a-member-function-of-a-given-signature;
-// a pair of templates are given, only one of which will actualy be implemented, based
+// a pair of templates are given, only one of which will actually be implemented, based
 // on whether dtr() is a valid method.
 //
 // This first template will tell us if a given type has a dtr() method.

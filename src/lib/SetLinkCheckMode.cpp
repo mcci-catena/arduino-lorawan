@@ -23,7 +23,7 @@ Arduino_LoRaWAN::SetLinkCheckMode(bool fEnable)
         // remember current state.
         const bool result = LMIC.adrAckReq != LINK_CHECK_OFF;
 
-        // set nuew state.
+        // set new state.
         LMIC_setLinkCheckMode(fEnable);
         return result;
         }

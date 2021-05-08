@@ -431,10 +431,10 @@ public:
                 uint8_t         AppSKey[16];    // app session key
                 };
 
-        /// \brief information about the curent session.
+        /// \brief information about the current session.
         ///
         /// \details
-        /// This structure is stored persistenly if
+        /// This structure is stored persistently if
         /// possible, and represents the result of a join. We allow for
         /// versioning, primarily so that (if we
         /// choose) we can accommodate older versions and very simple
@@ -475,7 +475,7 @@ public:
         /// Arduino_LoRaWAN sends this whenever the underlying state might
         /// have changed (in particular, after each EV_TXCOMPLETE). The client
         /// may store this in non-volatile storage in order to allow for
-        /// power interruption. This is not nessarily a complete image of
+        /// power interruption. This is not necessarily a complete image of
         /// MAC state, but is reasonably comprehensive.
         ///
         /// This should be taken as an opaque blob by most clients.
@@ -517,9 +517,9 @@ public:
                 uint8_t         Rx1DRoffset;    ///< RX1 datarate offset
 
                 uint8_t         Rx2DataRate;    ///< RX2 data rate
-                uint8_t         RxDelay;        ///< RX window dlay
+                uint8_t         RxDelay;        ///< RX window delay
                 uint8_t         TxParam;        ///< saved TX param
-                uint8_t         BeaconChannel;  ///< class B: beackon channel.
+                uint8_t         BeaconChannel;  ///< class B: beacon channel.
 
                 uint8_t         PingDr;         ///< class B: ping datarate
                 uint8_t         MacRxParamAns;  ///< saved LMIC.dn2Ans
@@ -713,7 +713,7 @@ protected:
         ///
         virtual void NetBeginRegionInit() = 0;
 
-        /// \brief notify client about network joine.
+        /// \brief notify client about network join.
         ///
         /// \details
         /// you may have a \c NetJoin() function.
@@ -731,7 +731,7 @@ protected:
         ///
         virtual void NetRxComplete(void);
 
-        /// \brief notify client that trnsmission has compileted.
+        /// \brief notify client that transmission has completed.
         /// you may have a NetTxComplete() function.
         /// if not, the base function does nothing.
         virtual void NetTxComplete(void)
@@ -753,7 +753,7 @@ protected:
         /// should provide a function that returns provisioning info from
         /// persistent storage. Called during initialization. If this returns
         /// false, OTAA will be forced. If this returns true (as it should for
-        /// a saved session), then a call with a non-null pointer will get teh
+        /// a saved session), then a call with a non-null pointer will get the
         /// filled-in provisioning info.
         virtual bool GetAbpProvisioningInfo(
                         AbpProvisioningInfo *pProvisioningInfo
@@ -825,7 +825,7 @@ protected:
         /// \brief save session info (after join)
         ///
         /// \details
-        /// if you have persistent storage, you shold provide a function that
+        /// if you have persistent storage, you should provide a function that
         /// saves session info to persistent storage. This will be called
         /// after a successful join.
         ///
@@ -925,7 +925,7 @@ private:
         ///
         /// \brief build session state object
         ///
-        /// \param [in] State reference to the session state object to be initalized.
+        /// \param [in] State reference to the session state object to be initialized.
         ///
         void BuildSessionState(SessionState &State) const;
 
@@ -951,7 +951,7 @@ private:
 /****************************************************************************\
 |
 |       Eventually this will get removed for "free" builds. But if you build
-|       in the Arduino enfironment, this is going to get hard to override.
+|       in the Arduino environment, this is going to get hard to override.
 |
 \****************************************************************************/
 
