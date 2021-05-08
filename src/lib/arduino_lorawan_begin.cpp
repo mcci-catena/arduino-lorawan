@@ -39,7 +39,7 @@ bool Arduino_LoRaWAN::begin(
 
     Arduino_LoRaWAN::pLoRaWAN = this;
 
-    // LMIC init -- need to pass a void* pointer through to the hal,
+    // Initialize the LMIC -- need to pass a void* pointer through to the HAL,
     // but it must point to an instance of ArduinoLMIC::HalConfiguration_t.
     if (! os_init_ex(pPinmap))
         return false;
@@ -56,15 +56,15 @@ bool Arduino_LoRaWAN::begin(
         }
 
     //
-    // If no provisining info, return false.
+    // If no provisioning info, return false.
     //
     if (this->GetProvisioningStyle() == ProvisioningStyle::kNone)
         return false;
 
     //
-    // this will succeed either if provisioned for Abp, or if Otaa and we
+    // this will succeed either if provisioned for ABP, or if OTAA and we
     // have successfully joined.  Note that ABP is just exactly the same
-    // as what happends after a join, so we use this for fetching all the
+    // as what happens after a join, so we use this for fetching all the
     // required information.
     //
     AbpProvisioningInfo abpInfo;
@@ -78,7 +78,7 @@ bool Arduino_LoRaWAN::begin(
                 abpInfo.AppSKey
                 );
 
-        // set the seqnoUp and seqnoDown
+        // set the FCntUp and FCntDown
         // presumably if non-zero, somebody is stashing these
         // in NVR
         LMIC.seqnoUp = abpInfo.FCntUp;
@@ -195,7 +195,7 @@ Definition:
 
 Description:
         The simple events emitted from the LMIC core are processed, both
-        to arrange for completions and notificatoins for asynchronous events,
+        to arrange for completions and notifications for asynchronous events,
         and to generate notifications to cause data to be pushed to the
         platform's persistent storage.
 

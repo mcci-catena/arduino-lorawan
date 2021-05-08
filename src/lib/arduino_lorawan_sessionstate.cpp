@@ -264,7 +264,7 @@ Arduino_LoRaWAN::ApplySessionState(
     const Arduino_LoRaWAN::SessionState &State
     )
     {
-    // do not apply the session state unless it rougly matches our configuration.
+    // do not apply the session state unless it roughly matches our configuration.
     if (State.Header.Tag == kSessionStateTag_V1 &&
         Arduino_LoRaWAN::Region(State.V1.Region) == this->GetRegion() &&
         State.V1.Country == uint16_t(this->GetCountryCode())

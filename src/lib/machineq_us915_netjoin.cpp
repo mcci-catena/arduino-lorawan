@@ -62,6 +62,6 @@ void Arduino_LoRaWAN_machineQ_us915::NetJoin()
 	// do the common work.
 	this->Super::NetJoin();
 
-	// machineQ is bog standard, and our DNW2 value is already rignt.
+	// machineQ is bog standard, and our DNW2 value is already right.
 	}
 #endif // defined(CFG_us915)
