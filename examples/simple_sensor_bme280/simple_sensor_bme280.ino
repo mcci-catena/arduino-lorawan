@@ -18,6 +18,7 @@ Notes:
 */
 
 #include <Arduino_LoRaWAN_network.h>
+#include <Arduino_LoRaWAN_EventLog.h>
 #include <arduino_lmic.h>
 #include <Adafruit_BME280.h>
 
@@ -42,52 +43,6 @@ protected:
     virtual bool NetGetSessionState(SessionState &State) override;
 };
 
-/****************************************************************************\
-|
-|	The event log object
-|
-\****************************************************************************/
-
-class cEventLog {
-public:
-    cEventLog() {};
-    ~cEventLog() {};
-
-    void setup();
-    void loop();
-
-    struct EventNode_t;
-    typedef void (LogCallback_t)(const EventNode_t *);
-
-    struct EventNode_t {
-        ostime_t time;
-        LogCallback_t *pCallBack;
-        void *pClientData;
-        std::uint32_t data[3];
-
-        ostime_t getTime() const { return this->time; }
-        void *getClientData() const { return this->pClientData; }
-        std::uint32_t getData(unsigned i) const { return this->data[i]; }
-    };
-
-    bool logEvent(void *pClientData, std::uint32_t arg1, std::uint32_t arg2, std::uint32_t arg3, LogCallback_t *pFn); 
-
-    void printRps(rps_t rps) const;
-    void printCh(std::uint8_t channel) const;
-    const char *getSfName(rps_t rps) const;
-    const char *getBwName(rps_t rps) const;
-    const char *getCrName(rps_t rps) const;
-    const char *getCrcName(rps_t rps) const;
-    void printHex2(unsigned v) const;
-    void printHex4(unsigned v) const;
-    void printSpace(void) const;
-    void printFreq(u4_t freq) const;
-
-private:
-    unsigned m_head, m_tail;
-    EventNode_t m_queue[8];
-    bool processSingleEvent();
-};
 
 /****************************************************************************\
 |
@@ -142,7 +97,7 @@ cMyLoRaWAN myLoRaWAN {};
 cSensor mySensor {};
 
 // the global event log instance
-cEventLog myEventLog;
+Arduino_LoRaWAN::cEventLog myEventLog;
 
 /****************************************************************************\
 |
@@ -308,130 +263,6 @@ cMyLoRaWAN::NetGetSessionState(SessionState &State) {
     return false;
 }
 
-/****************************************************************************\
-|
-|	Log methods
-|
-\****************************************************************************/
-
-void cEventLog::setup() {
-    // no setup needed.
-}
-
-void cEventLog::loop() {
-    if ((LMIC.opmode & OP_TXRXPEND) != 0)
-        return;
-
-    if (os_queryTimeCriticalJobs(ms2osticks(1000)))
-        return;
-
-    this->processSingleEvent();
-}
-
-bool cEventLog::logEvent(
-    void *pClientData,
-    std::uint32_t arg1,
-    std::uint32_t arg2,
-    std::uint32_t arg3,
-    LogCallback_t *pFn
-) {
-    auto i = this->m_tail + 1;
-    if (i == sizeof(this->m_queue) / sizeof(this->m_queue[0])) {
-        i = 0;
-    }
-    if (i == this->m_head) {
-        // indicate failure. Callback won't be called!
-        return false;
-    }
-    auto const pEvent = &this->m_queue[this->m_tail];
-
-    // save log data
-    pEvent->time = os_getTime();
-    pEvent->pCallBack = pFn;
-    pEvent->pClientData = pClientData;
-    pEvent->data[0] = arg1;
-    pEvent->data[1] = arg2;
-    pEvent->data[2] = arg3;
-
-    // advance pointer
-    this->m_tail = i;
-
-    // indicate success (if anyone cares)
-    return true;
-}
-
-bool cEventLog::processSingleEvent() {
-    if (this->m_head == this->m_tail) {
-        return false;
-    }
-    auto const pEvent = &this->m_queue[this->m_head];
-
-    Serial.print(osticks2ms(pEvent->time));
-    Serial.print(" ms:");
-    pEvent->pCallBack(pEvent);
-    Serial.println();
-
-    if (++m_head == sizeof(m_queue) / sizeof(m_queue[0])) {
-        m_head = 0;
-    }
-}
-
-void cEventLog::printCh(std::uint8_t channel) const {
-    Serial.print(F(" ch="));
-    Serial.print(std::uint32_t(channel));
-}
-
-const char *cEventLog::getSfName(rps_t rps) const {
-    const char * const t[] = { "FSK", "SF7", "SF8", "SF9", "SF10", "SF11", "SF12", "SFrfu" };
-    return t[getSf(rps)];
-}
-
-const char *cEventLog::getBwName(rps_t rps) const {
-    const char * const t[] = { "BW125", "BW250", "BW500", "BWrfu" };
-    return t[getBw(rps)];
-}
-
-const char *cEventLog::getCrName(rps_t rps) const {
-    const char * const t[] = { "CR 4/5", "CR 4/6", "CR 4/7", "CR 4/8" };
-    return t[getCr(rps)];
-}
-
-const char *cEventLog::getCrcName(rps_t rps) const {
-    return getNocrc(rps) ? "NoCrc" : "Crc";
-}
-
-void cEventLog::printHex2(unsigned v) const {
-    v &= 0xff;
-    if (v < 16)
-        Serial.print('0');
-    Serial.print(v, HEX);
-}
-
-void cEventLog::printHex4(unsigned v) const {
-    printHex2(v >> 8u);
-    printHex2(v);
-}
-
-void cEventLog::printSpace(void) const {
-    Serial.print(' ');
-}
-
-void cEventLog::printFreq(u4_t freq) const {
-    Serial.print(F(": freq="));
-    Serial.print(freq / 1000000);
-    Serial.print('.');
-    Serial.print((freq % 1000000) / 100000);
-}
-
-void cEventLog::printRps(rps_t rps) const {
-    Serial.print(F(" rps=0x")); printHex2(rps);
-    Serial.print(F(" (")); Serial.print(getSfName(rps));
-    printSpace(); Serial.print(getBwName(rps));
-    printSpace(); Serial.print(getCrName(rps));
-    printSpace(); Serial.print(getCrcName(rps));
-    Serial.print(F(" IH=")); Serial.print(unsigned(getIh(rps)));
-    Serial.print(')');
-}
 
 /****************************************************************************\
 |
