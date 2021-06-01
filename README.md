@@ -6,6 +6,14 @@
 
 **Contents:**
 
+<!--
+  This TOC uses the VS Code markdown TOC extension AlanWalk.markdown-toc.
+  We strongly recommend updating using VS Code, the markdown-toc extension and the
+  bierner.markdown-preview-github-styles extension. Note that if you are using
+  VS Code 1.29 and Markdown TOC 1.5.6, https://github.com/AlanWalk/markdown-toc/issues/65
+  applies -- you must change your line-ending to some non-auto value in Settings>
+  Text Editor>Files.  `\n` works for me.
+-->
 <!-- markdownlint-capture -->
 <!-- markdownlint-disable -->
 <!-- TOC depthFrom:2 updateOnSave:true -->
@@ -13,28 +21,29 @@
 - [Overview](#overview)
 - [Required libraries](#required-libraries)
 - [Compile-time Configuration](#compile-time-configuration)
-        - [Region Selection](#region-selection)
-        - [Network selection](#network-selection)
-        - [Join Subband Selection](#join-subband-selection)
+	- [Region Selection](#region-selection)
+	- [Network selection](#network-selection)
+	- [Join Subband Selection](#join-subband-selection)
 - [Writing Code With This Library](#writing-code-with-this-library)
-        - [Using the LMIC's pre-configured pin-maps](#using-the-lmics-pre-configured-pin-maps)
-        - [Supplying a pin-map](#supplying-a-pin-map)
-        - [Details on use](#details-on-use)
+	- [Using the LMIC's pre-configured pin-maps](#using-the-lmics-pre-configured-pin-maps)
+	- [Supplying a pin-map](#supplying-a-pin-map)
+	- [Details on use](#details-on-use)
 - [APIs](#apis)
-        - [Starting operation](#starting-operation)
-        - [Poll and update the LMIC](#poll-and-update-the-lmic)
-        - [Reset the LMIC](#reset-the-lmic)
-        - [Shut down the LMIC](#shut-down-the-lmic)
-        - [Register an event listener](#register-an-event-listener)
-        - [Send an event to all listeners](#send-an-event-to-all-listeners)
-        - [Manipulate the Debug Mask](#manipulate-the-debug-mask)
-        - [Output a formatted log message](#output-a-formatted-log-message)
-        - [Get the configured LoRaWAN region, country code, and network name](#get-the-configured-lorawan-region-country-code-and-network-name)
-        - [Set link-check mode](#set-link-check-mode)
-        - [Send a buffer](#send-a-buffer)
-        - [Register a Receive-Buffer Callback](#register-a-receive-buffer-callback)
-        - [Get DevEUI, AppEUI, AppKey](#get-deveui-appeui-appkey)
-        - [Test provisioning state](#test-provisioning-state)
+	- [Starting operation](#starting-operation)
+	- [Poll and update the LMIC](#poll-and-update-the-lmic)
+	- [Reset the LMIC](#reset-the-lmic)
+	- [Shut down the LMIC](#shut-down-the-lmic)
+	- [Register an event listener](#register-an-event-listener)
+	- [Send an event to all listeners](#send-an-event-to-all-listeners)
+	- [Manipulate the Debug Mask](#manipulate-the-debug-mask)
+	- [Output a formatted log message](#output-a-formatted-log-message)
+	- [Get the configured LoRaWAN region, country code, and network name](#get-the-configured-lorawan-region-country-code-and-network-name)
+	- [Set link-check mode](#set-link-check-mode)
+	- [Send a buffer](#send-a-buffer)
+	- [Register a Receive-Buffer Callback](#register-a-receive-buffer-callback)
+	- [Get DevEUI, AppEUI, AppKey](#get-deveui-appeui-appkey)
+	- [Test provisioning state](#test-provisioning-state)
+- [Examples](#examples)
 - [Release History](#release-history)
 - [Notes](#notes)
 
@@ -46,7 +55,7 @@
 
 The **`arduino-lorawan`** library provides a structured way of using the [`arduino-lmic` library][0] to send sensor data over The Things Network or a similar LoRaWAN-based data network.
 
-This version targets v2.3.0 or later of the `arduino-lmic` library.
+This version targets v3.3.0 or later of the `arduino-lmic` library.
 
 It targets devices that are reasonably capable, consisting of:
 
@@ -57,7 +66,7 @@ It targets devices that are reasonably capable, consisting of:
 The reference target for SAMD21G deployments is [Adafruit Feather M0 LoRa][1].
 In addition to the basic Feather M0 LoRa, other products are supported. The [MCCI][3] [Catena 4450][4], [Catena 4460][5], and [Catena 4470][6] products are upward compatible with the Feather M0 LoRa and therefore also can be used with this library.
 
-The reference target for STM32L0 deployments is the Murata CMWX1ZZABZ-078, as deployed in the MCCI [Catena 4610][7], [Catena 4612][9], [Catena 4801][12], [Catena 4617][10], [Catena 4618][11], [Catena 4630][13] etc., with the MCCI Arduino [board support package][8]. Note that for proper TCXO control, you must use v2.3.0 or later of the `arduino-lmic` library.
+The reference target for STM32L0 deployments is the Murata CMWX1ZZABZ-078, as deployed in the MCCI [Catena 4610][7], [Catena 4612][9], [Catena 4801][12], [Catena 4617][10], [Catena 4618][11], [Catena 4630][13] etc., with the MCCI Arduino [board support package][8].
 
 [0]: https://github.com/mcci-catena/arduino-lmic
 [1]: https://www.adafruit.com/products/3178
@@ -121,6 +130,8 @@ Three regional plans (US915, AU915 and CN470) have fixed channel frequencies, an
 The symbol `ARDUINO_LMIC_CFG_SUBBAND`, if defined, configures the subband to be used. If set to -1, no subband choice is made; all channels are used for joining. Otherwise, the value is multiplied by 8 and used as the base channel for joining. Channels `ARDUINO_LMIC_CFG_SUBBAND` through `ARDUINO_LMIC_CFG_SUBBAND + 7` are used for the join process.  In the US915 and AU915 regions `ARDUINO_LMIC_CFG_SUBBAND` can be any value between 0 and 7, inclusive.  In the CN470 region, `ARDUINO_LMIC_CFG_SUBBAND` can be any value between 0 and 11, inclusive.
 
 Some networks (The Things Network, Helium) pre-define the subband to be used; in that case, `ARDUINO_LMIC_CFG_SUBBAND` is not used.
+
+In most cases, `ARDUINO_LMIC_CFG_SUBBAND` can be set to -1. The network either sends the desired channel mask as part of the JoinAccept message, or (in the case of TTN V2) sends channel-mapping information in response to the first successful uplink. However, if you're impatient, setting the subband to match your network will speed up joins appreciably, and (on TTN V2) will make your device start sending good data more quickly. Setting `ARDUINO_LMIC_CFG_SUBBAND` to a non-negative value that doesn't match your network will effectively prevent communiation.
 
 ## Writing Code With This Library
 
@@ -400,7 +411,30 @@ bool Arduino_LoRaWAN::IsProvisioned(void);
 
 Return `true` if the LoRaWAN stack seems to be properly provisioned (provided with a valid Device EUI, Application EUI and Application Key for OTAA; or provided with valid Device Address, Application Session Key and Network Session Key for ABP). Returns `false` otherwise.
 
+## Examples
+
+Although the examples directory has many sketches, most are for regression testing, and are not of much use in showing how library should be used.
+
+However, [examples/simple_sensor_bme280](examples/simple_sensor_bme280/simple_sensor_bme280.ino) is a complete working example of an OTAA device.
+
+- It assumes you have a Bosch BME280 sensor attached via I2C. It reads the sensor every six minutes, and transmits temperature, humidity and barometric pressure.
+- It includes a simple implementation of a non-intrusive logging system. This shows how best to get debug information out of the LMIC: save data and print later.
+- It shows how to write the hooks that can save state (but it doesn't try to save state).
+- The structure for sending uplink data is considerably simpler than either the examples in the LMIC or the examples in the MCCI Catena family.
+
+**Note**: the example uses the MCCI fork of the Adafruit BME280 library, found [here](https://github.com/mcci-catena/Adafruit_BME280_Library). This won't trouble you unless you actually try to use the code, rather than replacing the sensor logic with your own logic.
+
+Much more elaborate uses can be found in the MCCI [Catena-Arduino-Platform](https://github.com/mcci-catena/Catena-Arduino-Platform) library; but that library is so large that it's tough to figure out what's required for LoRaWAN, and what's used for supporting our boards.
+
 ## Release History
+
+- v0.9.0-12 is a pre-release that includes the following changes
+  - Complete save/restore of all LMIC state ([#25](https://github.com/mcci-catena/arduino-lorawan/issues/25)). This greatly improves save/restore usability with TTN V3.
+  - Semantic versions are now used; the fourth field of version is now the pre-release number, and compares appropriately ([#278](https://github.com/mcci-catena/arduino-lorawan/issues/278)).
+  - Support Helium worldwide ([#154](https://github.com/mcci-catena/arduino-lorawan/issues/154), [#153](https://github.com/mcci-catena/arduino-lorawan/issues/153)).
+  - Support the LMIC V3.99 channel shuffle-map as part of save/restore.
+  - Add a complete example sketch ([#143](https://github.com/mcci-catena/arduino-lorawan/issues/143)).
+  - Add a clean logging class ([#160](https://github.com/mcci-catena/arduino-lorawan/issues/160))
 
 - v0.8.0 has the following change.
 

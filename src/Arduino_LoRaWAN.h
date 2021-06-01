@@ -94,6 +94,11 @@ public:
         class cLMIC; /* forward reference, see Arduino_LoRaWAN_lmic.h */
 
         /*
+        || the event logger
+        */
+        class cEventLog; /* forward reference, see Arduino_LoRaWAN_EventLog.h */
+
+        /*
         || debug things
         */
         enum {
