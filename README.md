@@ -2,7 +2,7 @@
 
 **User-friendly library for using the Arduino LMIC library with The Things Network and LoRaWAN&reg; networks.**
 
-[![GitHub release](https://img.shields.io/github/release/mcci-catena/arduino-lorawan.svg)](https://github.com/mcci-catena/arduino-lorawan/releases/latest) [![GitHub commits](https://img.shields.io/github/commits-since/mcci-catena/arduino-lorawan/latest.svg)](https://github.com/mcci-catena/arduino-lorawan/compare/v0.8.0...master) [![Build Status](https://travis-ci.com/mcci-catena/arduino-lorawan.svg?branch=master)](https://travis-ci.com/mcci-catena/arduino-lorawan)
+[![GitHub release](https://img.shields.io/github/release/mcci-catena/arduino-lorawan.svg)](https://github.com/mcci-catena/arduino-lorawan/releases/latest) [![GitHub commits](https://img.shields.io/github/commits-since/mcci-catena/arduino-lorawan/latest.svg)](https://github.com/mcci-catena/arduino-lorawan/compare/v0.9.0...master) [![Build Status](https://travis-ci.com/mcci-catena/arduino-lorawan.svg?branch=master)](https://travis-ci.com/mcci-catena/arduino-lorawan)
 
 **Contents:**
 
@@ -92,14 +92,14 @@ The reference target for STM32L0 deployments is the Murata CMWX1ZZABZ-078, as de
 
 The resulting programming environment is just a little more complicated than basic Arduino, but we intend that it will be almost as easy to use for prototyping, and not too tedious to use when moving to small pilot runs.
 
-MCCI tends to use the this library wrapped by the [Catena Arduino Platform](https://github.com/mcci-catena/Catena-Arduino-Platform) library, but it can be used stand-alone as described below.
+MCCI tends to use the this library wrapped by the [Catena Arduino Platform](https://github.com/mcci-catena/Catena-Arduino-Platform) library, but this library can be used stand-alone, as described below, and as shown in [`examples/simple_sensor_bme280/simple_sensor_bme280.ino`](examples/simple_sensor_bme280/simple_sensor_bme280.ino).
 
 ## Required libraries
 
-| Library | Version | Comments |
-|---------|:-------:|----------|
-| [`arduino-lmic`](https://github.com/mcci-catena/arduino-lmic) | 2.3.2.60 | Earlier versions will fail to compile but should give compile-time asserts. |
-| [`Catena-mcciadk`](https://github.com/mcci-catena/Catena-mcciadk) | 0.1.1 | Needed for miscellaneous definitions |
+| Library | Required Version | Recommended Version | Comments |
+|---------|:----------------:|:-------------------:|----------|
+| [`arduino-lmic`](https://github.com/mcci-catena/arduino-lmic) | 3.99.0-2 | 4.0.0 | Earlier versions will fail to compile but should give compile-time asserts. |
+| [`Catena-mcciadk`](https://github.com/mcci-catena/Catena-mcciadk) | 0.1.1 | 0.2.2 | Needed for miscellaneous definitions |
 
 ## Compile-time Configuration
 
@@ -428,8 +428,9 @@ Much more elaborate uses can be found in the MCCI [Catena-Arduino-Platform](http
 
 ## Release History
 
-- v0.9.0-12 is a pre-release that includes the following changes
-  - Complete save/restore of all LMIC state ([#25](https://github.com/mcci-catena/arduino-lorawan/issues/25)). This greatly improves save/restore usability with TTN V3.
+- v0.9.0 includes the following changes.
+
+  - Complete save/restore of all LMIC state ([#25](https://github.com/mcci-catena/arduino-lorawan/issues/25)). This greatly improves save/restore usability with TTN V3. Requires LMIC version v3.99.0-2 or later.
   - Semantic versions are now used; the fourth field of version is now the pre-release number, and compares appropriately ([#278](https://github.com/mcci-catena/arduino-lorawan/issues/278)).
   - Support Helium worldwide ([#154](https://github.com/mcci-catena/arduino-lorawan/issues/154), [#153](https://github.com/mcci-catena/arduino-lorawan/issues/153)).
   - Support the LMIC V3.99 channel shuffle-map as part of save/restore.

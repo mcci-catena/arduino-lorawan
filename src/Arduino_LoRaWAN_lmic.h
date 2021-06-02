@@ -24,7 +24,9 @@ Author:
 
 #include <lmic.h>
 
-#if ! (defined(ARDUINO_LMIC_VERSION) && ARDUINO_LMIC_VERSION >= ARDUINO_LMIC_VERSION_CALC(2,3,2,60))
+#if ! (defined(ARDUINO_LMIC_VERSION) && defined(ARDUINO_LMIC_VERSION_COMPARE_GE))
+# error lmic library is out of date. Check ARDUINO_LMIC_VERSION.
+#elif ARDUINO_LMIC_VERSION_COMPARE_LT(ARDUINO_LMIC_VERSION, ARDUINO_LMIC_VERSION_CALC(3,99,0,2))
 # error lmic library is out of date. Check ARDUINO_LMIC_VERSION.
 #endif
 
