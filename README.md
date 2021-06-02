@@ -92,7 +92,7 @@ The reference target for STM32L0 deployments is the Murata CMWX1ZZABZ-078, as de
 
 The resulting programming environment is just a little more complicated than basic Arduino, but we intend that it will be almost as easy to use for prototyping, and not too tedious to use when moving to small pilot runs.
 
-MCCI tends to use the this library wrapped by the [Catena Arduino Platform](https://github.com/mcci-catena/Catena-Arduino-Platform) library, but it can be used stand-alone as described below.
+MCCI tends to use the this library wrapped by the [Catena Arduino Platform](https://github.com/mcci-catena/Catena-Arduino-Platform) library, but this library can be used stand-alone, as described below, and as shown in [`examples/simple_sensor_bme280/simple_sensor_bme280.ino`](examples/simple_sensor_bme280/simple_sensor_bme280.ino).
 
 ## Required libraries
 
