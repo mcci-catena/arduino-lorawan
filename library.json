@@ -1,6 +1,6 @@
 {
   "name": "MCCI Arduino LoRaWAN Library",
-  "keywords": "ttn, lora, the things network",
+  "keywords": "ttn, lora, the things network, lorawan, helium, chirpstack",
   "description": "High-level library for LoRaWAN-based Arduino end-devices",
   "repository":
   {
