@@ -96,10 +96,10 @@ MCCI tends to use the this library wrapped by the [Catena Arduino Platform](http
 
 ## Required libraries
 
-| Library | Version | Comments |
-|---------|:-------:|----------|
-| [`arduino-lmic`](https://github.com/mcci-catena/arduino-lmic) | 2.3.2.60 | Earlier versions will fail to compile but should give compile-time asserts. |
-| [`Catena-mcciadk`](https://github.com/mcci-catena/Catena-mcciadk) | 0.1.1 | Needed for miscellaneous definitions |
+| Library | Required Version | Recommended Version | Comments |
+|---------|:----------------:|:-------------------:|----------|
+| [`arduino-lmic`](https://github.com/mcci-catena/arduino-lmic) | 3.99.0-2 | 4.0.0 | Earlier versions will fail to compile but should give compile-time asserts. |
+| [`Catena-mcciadk`](https://github.com/mcci-catena/Catena-mcciadk) | 0.1.1 | 0.2.2 | Needed for miscellaneous definitions |
 
 ## Compile-time Configuration
 
