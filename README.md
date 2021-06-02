@@ -55,7 +55,7 @@
 
 The **`arduino-lorawan`** library provides a structured way of using the [`arduino-lmic` library][0] to send sensor data over The Things Network or a similar LoRaWAN-based data network.
 
-This version targets v3.3.0 or later of the `arduino-lmic` library.
+This version targets v4.0.0 or later of the `arduino-lmic` library.
 
 It targets devices that are reasonably capable, consisting of:
 
