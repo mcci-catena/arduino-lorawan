@@ -2,7 +2,7 @@
 
 **User-friendly library for using the Arduino LMIC library with The Things Network and LoRaWAN&reg; networks.**
 
-[![GitHub release](https://img.shields.io/github/release/mcci-catena/arduino-lorawan.svg)](https://github.com/mcci-catena/arduino-lorawan/releases/latest) [![GitHub commits](https://img.shields.io/github/commits-since/mcci-catena/arduino-lorawan/latest.svg)](https://github.com/mcci-catena/arduino-lorawan/compare/v0.8.0...master) [![Build Status](https://travis-ci.com/mcci-catena/arduino-lorawan.svg?branch=master)](https://travis-ci.com/mcci-catena/arduino-lorawan)
+[![GitHub release](https://img.shields.io/github/release/mcci-catena/arduino-lorawan.svg)](https://github.com/mcci-catena/arduino-lorawan/releases/latest) [![GitHub commits](https://img.shields.io/github/commits-since/mcci-catena/arduino-lorawan/latest.svg)](https://github.com/mcci-catena/arduino-lorawan/compare/v0.9.0...master) [![Build Status](https://travis-ci.com/mcci-catena/arduino-lorawan.svg?branch=master)](https://travis-ci.com/mcci-catena/arduino-lorawan)
 
 **Contents:**
 
@@ -428,8 +428,9 @@ Much more elaborate uses can be found in the MCCI [Catena-Arduino-Platform](http
 
 ## Release History
 
-- v0.9.0-12 is a pre-release that includes the following changes
-  - Complete save/restore of all LMIC state ([#25](https://github.com/mcci-catena/arduino-lorawan/issues/25)). This greatly improves save/restore usability with TTN V3.
+- v0.9.0 includes the following changes.
+
+  - Complete save/restore of all LMIC state ([#25](https://github.com/mcci-catena/arduino-lorawan/issues/25)). This greatly improves save/restore usability with TTN V3. Requires LMIC version v3.99.0-2 or later.
   - Semantic versions are now used; the fourth field of version is now the pre-release number, and compares appropriately ([#278](https://github.com/mcci-catena/arduino-lorawan/issues/278)).
   - Support Helium worldwide ([#154](https://github.com/mcci-catena/arduino-lorawan/issues/154), [#153](https://github.com/mcci-catena/arduino-lorawan/issues/153)).
   - Support the LMIC V3.99 channel shuffle-map as part of save/restore.
