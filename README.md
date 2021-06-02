@@ -431,7 +431,7 @@ Much more elaborate uses can be found in the MCCI [Catena-Arduino-Platform](http
 - v0.9.0 includes the following changes.
 
   - Complete save/restore of all LMIC state ([#25](https://github.com/mcci-catena/arduino-lorawan/issues/25)). This greatly improves save/restore usability with TTN V3. Requires LMIC version v3.99.0-2 or later.
-  - Semantic versions are now used; the fourth field of version is now the pre-release number, and compares appropriately ([#278](https://github.com/mcci-catena/arduino-lorawan/issues/278)).
+  - Semantic versions are now used; the fourth field of version is now the pre-release number, and compares appropriately ([#149](https://github.com/mcci-catena/arduino-lorawan/issues/149)).
   - Support Helium worldwide ([#154](https://github.com/mcci-catena/arduino-lorawan/issues/154), [#153](https://github.com/mcci-catena/arduino-lorawan/issues/153)).
   - Support the LMIC V3.99 channel shuffle-map as part of save/restore.
   - Add a complete example sketch ([#143](https://github.com/mcci-catena/arduino-lorawan/issues/143)).
