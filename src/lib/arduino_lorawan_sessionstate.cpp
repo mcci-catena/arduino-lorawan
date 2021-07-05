@@ -286,6 +286,9 @@ bool Arduino_LoRaWAN::SessionState::isValid() const
     case Arduino_LoRaWAN::SessionChannelMask_Header::eMaskKind::kUSlike:
         return this->V1.Channels.Header.Size == sizeof(this->V1.Channels.USlike);
 
+    case Arduino_LoRaWAN::SessionChannelMask_Header::eMaskKind::kCNlike:
+        return this->V1.Channels.Header.Size == sizeof(this->V1.Channels.CNlike);
+
     default:
         return false;
         }
