@@ -194,10 +194,10 @@ public:
 
         struct SessionChannelMask_Header
                 {
-                enum eMaskKind : uint8_t { kEUlike = 0, kUSlike = 1 };
+                enum eMaskKind : uint8_t { kEUlike = 0, kUSlike = 1, kCNlike = 2 };
 
                 uint8_t         Tag;    ///< discriminator, eMaskKind.
-                uint8_t         Size;   ///< size of SessionChannelMask, in bytes
+                uint8_t         Size;   ///< size of actual SessionChannelMask, in bytes
                 };
 
         template <uint32_t a_nCh>
@@ -541,7 +541,9 @@ public:
                 {
                 SessionStateHeader      Header;
                 SessionStateV1          V1;
+                bool isValid() const;
                 } SessionState;
+
         /*
         || the constructor.
         */
@@ -676,6 +678,8 @@ public:
         bool GetAppKey(
             uint8_t *pBuf
             );
+
+        bool IsValidState(const SessionState &state) const;
 
         // return true iff network seems to be provisioned.  Make
         // it virtual so it can be overridden if needed.
