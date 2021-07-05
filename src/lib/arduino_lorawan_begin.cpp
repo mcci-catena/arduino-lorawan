@@ -49,7 +49,8 @@ bool Arduino_LoRaWAN::begin(
     LMIC_reset();
 
     // if we can get saved state, go on.
-    if (! this->RestoreSessionState())
+    auto const fHaveSavedState = this->RestoreSessionState();
+    if (! fHaveSavedState)
         {
         // Otherwise set data rate and transmit power, based on regional considerations.
         this->NetBeginRegionInit();
@@ -69,7 +70,8 @@ bool Arduino_LoRaWAN::begin(
     //
     AbpProvisioningInfo abpInfo;
 
-    if (this->GetAbpProvisioningInfo(&abpInfo))
+    if ((fHaveSavedState || this->GetProvisioningStyle() == ProvisioningStyle::kABP) &&
+         this->GetAbpProvisioningInfo(&abpInfo))
         {
         LMIC_setSession(
                 abpInfo.NetID,
