@@ -224,6 +224,18 @@ void Arduino_LoRaWAN::StandardEventProcessor(
         case EV_BEACON_TRACKED:
             break;
         case EV_JOINING:
+            {
+            // Set data rate and transmit power, based on regional considerations.
+            // Allows regions to change the channel mask (which otherwise will
+            // be reset to the region default -- possibly not what you want).
+            this->NetBeginRegionInit();
+
+            // Update the session info
+            this->SaveSessionInfo();
+
+            // save everything else of interest.
+            this->SaveSessionState();
+            }
             break;
 
         case EV_JOINED:
