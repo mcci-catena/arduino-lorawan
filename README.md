@@ -2,7 +2,7 @@
 
 **User-friendly library for using the Arduino LMIC library with The Things Network and LoRaWAN&reg; networks.**
 
-[![GitHub release](https://img.shields.io/github/release/mcci-catena/arduino-lorawan.svg)](https://github.com/mcci-catena/arduino-lorawan/releases/latest) [![GitHub commits](https://img.shields.io/github/commits-since/mcci-catena/arduino-lorawan/latest.svg)](https://github.com/mcci-catena/arduino-lorawan/compare/v0.9.0...master) [![Build Status](https://travis-ci.com/mcci-catena/arduino-lorawan.svg?branch=master)](https://travis-ci.com/mcci-catena/arduino-lorawan)
+[![GitHub release](https://img.shields.io/github/release/mcci-catena/arduino-lorawan.svg)](https://github.com/mcci-catena/arduino-lorawan/releases/latest) [![GitHub commits](https://img.shields.io/github/commits-since/mcci-catena/arduino-lorawan/latest.svg)](https://github.com/mcci-catena/arduino-lorawan/compare/v0.9.1...master) [![Build Status](https://travis-ci.com/mcci-catena/arduino-lorawan.svg?branch=master)](https://travis-ci.com/mcci-catena/arduino-lorawan)
 
 **Contents:**
 
@@ -427,6 +427,15 @@ However, [examples/simple_sensor_bme280](examples/simple_sensor_bme280/simple_se
 Much more elaborate uses can be found in the MCCI [Catena-Arduino-Platform](https://github.com/mcci-catena/Catena-Arduino-Platform) library; but that library is so large that it's tough to figure out what's required for LoRaWAN, and what's used for supporting our boards.
 
 ## Release History
+
+- v0.9.1 includes the following changes.
+
+  - Check size and tag of SessionChannelMask when restoring a session ([#169](https://github.com/mcci-catena/arduino-lorawan/issues/169)).
+  - Set size and tag of SessionChannelMask when saving ([#170](https://github.com/mcci-catena/arduino-lorawan/issues/170)).
+  - Don't use the results of ABP provisioning info for OTAA initialization unless saved SessionState is valid ([#171](https://github.com/mcci-catena/arduino-lorawan/issues/171)).
+  - Add a method to `Arduino_LoRaWAN` to match session state against the configuration for the LMIC. ([#172](https://github.com/mcci-catena/arduino-lorawan/issues/172)).
+  - Define a `SessionChannelMask` tag for CN470-like configurations, and allow for such configurations when reading the state ([#173](https://github.com/mcci-catena/arduino-lorawan/issues/173)).
+  - Update the standard event processor: on `EV_JOINING`, call client methods to re-initialize both the active state and the saved state according to regional defaults ([#176](https://github.com/mcci-catena/arduino-lorawan/issues/176)).
 
 - v0.9.0 includes the following changes.
 
