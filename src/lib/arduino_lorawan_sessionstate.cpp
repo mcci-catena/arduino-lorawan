@@ -99,7 +99,7 @@ Arduino_LoRaWAN::BuildSessionState(
     // handle EU like regions
 #if CFG_LMIC_EU_like
     State.V1.Channels.Header.Tag = State.V1.Channels.Header.kEUlike;
-    State.V1.Channels.Header.Tag = sizeof(State.V1.Channels.EUlike);
+    State.V1.Channels.Header.Size = sizeof(State.V1.Channels.EUlike);
     State.V1.Channels.EUlike.clearAll();
     constexpr unsigned maxCh = MAX_CHANNELS < State.V1.Channels.EUlike.nCh ? MAX_CHANNELS : State.V1.Channels.EUlike.nCh;
     State.V1.Channels.EUlike.ChannelMap = LMIC.channelMap;
@@ -135,8 +135,8 @@ Arduino_LoRaWAN::BuildSessionState(
         }
 
 #elif CFG_LMIC_US_like
-    State.V1.Channels.Header.Tag = State.V1.Channels.Header.kEUlike;
-    State.V1.Channels.Header.Tag = sizeof(State.V1.Channels.USlike);
+    State.V1.Channels.Header.Tag = State.V1.Channels.Header.kUSlike;
+    State.V1.Channels.Header.Size = sizeof(State.V1.Channels.USlike);
 
 #if ARDUINO_LMIC_VERSION_COMPARE_GE(ARDUINO_LMIC_VERSION, ARDUINO_LMIC_VERSION_CALC(3,99,0,1))
     static_assert(
@@ -257,6 +257,43 @@ Notes:
 
 */
 
+bool Arduino_LoRaWAN::IsValidState(const Arduino_LoRaWAN::SessionState &state) const
+    {
+    // do not apply the session state unless it roughly matches our configuration.
+    if (! state.isValid())
+        return false;
+
+    // make sure region and country match. TODO: make sure network matches.
+    if (! (Arduino_LoRaWAN::Region(state.V1.Region) == this->GetRegion() &&
+           state.V1.Country == uint16_t(this->GetCountryCode())))
+        return false;
+
+    // it matches!
+    return true;
+    }
+
+bool Arduino_LoRaWAN::SessionState::isValid() const
+    {
+    if (! (this->Header.Tag == kSessionStateTag_V1 &&
+           this->Header.Size == sizeof(*this)))
+          return false;
+
+    switch (this->V1.Channels.Header.Tag)
+        {
+    case Arduino_LoRaWAN::SessionChannelMask_Header::eMaskKind::kEUlike:
+        return this->V1.Channels.Header.Size == sizeof(this->V1.Channels.EUlike);
+
+    case Arduino_LoRaWAN::SessionChannelMask_Header::eMaskKind::kUSlike:
+        return this->V1.Channels.Header.Size == sizeof(this->V1.Channels.USlike);
+
+    case Arduino_LoRaWAN::SessionChannelMask_Header::eMaskKind::kCNlike:
+        return this->V1.Channels.Header.Size == sizeof(this->V1.Channels.CNlike);
+
+    default:
+        return false;
+        }
+    }
+
 #define FUNCTION "Arduino_LoRaWAN::ApplySessionState"
 
 bool
@@ -265,124 +302,115 @@ Arduino_LoRaWAN::ApplySessionState(
     )
     {
     // do not apply the session state unless it roughly matches our configuration.
-    if (State.Header.Tag == kSessionStateTag_V1 &&
-        Arduino_LoRaWAN::Region(State.V1.Region) == this->GetRegion() &&
-        State.V1.Country == uint16_t(this->GetCountryCode())
-        )
-        {
-        auto const tNow = os_getTime();
+    if (! this->IsValidState(State))
+        return false;
 
-        // record that we've done it.
-        this->m_savedSessionState = State;
+    auto const tNow = os_getTime();
 
-        // set FcntUp, FcntDown, and session state
-        LMIC.datarate   = State.V1.LinkDR;
+    // record that we've done it.
+    this->m_savedSessionState = State;
 
-        // set the uplink and downlink count
-        LMIC.seqnoDn    = State.V1.FCntDown;
-        LMIC.seqnoUp    = State.V1.FCntUp;
+    // set FcntUp, FcntDown, and session state
+    LMIC.datarate   = State.V1.LinkDR;
 
-        //
-        // TODO(tmm@mcci.com): State.V1.gpsTime can be used to tweak the saved cycle
-        // time and also as a fallback if the system clock is not robust. but right
-        // now we ignore it.
-        //
+    // set the uplink and downlink count
+    LMIC.seqnoDn    = State.V1.FCntDown;
+    LMIC.seqnoUp    = State.V1.FCntUp;
 
-        // conservatively set the global avail time.
-        LMIC.globalDutyAvail = tNow + State.V1.globalAvail;
+    //
+    // TODO(tmm@mcci.com): State.V1.gpsTime can be used to tweak the saved cycle
+    // time and also as a fallback if the system clock is not robust. but right
+    // now we ignore it.
+    //
 
-        // set the Rx2 frequency
-        LMIC.dn2Freq    = State.V1.Rx2Frequency;
+    // conservatively set the global avail time.
+    LMIC.globalDutyAvail = tNow + State.V1.globalAvail;
+
+    // set the Rx2 frequency
+    LMIC.dn2Freq    = State.V1.Rx2Frequency;
 
 #if !defined(DISABLE_PING)
-        // set the ping frequency
-        LMIC.ping.freq  = State.V1.PingFrequency;
+    // set the ping frequency
+    LMIC.ping.freq  = State.V1.PingFrequency;
 #endif
 
-        LMIC.adrAckReq = State.V1.LinkIntegrity;
-        LMIC.adrTxPow = State.V1.TxPower;
-        LMIC.upRepeat = State.V1.Redundancy;
-        LMIC.globalDutyRate = State.V1.DutyCycle;
-        LMIC.rx1DrOffset = State.V1.Rx1DRoffset;
-        LMIC.dn2Dr = State.V1.Rx2DataRate;
-        LMIC.rxDelay = State.V1.RxDelay;
+    LMIC.adrAckReq = State.V1.LinkIntegrity;
+    LMIC.adrTxPow = State.V1.TxPower;
+    LMIC.upRepeat = State.V1.Redundancy;
+    LMIC.globalDutyRate = State.V1.DutyCycle;
+    LMIC.rx1DrOffset = State.V1.Rx1DRoffset;
+    LMIC.dn2Dr = State.V1.Rx2DataRate;
+    LMIC.rxDelay = State.V1.RxDelay;
 
 #if LMIC_ENABLE_TxParamSetupReq
-        LMIC.txParam = State.V1.TxParam;
+    LMIC.txParam = State.V1.TxParam;
 #endif
 #if !defined(DISABLE_BEACONS)
-        LMIC.bcnChnl = State.V1.BeaconChannel;
+    LMIC.bcnChnl = State.V1.BeaconChannel;
 #endif
 #if !defined(DISABLE_PING)
-        LMIC.ping.dr = State.V1.PingDr;
+    LMIC.ping.dr = State.V1.PingDr;
 #endif
-        LMIC.dn2Ans = State.V1.MacRxParamAns;
-        LMIC.macDlChannelAns = State.V1.MacDlChannelAns;
-        LMIC.macRxTimingSetupAns = State.V1.MacRxTimingSetupAns;
+    LMIC.dn2Ans = State.V1.MacRxParamAns;
+    LMIC.macDlChannelAns = State.V1.MacDlChannelAns;
+    LMIC.macRxTimingSetupAns = State.V1.MacRxTimingSetupAns;
 
 #if CFG_LMIC_EU_like
-        // don't turn off bits: user can't fool us here.
-        // we can get the immutable channels from the
-        // channelMap value after reset.
-        auto const resetMap = LMIC.channelMap;
-        auto const & euLike = State.V1.Channels.EUlike;
-        LMIC.channelMap |= euLike.ChannelMap;
+    // don't turn off bits: user can't fool us here.
+    // we can get the immutable channels from the
+    // channelMap value after reset.
+    auto const resetMap = LMIC.channelMap;
+    auto const & euLike = State.V1.Channels.EUlike;
+    LMIC.channelMap |= euLike.ChannelMap;
 #if ARDUINO_LMIC_VERSION_COMPARE_GE(ARDUINO_LMIC_VERSION, ARDUINO_LMIC_VERSION_CALC(3,99,0,1))
-        LMIC.channelShuffleMap = euLike.ChannelShuffleMap;
+    LMIC.channelShuffleMap = euLike.ChannelShuffleMap;
 #endif
-        for (unsigned ch = 0; ch < MAX_CHANNELS; ++ch)
+    for (unsigned ch = 0; ch < MAX_CHANNELS; ++ch)
+        {
+        if ((resetMap & (decltype(resetMap)(1) << ch)) == 0)
             {
-            if ((resetMap & (decltype(resetMap)(1) << ch)) == 0)
-                {
-                // copy data -- note that the saved band number is encoded
-                LMIC_setupChannel(
-                    ch,
-                    euLike.getFrequency(euLike.UplinkFreq, ch),
-                    euLike.ChannelDrMap[ch],
-                    euLike.getBand(ch)
-                    );
+            // copy data -- note that the saved band number is encoded
+            LMIC_setupChannel(
+                ch,
+                euLike.getFrequency(euLike.UplinkFreq, ch),
+                euLike.ChannelDrMap[ch],
+                euLike.getBand(ch)
+                );
 #if !defined(DISABLE_MCMD_DlChannelReq)
-                LMIC.channelDlFreq[ch] = euLike.getFrequency(euLike.DownlinkFreq, ch);
+            LMIC.channelDlFreq[ch] = euLike.getFrequency(euLike.DownlinkFreq, ch);
 #endif
-                }
             }
+        }
 
-        for (unsigned band = 0; band < MAX_BANDS; ++band)
-            {
-            LMIC.bands[band].txcap = euLike.Bands[band].txDutyDenom;
-            LMIC.bands[band].txpow = euLike.Bands[band].txPower;
-            LMIC.bands[band].lastchnl = euLike.Bands[band].lastChannel;
-            // Heuristic; we don't know how long has passed since we saved
-            // this, because we don't currently have GPS time available.
-            // Conservatively reserve time from now.
-            LMIC.bands[band].avail = tNow + euLike.Bands[band].ostimeAvail;
-            }
+    for (unsigned band = 0; band < MAX_BANDS; ++band)
+        {
+        LMIC.bands[band].txcap = euLike.Bands[band].txDutyDenom;
+        LMIC.bands[band].txpow = euLike.Bands[band].txPower;
+        LMIC.bands[band].lastchnl = euLike.Bands[band].lastChannel;
+        // Heuristic; we don't know how long has passed since we saved
+        // this, because we don't currently have GPS time available.
+        // Conservatively reserve time from now.
+        LMIC.bands[band].avail = tNow + euLike.Bands[band].ostimeAvail;
+        }
 
 #elif CFG_LMIC_US_like
 # if ARDUINO_LMIC_VERSION_COMPARE_GE(ARDUINO_LMIC_VERSION, ARDUINO_LMIC_VERSION_CALC(3,99,0,1))
-        static_assert(sizeof(LMIC.channelShuffleMap) == sizeof(State.V1.Channels.USlike.ChannelShuffleMap),
-            "shuffle map doesn't match");
-        // copy the shuffle map bits
-        memcpy(LMIC.channelShuffleMap, State.V1.Channels.USlike.ChannelShuffleMap, sizeof(LMIC.channelShuffleMap));
+    static_assert(sizeof(LMIC.channelShuffleMap) == sizeof(State.V1.Channels.USlike.ChannelShuffleMap),
+        "shuffle map doesn't match");
+    // copy the shuffle map bits
+    memcpy(LMIC.channelShuffleMap, State.V1.Channels.USlike.ChannelShuffleMap, sizeof(LMIC.channelShuffleMap));
 # endif
-        // copy the enabled states
-        for (unsigned ch = 0; ch < State.V1.Channels.USlike.nCh; ++ch)
-            {
-            const bool state = State.V1.Channels.USlike.isEnabled(ch);
-
-            if (state)
-                LMIC_enableChannel(ch);
-            else
-                LMIC_disableChannel(ch);
-            }
-#endif
-
-        return true;
-        }
-    else
+    // copy the enabled states
+    for (unsigned ch = 0; ch < State.V1.Channels.USlike.nCh; ++ch)
         {
-        return false;
+        const bool state = State.V1.Channels.USlike.isEnabled(ch);
+
+        if (state)
+            LMIC_enableChannel(ch);
+        else
+            LMIC_disableChannel(ch);
         }
+#endif
     }
 
 #undef FUNCTION
