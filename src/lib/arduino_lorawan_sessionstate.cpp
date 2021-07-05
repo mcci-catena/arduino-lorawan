@@ -99,7 +99,7 @@ Arduino_LoRaWAN::BuildSessionState(
     // handle EU like regions
 #if CFG_LMIC_EU_like
     State.V1.Channels.Header.Tag = State.V1.Channels.Header.kEUlike;
-    State.V1.Channels.Header.Tag = sizeof(State.V1.Channels.EUlike);
+    State.V1.Channels.Header.Size = sizeof(State.V1.Channels.EUlike);
     State.V1.Channels.EUlike.clearAll();
     constexpr unsigned maxCh = MAX_CHANNELS < State.V1.Channels.EUlike.nCh ? MAX_CHANNELS : State.V1.Channels.EUlike.nCh;
     State.V1.Channels.EUlike.ChannelMap = LMIC.channelMap;
@@ -135,8 +135,8 @@ Arduino_LoRaWAN::BuildSessionState(
         }
 
 #elif CFG_LMIC_US_like
-    State.V1.Channels.Header.Tag = State.V1.Channels.Header.kEUlike;
-    State.V1.Channels.Header.Tag = sizeof(State.V1.Channels.USlike);
+    State.V1.Channels.Header.Tag = State.V1.Channels.Header.kUSlike;
+    State.V1.Channels.Header.Size = sizeof(State.V1.Channels.USlike);
 
 #if ARDUINO_LMIC_VERSION_COMPARE_GE(ARDUINO_LMIC_VERSION, ARDUINO_LMIC_VERSION_CALC(3,99,0,1))
     static_assert(
