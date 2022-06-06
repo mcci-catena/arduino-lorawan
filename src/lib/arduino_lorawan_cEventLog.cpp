@@ -103,6 +103,8 @@ Arduino_LoRaWAN::cEventLog::processSingleEvent()
         {
         m_head = 0;
         }
+
+    return true;
     }
 
 void

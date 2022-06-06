@@ -21,28 +21,28 @@
 - [Overview](#overview)
 - [Required libraries](#required-libraries)
 - [Compile-time Configuration](#compile-time-configuration)
-	- [Region Selection](#region-selection)
-	- [Network selection](#network-selection)
-	- [Join Subband Selection](#join-subband-selection)
+        - [Region Selection](#region-selection)
+        - [Network selection](#network-selection)
+        - [Join Subband Selection](#join-subband-selection)
 - [Writing Code With This Library](#writing-code-with-this-library)
-	- [Using the LMIC's pre-configured pin-maps](#using-the-lmics-pre-configured-pin-maps)
-	- [Supplying a pin-map](#supplying-a-pin-map)
-	- [Details on use](#details-on-use)
+        - [Using the LMIC's pre-configured pin-maps](#using-the-lmics-pre-configured-pin-maps)
+        - [Supplying a pin-map](#supplying-a-pin-map)
+        - [Details on use](#details-on-use)
 - [APIs](#apis)
-	- [Starting operation](#starting-operation)
-	- [Poll and update the LMIC](#poll-and-update-the-lmic)
-	- [Reset the LMIC](#reset-the-lmic)
-	- [Shut down the LMIC](#shut-down-the-lmic)
-	- [Register an event listener](#register-an-event-listener)
-	- [Send an event to all listeners](#send-an-event-to-all-listeners)
-	- [Manipulate the Debug Mask](#manipulate-the-debug-mask)
-	- [Output a formatted log message](#output-a-formatted-log-message)
-	- [Get the configured LoRaWAN region, country code, and network name](#get-the-configured-lorawan-region-country-code-and-network-name)
-	- [Set link-check mode](#set-link-check-mode)
-	- [Send a buffer](#send-a-buffer)
-	- [Register a Receive-Buffer Callback](#register-a-receive-buffer-callback)
-	- [Get DevEUI, AppEUI, AppKey](#get-deveui-appeui-appkey)
-	- [Test provisioning state](#test-provisioning-state)
+        - [Starting operation](#starting-operation)
+        - [Poll and update the LMIC](#poll-and-update-the-lmic)
+        - [Reset the LMIC](#reset-the-lmic)
+        - [Shut down the LMIC](#shut-down-the-lmic)
+        - [Register an event listener](#register-an-event-listener)
+        - [Send an event to all listeners](#send-an-event-to-all-listeners)
+        - [Manipulate the Debug Mask](#manipulate-the-debug-mask)
+        - [Output a formatted log message](#output-a-formatted-log-message)
+        - [Get the configured LoRaWAN region, country code, and network name](#get-the-configured-lorawan-region-country-code-and-network-name)
+        - [Set link-check mode](#set-link-check-mode)
+        - [Send a buffer](#send-a-buffer)
+        - [Register a Receive-Buffer Callback](#register-a-receive-buffer-callback)
+        - [Get DevEUI, AppEUI, AppKey](#get-deveui-appeui-appkey)
+        - [Test provisioning state](#test-provisioning-state)
 - [Examples](#examples)
 - [Release History](#release-history)
 - [Notes](#notes)
@@ -424,9 +424,13 @@ However, [examples/simple_sensor_bme280](examples/simple_sensor_bme280/simple_se
 
 **Note**: the example uses the MCCI fork of the Adafruit BME280 library, found [here](https://github.com/mcci-catena/Adafruit_BME280_Library). This won't trouble you unless you actually try to use the code, rather than replacing the sensor logic with your own logic.
 
-Much more elaborate uses can be found in the MCCI [Catena-Arduino-Platform](https://github.com/mcci-catena/Catena-Arduino-Platform) library; but that library is so large that it's tough to figure out what's required for LoRaWAN, and what's used for supporting our boards.
+Much more elaborate uses can be found in the MCCI [Catena-Arduino-Platform](https://github.com/mcci-catena/Catena-Arduino-Platform) library; but that library is so large that it's tough to figure out what's required for LoRaWAN, and what's used for supporting MCCI boards.
 
 ## Release History
+
+- Head includes the following changes.
+
+  - Correct error in logging, missing `return true` in `Arduino_LoRaWAN::cEventLog::processSingleEvent()` ([#191](https://github.com/mcci-catena/arduino-lorawan/issues/169)). This is v0.9.2-pre1.
 
 - v0.9.1 includes the following changes.
 
