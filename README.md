@@ -430,7 +430,9 @@ Much more elaborate uses can be found in the MCCI [Catena-Arduino-Platform](http
 
 - Head includes the following changes.
 
-  - Correct error in logging, missing `return true` in `Arduino_LoRaWAN::cEventLog::processSingleEvent()` ([#191](https://github.com/mcci-catena/arduino-lorawan/issues/169)). This is v0.9.2-pre1.
+  - Apply pre-release version to `library.properties` and `library.json` ([#195](https://github.com/mcci-catena/arduino-lorawan/issues/195)). This is v0.9.2-pre2.
+  - Correct error, missing `return true` at end of `Arduino_LoRaWAN::ApplySessionState()`. ([#194])(https://github.com/mcci-catena/arduino-lorawan/issues/194)).
+  - Correct error in logging, missing `return true` in `Arduino_LoRaWAN::cEventLog::processSingleEvent()` ([#191](https://github.com/mcci-catena/arduino-lorawan/issues/191)). This is v0.9.2-pre1.
 
 - v0.9.1 includes the following changes.
 
