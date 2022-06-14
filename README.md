@@ -2,7 +2,7 @@
 
 **User-friendly library for using the Arduino LMIC library with The Things Network and LoRaWAN&reg; networks.**
 
-[![GitHub release](https://img.shields.io/github/release/mcci-catena/arduino-lorawan.svg)](https://github.com/mcci-catena/arduino-lorawan/releases/latest) [![GitHub commits](https://img.shields.io/github/commits-since/mcci-catena/arduino-lorawan/latest.svg)](https://github.com/mcci-catena/arduino-lorawan/compare/v0.9.1...master) [![Build Status](https://travis-ci.com/mcci-catena/arduino-lorawan.svg?branch=master)](https://travis-ci.com/mcci-catena/arduino-lorawan)
+[![GitHub release](https://img.shields.io/github/release/mcci-catena/arduino-lorawan.svg)](https://github.com/mcci-catena/arduino-lorawan/releases/latest) [![GitHub commits](https://img.shields.io/github/commits-since/mcci-catena/arduino-lorawan/latest.svg)](https://github.com/mcci-catena/arduino-lorawan/compare/v0.9.2...master) [![Build Status](https://travis-ci.com/mcci-catena/arduino-lorawan.svg?branch=master)](https://travis-ci.com/mcci-catena/arduino-lorawan)
 
 **Contents:**
 
@@ -131,7 +131,7 @@ The symbol `ARDUINO_LMIC_CFG_SUBBAND`, if defined, configures the subband to be 
 
 Some networks (The Things Network, Helium) pre-define the subband to be used; in that case, `ARDUINO_LMIC_CFG_SUBBAND` is not used.
 
-In most cases, `ARDUINO_LMIC_CFG_SUBBAND` can be set to -1. The network either sends the desired channel mask as part of the JoinAccept message, or (in the case of TTN V2) sends channel-mapping information in response to the first successful uplink. However, if you're impatient, setting the subband to match your network will speed up joins appreciably, and (on TTN V2) will make your device start sending good data more quickly. Setting `ARDUINO_LMIC_CFG_SUBBAND` to a non-negative value that doesn't match your network will effectively prevent communiation.
+In most cases, `ARDUINO_LMIC_CFG_SUBBAND` can be set to -1. The network either sends the desired channel mask as part of the JoinAccept message, or (in the case of TTN V2) sends channel-mapping information in response to the first successful uplink. However, if you're impatient, setting the subband to match your network will speed up joins appreciably, and (on TTN V2) will make your device start sending good data more quickly. Setting `ARDUINO_LMIC_CFG_SUBBAND` to a non-negative value that doesn't match your network will effectively prevent communication.
 
 ## Writing Code With This Library
 
@@ -428,11 +428,11 @@ Much more elaborate uses can be found in the MCCI [Catena-Arduino-Platform](http
 
 ## Release History
 
-- Head includes the following changes.
+- v0.9.2 includes the following changes.
 
-  - Fix `-Wunused-parameter` warnings from gcc. ([#196](https://github.com/mcci-catena/arduino-lorawan/issues/196)). This is v0.9.2-pre3.
+  - Fix `-Wunused-parameter` warnings from GCC. ([#196](https://github.com/mcci-catena/arduino-lorawan/issues/196)). This is v0.9.2-pre3.
   - Apply pre-release version to `library.properties` and `library.json` ([#195](https://github.com/mcci-catena/arduino-lorawan/issues/195)). This is v0.9.2-pre2.
-  - Correct error, missing `return true` at end of `Arduino_LoRaWAN::ApplySessionState()`. ([#194])(https://github.com/mcci-catena/arduino-lorawan/issues/194)).
+  - Correct error, missing `return true` at end of `Arduino_LoRaWAN::ApplySessionState()`. ([#194](https://github.com/mcci-catena/arduino-lorawan/issues/194)).
   - Correct error in logging, missing `return true` in `Arduino_LoRaWAN::cEventLog::processSingleEvent()` ([#191](https://github.com/mcci-catena/arduino-lorawan/issues/191)). This is v0.9.2-pre1.
 
 - v0.9.1 includes the following changes.
