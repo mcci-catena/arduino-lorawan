@@ -34,7 +34,7 @@ Author:
 ///     \ref ARDUINO_LORAWAN_VERSION_COMPARE_LT() to compare relative versions.
 ///
 #define ARDUINO_LORAWAN_VERSION \
-        ARDUINO_LORAWAN_VERSION_CALC(0, 9, 2, 1) /* v0.9.2-pre1 */
+        ARDUINO_LORAWAN_VERSION_CALC(0, 9, 2, 3) /* v0.9.2-pre3 */
 
 #define ARDUINO_LORAWAN_VERSION_GET_MAJOR(v)    \
         (((v) >> 24u) & 0xFFu)
@@ -844,6 +844,10 @@ protected:
                         size_t nExtraSessionInfo
                         )
                 {
+                MCCIADK_API_PARAMETER(SessionInfo);
+                MCCIADK_API_PARAMETER(pExtraSessionInfo);
+                MCCIADK_API_PARAMETER(nExtraSessionInfo);
+
                 // default: do nothing.
                 }
 
@@ -854,6 +858,8 @@ protected:
                 SessionState &State
                 )
                 {
+                MCCIADK_API_PARAMETER(State);
+
                 // default: not implemented.
                 return false;
                 }
@@ -866,6 +872,8 @@ protected:
                 const SessionState &State
                 )
                 {
+                MCCIADK_API_PARAMETER(State);
+
                 // default: do nothing.
                 }
 

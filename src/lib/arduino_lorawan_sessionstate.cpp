@@ -411,6 +411,7 @@ Arduino_LoRaWAN::ApplySessionState(
             LMIC_disableChannel(ch);
         }
 #endif
+    return true;
     }
 
 #undef FUNCTION
