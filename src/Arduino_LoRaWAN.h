@@ -368,6 +368,8 @@ public:
                         chPtr[0] = uint8_t(reducedFreq >> 16);
                         chPtr[1] = uint8_t(reducedFreq >> 8);
                         chPtr[2] = uint8_t(reducedFreq);
+                        
+                        return true;
                         }
 
                 /// \brief clear all entries in the channel table.
