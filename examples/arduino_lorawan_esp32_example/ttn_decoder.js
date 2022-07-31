@@ -122,8 +122,7 @@ function ttn_decoder_fp(bytes) {
     }
     var i = bytesToInt(byte);
     var bm = ('00000000' + Number(i).toString(2)).substr(-8).split('').map(Number).map(Boolean);
-    //return ['res5', 'res4', 'res3', 'res2', 'res1', 'res0', 'dec_ok', 'batt_ok']
-    return ['res4', 'res3', 'res2', 'res1', 'res0', 'ble_ok', 'dec_ok', 'batt_ok']
+    return ['res4', 'res3', 'res2', 'res1', 'res0', 'runtime_exp', 'data_ok', 'battery_ok']
         .reduce(function(obj, pos, index) {
         obj[pos] = bm[index];
         return obj;
