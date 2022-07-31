@@ -172,7 +172,7 @@ function ttn_decoder_fp(bytes) {
     // see assignment to 'bitmap' variable for status bit names 
     return decode(
     bytes,
-    [bitmap,   temperature,  humidity,    uint16,       uint16      ], // types
+    [bitmap,   temperature,  uint8,       uint16,       uint16      ], // types
     ['status', 'air_temp_c', 'humidity',  'supply_v',   'battery_v' ]  // JSON elements
   );
 
