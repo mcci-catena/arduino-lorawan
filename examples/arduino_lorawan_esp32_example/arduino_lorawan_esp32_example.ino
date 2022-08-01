@@ -6,7 +6,7 @@
 //
 // Based simple_sensor_bme280.ino with the following modifications: 
 // - reading the sensor data is replaced by a stub
-// - implements power saving by using the ESP32 sleep mode
+// - implements power saving by using the ESP32 deep sleep mode
 // - implements fast re-joining after sleep by storing network session data
 //   in the ESP32 RTC RAM
 // - LoRa_Serialization is used for encoding various data types into bytes
