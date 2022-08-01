@@ -1,10 +1,10 @@
 ///////////////////////////////////////////////////////////////////////////////
 // arduino_lorawan_esp32_example.ino
 // 
-// Example app showing how to periodically poll a sensor and send the data
+// Example sketch showing how to periodically poll a sensor and send the data
 // to The Things Network.
 //
-// Based simple_sensor_bme280.ino with the following modifications: 
+// Based on simple_sensor_bme280.ino with the following modifications: 
 // - reading the sensor data is replaced by a stub
 // - implements power saving by using the ESP32 deep sleep mode
 // - implements fast re-joining after sleep by storing network session data
