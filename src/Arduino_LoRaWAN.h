@@ -81,7 +81,7 @@ namespace Arduino_LMIC {
                 {
                 return (c1 < 'A' || c1 > 'Z' || c2 < 'A' || c2 > 'Z')
                         ? 0
-                        : ((c1 << 8) | c1);
+                        : ((c1 << 8) | c2);
                 }
 } // namespace Arduino_LMIC
 
