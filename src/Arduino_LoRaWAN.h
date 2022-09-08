@@ -964,7 +964,7 @@ private:
         /// \brief the internal copy of the session state, used to
         ///     reduce the number of saves to a minimum. It's initially
         ///     marked as "not valid".
-        SessionState m_savedSessionState { .Header = { .Tag = kSessionStateTag_Null } };
+        SessionState m_savedSessionState { .Header = { .Tag = kSessionStateTag_Null, .Size = 0 } };
         };
 
 /****************************************************************************\
