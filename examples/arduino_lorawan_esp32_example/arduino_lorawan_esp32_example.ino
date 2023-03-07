@@ -2,7 +2,7 @@
 // arduino_lorawan_esp32_example.ino
 // 
 // Example sketch showing how to periodically poll a sensor and send the data
-// to The Things Network.
+// to a LoRaWAN network.
 //
 // Based on simple_sensor_bme280.ino with the following modifications: 
 // - reading the sensor data is replaced by a stub
