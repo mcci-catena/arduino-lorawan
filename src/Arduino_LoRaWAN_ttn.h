@@ -123,7 +123,7 @@ protected:
         // select the subband.
         virtual void NetBeginRegionInit();
 
-        // Implement the NetJoin() operations for US915
+        // Implement the NetJoin() operations for AU915
         virtual void NetJoin();
 
 private:
