@@ -58,8 +58,6 @@
 // History:
 //
 // 20220729 Created
-// 20230307 Changed cMyLoRaWAN to inherit from Arduino_LoRaWAN_network
-//          instead of Arduino_LoRaWAN_ttn
 //
 //
 // Notes:
@@ -76,17 +74,7 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-//--- Select LoRaWAN Network ---
-// The Things Network
 #define ARDUINO_LMIC_CFG_NETWORK_TTN 1
-
-// Helium Network
-// see mcci-cathena/arduino-lorawan issue #185 "Add Helium EU868 support"
-// (https://github.com/mcci-catena/arduino-lorawan/issues/185)
-#define ARDUINO_LMIC_CFG_NETWORK_GENERIC 0
-
-// (Add other networks here)
-
 
 #include <Arduino_LoRaWAN_network.h>
 #include <Arduino_LoRaWAN_EventLog.h>
@@ -155,10 +143,10 @@ const uint8_t PAYLOAD_SIZE = 8;
 |
 \****************************************************************************/
 
-class cMyLoRaWAN : public Arduino_LoRaWAN_network {
+class cMyLoRaWAN : public Arduino_LoRaWAN_ttn {
 public:
     cMyLoRaWAN() {};
-    using Super = Arduino_LoRaWAN_network;
+    using Super = Arduino_LoRaWAN_ttn;
     void setup();
     
 protected:
