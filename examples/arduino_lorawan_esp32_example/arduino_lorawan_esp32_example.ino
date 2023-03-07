@@ -26,7 +26,7 @@
 // MCCI Arduino Development Kit ADK     0.2.2
 // MCCI LoRaWAN LMIC library            4.1.1
 // MCCI Arduino LoRaWAN Library         0.9.2
-// LoRa_Serialization                   3.1.0
+// LoRa_Serialization                   3.2.1
 //
 //
 // created: 07/2022
