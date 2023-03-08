@@ -499,7 +499,7 @@ void loop() {
     myEventLog.loop();
 
     #ifdef FORCE_SLEEP
-        if (os_getTime() > sleepTimeout & !rtcSyncReq) {
+        if ((os_getTime() > sleepTimeout) & !rtcSyncReq) {
             DEBUG_PRINTF_TS("Sleep timer expired!\n");
             DEBUG_PRINTF("Shutdown()\n");
             runtimeExpired = true;
