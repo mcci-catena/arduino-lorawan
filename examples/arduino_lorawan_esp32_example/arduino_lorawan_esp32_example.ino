@@ -121,6 +121,9 @@
 #if defined(GET_NETWORKTIME)
     // Enter your time zone (https://remotemonitoringsystems.ca/time-zone-abbreviations.php)
     const char* TZ_INFO    = "CET-1CEST-2,M3.5.0/02:00:00,M10.5.0/03:00:00";
+
+    // RTC to network time sync interval (in minutes)
+    #define CLOCK_SYNC_INTERVAL 24 * 60
 #endif
 
 // If SLEEP_EN is defined, MCU will sleep for SLEEP_INTERVAL seconds after succesful transmission
@@ -201,6 +204,15 @@
     #define PIN_LMIC_DIO2     cMyLoRaWAN::lmic_pinmap::LMIC_UNUSED_PIN
     #pragma message("ARDUINO_ADAFRUIT_FEATHER_ESP32 defined; assuming RFM95W FeatherWing will be used")
     #pragma message("Required wiring: A to RST, B to DIO1, D to DIO0, E to CS")
+#else
+    // LoRaWAN_Node board
+    // https://github.com/matthias-bs/LoRaWAN_Node
+    #define PIN_LMIC_NSS      14
+    #define PIN_LMIC_RST      12
+    #define PIN_LMIC_DIO0     4
+    #define PIN_LMIC_DIO1     16
+    #define PIN_LMIC_DIO2     17
+
 #endif
 
 // Uplink message payload size (calculate from assignments to 'encoder' object)
@@ -511,9 +523,7 @@ void
 cMyLoRaWAN::setup() {
     // simply call begin() w/o parameters, and the LMIC's built-in
     // configuration for this board will be used.
-    bool res = this->Super::begin(myPinMap);
-    DEBUG_PRINTF("Arduino_LoRaWAN::begin(): %d\n", res);
-
+    this->Super::begin(myPinMap);
 
 //    LMIC_selectSubBand(0);
     LMIC_setClockError(MAX_CLOCK_ERROR * 1 / 100);
