@@ -67,31 +67,16 @@ jobs:
         if: ${{ env.run-build == 'true' }}
         run:
           |
-          #declare -a required_libs=("https://github.com/matthias-bs/BresserWeatherSensorReceiver.git"
           declare -a required_libs=(
-            "RadioLib@5.7.0"
-            "BresserWeatherSensorReceiver@0.6.0"
             "MCCI LoRaWAN LMIC library@4.1.1"
             "MCCI Arduino LoRaWAN Library@0.9.2"
             "MCCI Arduino Development Kit ADK@0.2.2"
             "LoRa Serialization@3.2.1"
-            "ESP32Time@2.0.0"
-            "ESP32AnalogRead@0.2.1"
-            "OneWireNg@0.13.0"
-            "DallasTemperature@3.9.0"
-            "NimBLE-Arduino@1.4.1"
-            "ATC_MiThermometer@0.2.1"
-            "TheengsDecoder@1.2.0")
-          #"OneWire@2.3.7"
+            "ESP32Time@2.0.0")
           for i in "${required_libs[@]}"
           do
             arduino-cli lib install "$i"
           done
-          gh repo clone matthias-bs/DistanceSensor_A02YYUW
-          cp -r DistanceSensor_A02YYUW /home/runner/Arduino/libraries/
-          # OneWire is installed due to dependency in DallasTemperature, but OneWireNg shall be used instead
-          echo "Removing Arduino/libraries/OneWire (installed automatically, but shall be replaced by OneWireNg)"
-          rm -r /home/runner/Arduino/libraries/OneWire
 
       - name: Install platform
         if: ${{ env.run-build == 'true' }}
@@ -103,13 +88,6 @@ jobs:
       - name: Checkout repository
         if: ${{ env.run-build == 'true' }}
         uses: actions/checkout@v3
-
-      - name: Copy WeatherSensorCfg.h
-        if: ${{ env.run-build == 'true' }}
-        run:
-          |
-          cp /home/runner/work/BresserWeatherSensorTTN/BresserWeatherSensorTTN/WeatherSensorCfg.h.template \
-             /home/runner/Arduino/libraries/BresserWeatherSensorReceiver/src/WeatherSensorCfg.h
 
       - name: Customizing lmic_project_config.h (LMIC_ENABLE_DeviceTimeReq)
         if: ${{ env.run-build == 'true' }}
