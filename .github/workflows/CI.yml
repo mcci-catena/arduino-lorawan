@@ -96,7 +96,16 @@ jobs:
           echo "#define LMIC_ENABLE_DeviceTimeReq 1" >> /home/runner/Arduino/libraries/MCCI_LoRaWAN_LMIC_library/project_config/lmic_project_config.h
           # Fix for linker error with Arduino core for ESP32 v2.0.x as suggested in https://github.com/mcci-catena/arduino-lmic/issues/714#issuecomment-822051171
           echo "#define hal_init LMICHAL_init" >> /home/runner/Arduino/libraries/MCCI_LoRaWAN_LMIC_library/project_config/lmic_project_config.h
-
+      
+      - name: Copy secrets.h from secrets.h.template
+        if: ${{ env.run-build == 'true' }}
+        run:
+          |
+          pwd
+          ls
+          cp /home/runner/work/arduino-lorawan/arduino-lorawan/examples/arduino_lorawan_esp32_example/secrets.h.template \
+          /home/runner/work/arduino-lorawan/arduino-lorawan/examples/arduino_lorawan_esp32_example/secrets.h
+      
       - name: Build sketch
         if: ${{ env.run-build == 'true' }}
         run:
@@ -113,9 +122,9 @@ jobs:
               echo -e "\n\033[1;33mBuilding ${example##*/} ... \033[0m";
               if [[ "${{ contains(matrix.board, '@1.0.6') }}" == "true" ]]; then
                 # hardcoded fqbn, because 'esp32:esp32@1.0.6' did not work
-                arduino-cli compile --libraries /home/runner/work/BresserWeatherSensorReceiver --fqbn esp32:esp32:esp32${{ steps.prep.outputs.options }} $example --warnings=${{ steps.prep.outputs.warnings }}
+                arduino-cli compile --libraries /home/runner/work/arduino-lorawan --fqbn esp32:esp32:esp32${{ steps.prep.outputs.options }} $example --warnings=${{ steps.prep.outputs.warnings }}
               else
-                arduino-cli compile --libraries /home/runner/work/BresserWeatherSensorReceiver --fqbn ${{ matrix.board }}${{ steps.prep.outputs.options }} $example --warnings=${{ steps.prep.outputs.warnings }}
+                arduino-cli compile --libraries /home/runner/work/arduino-lorawan --fqbn ${{ matrix.board }}${{ steps.prep.outputs.options }} $example --warnings=${{ steps.prep.outputs.warnings }}
               fi
 
               if [ $? -ne 0 ]; then
