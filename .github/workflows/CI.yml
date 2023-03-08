@@ -103,8 +103,7 @@ jobs:
           |
           pwd
           ls
-          cp /home/runner/work/arduino-lorawan/arduino-lorawan/examples/arduino_lorawan_esp32_example/secrets.h.template \
-          /home/runner/work/arduino-lorawan/arduino-lorawan/examples/arduino_lorawan_esp32_example/secrets.h
+          cp examples/arduino_lorawan_esp32_example/secrets.h.template examples/arduino_lorawan_esp32_example/secrets.h
       
       - name: Build sketch
         if: ${{ env.run-build == 'true' }}
