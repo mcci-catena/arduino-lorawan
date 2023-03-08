@@ -284,7 +284,7 @@ public:
     uint16_t getVoltageBattery(void);
     uint16_t getVoltageSupply(void);
     
-    bool uplinkRequest(void) {
+    void uplinkRequest(void) {
         m_fUplinkRequest = true;
     };
     ///
