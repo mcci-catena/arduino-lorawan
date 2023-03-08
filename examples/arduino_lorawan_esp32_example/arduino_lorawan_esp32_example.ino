@@ -177,6 +177,17 @@
     #define PIN_LMIC_DIO2     cMyLoRaWAN::lmic_pinmap::LMIC_UNUSED_PIN
     #pragma message("ARDUINO_ADAFRUIT_FEATHER_ESP32 defined; assuming RFM95W FeatherWing will be used")
     #pragma message("Required wiring: A to RST, B to DIO1, D to DIO0, E to CS")
+
+#else
+    // LoRaWAN_Node board
+    // https://github.com/matthias-bs/LoRaWAN_Node
+    // (or anything else)
+    #define PIN_LMIC_NSS      14
+    #define PIN_LMIC_RST      12
+    #define PIN_LMIC_DIO0     4
+    #define PIN_LMIC_DIO1     16
+    #define PIN_LMIC_DIO2     17
+
 #endif
 
 // Uplink message payload size (calculate from assignments to 'encoder' object)
