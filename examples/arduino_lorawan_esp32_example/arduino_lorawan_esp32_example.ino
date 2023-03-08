@@ -10,6 +10,7 @@
 // - implements fast re-joining after sleep by storing network session data
 //   in the ESP32 RTC RAM
 // - LoRa_Serialization is used for encoding various data types into bytes
+// - internal Real-Time Clock (RTC) set from LoRaWAN network time (optional)
 //
 //
 // Based on:
@@ -27,6 +28,7 @@
 // MCCI LoRaWAN LMIC library            4.1.1
 // MCCI Arduino LoRaWAN Library         0.9.2
 // LoRa_Serialization                   3.2.1
+// ESP32Time                            2.0.0
 //
 //
 // created: 07/2022
@@ -116,7 +118,7 @@
 #define SLEEP_EN
 
 // Enable setting RTC from LoRaWAN network time
-//#define GET_NETWORKTIME
+#define GET_NETWORKTIME
 
 #if defined(GET_NETWORKTIME)
     // Enter your time zone (https://remotemonitoringsystems.ca/time-zone-abbreviations.php)
