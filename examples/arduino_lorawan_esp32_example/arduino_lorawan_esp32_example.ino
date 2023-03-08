@@ -116,7 +116,7 @@
 #define SLEEP_EN
 
 // Enable setting RTC from LoRaWAN network time
-#define GET_NETWORKTIME
+//#define GET_NETWORKTIME
 
 #if defined(GET_NETWORKTIME)
     // Enter your time zone (https://remotemonitoringsystems.ca/time-zone-abbreviations.php)
