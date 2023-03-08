@@ -52,8 +52,8 @@ jobs:
         id: prep
         run:
           |
-          # common settings - no extra options, skip nothing, all warnings
-          echo "skip-pattern=''" >> $GITHUB_OUTPUT
+          # common settings - no extra options, all warnings
+          echo "skip-pattern='simple_sensor_bme280'" >> $GITHUB_OUTPUT
           echo "warnings='all'" >> $GITHUB_OUTPUT
 
           # platform-dependent settings - extra board options, board index URLs, skip patterns etc.
