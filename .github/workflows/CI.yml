@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "master" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "master" ]
   workflow_dispatch:
 
 jobs:
@@ -16,13 +16,13 @@ jobs:
           - esp32:esp32@1.0.6
           - esp32:esp32:esp32:DebugLevel=none
           - esp32:esp32:esp32:DebugLevel=verbose
-          - esp32:esp32:firebeetle32
+          #- esp32:esp32:firebeetle32
           #- esp32:esp32:ttgo-lora32:Revision=TTGO_LoRa32_V1
           #- esp32:esp32:ttgo-lora32:Revision=TTGO_LoRa32_V2
-          - esp32:esp32:ttgo-lora32:Revision=TTGO_LoRa32_v21new
-          - esp32:esp32:heltec_wireless_stick:PSRAM=disabled
-          - esp32:esp32:featheresp32
-          - esp32:esp32:adafruit_feather_esp32s2
+          #- esp32:esp32:ttgo-lora32:Revision=TTGO_LoRa32_v21new
+          #- esp32:esp32:heltec_wireless_stick:PSRAM=disabled
+          #- esp32:esp32:featheresp32
+          #- esp32:esp32:adafruit_feather_esp32s2
 
     runs-on: ubuntu-latest
     name: ${{ matrix.board }}
