@@ -468,7 +468,7 @@ void setup() {
     
         // Check if clock was never synchronized or sync interval has expired 
         if ((rtcLastClockSync == 0) || ((rtc.getLocalEpoch() - rtcLastClockSync) > (CLOCK_SYNC_INTERVAL * 60))) {
-            DEBUG_PRINTF("RTC sync required");
+            DEBUG_PRINTF("RTC sync required\n");
             rtcSyncReq = true;
         }
     #endif
@@ -794,7 +794,7 @@ cMyLoRaWAN::GetAbpProvisioningInfo(AbpProvisioningInfo *pAbpInfo) {
         
         time_t tnow = rtc.getLocalEpoch();
         localtime_r(&tnow, &timeinfo);
-        strftime(tbuf, 25, "%Y-%m-%d %H:%M:%S", &timeinfo);
+        strftime(tbuf, 25, "%Y-%m-%d %H:%M:%S\n", &timeinfo);
         DEBUG_PRINTF("%s", tbuf);
     }
 
@@ -821,7 +821,7 @@ cMyLoRaWAN::GetAbpProvisioningInfo(AbpProvisioningInfo *pAbpInfo) {
 
         if (flagSuccess != 1) {
             // Most likely the service is not provided by the gateway. No sense in trying again...
-            DEBUG_PRINTF_TS("didn't succeed");
+            DEBUG_PRINTF_TS("didn't succeed\n");
             rtcSyncReq = false;
             return;
         }
@@ -829,7 +829,7 @@ cMyLoRaWAN::GetAbpProvisioningInfo(AbpProvisioningInfo *pAbpInfo) {
         // Populate "lmic_time_reference"
         flagSuccess = LMIC_getNetworkTimeReference(&lmicTimeReference);
         if (flagSuccess != 1) {
-            DEBUG_PRINTF_TS("LMIC_getNetworkTimeReference didn't succeed");
+            DEBUG_PRINTF_TS("LMIC_getNetworkTimeReference didn't succeed\n");
             return;
         }
 
@@ -853,7 +853,7 @@ cMyLoRaWAN::GetAbpProvisioningInfo(AbpProvisioningInfo *pAbpInfo) {
         // Save clock sync timestamp and clear flag 
         rtcLastClockSync = rtc.getLocalEpoch();
         rtcSyncReq = false;
-        DEBUG_PRINTF_TS("RTC sync completed");
+        DEBUG_PRINTF_TS("RTC sync completed\n");
         printDateTime();
     }
 
