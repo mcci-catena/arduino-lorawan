@@ -77,7 +77,7 @@ jobs:
           do
             arduino-cli lib install "$i"
           done
-          // Clone mcci-catena's fork of Adafruit_BME280_Library used in the example simple_sensor_bme280
+          # Clone mcci-catena's fork of Adafruit_BME280_Library used in the example simple_sensor_bme280
           gh repo clone mcci-catena/Adafruit_BME280_Library
           cp -r Adafruit_BME280_Library /home/runner/Arduino/libraries/
 
