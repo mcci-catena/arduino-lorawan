@@ -67,6 +67,7 @@ jobs:
         if: ${{ env.run-build == 'true' }}
         run:
           |
+          
           declare -a required_libs=(
             "MCCI LoRaWAN LMIC library@4.1.1"
             "MCCI Arduino LoRaWAN Library@0.9.2"
@@ -77,6 +78,9 @@ jobs:
           do
             arduino-cli lib install "$i"
           done
+          // Clone mcci-catena's fork of Adafruit_BME280_Library used in the example simple_sensor_bme280
+          gh repo clone mcci-catena/Adafruit_BME280_Library
+          cp -r Adafruit_BME280_Library /home/runner/Arduino/libraries/
 
       - name: Install platform
         if: ${{ env.run-build == 'true' }}
