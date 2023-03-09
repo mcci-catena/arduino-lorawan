@@ -988,10 +988,10 @@ cSensor::doUplink(void) {
     battery_ok = true; // sensor battery status
         
     DEBUG_PRINTF("--- Uplink Data ---\n");
-    DEBUG_PRINTF("Air Temperature:   % 3.1f °C\n", weatherSensor.temp_c);
-    DEBUG_PRINTF("Humidity:           %2d   %%\n", weatherSensor.humidity);
-    DEBUG_PRINTF("Supply  Voltage:  %4d   mV\n",   supply_voltage);
-    DEBUG_PRINTF("Battery Voltage:  %4d   mV\n",   battery_voltage);
+    DEBUG_PRINTF("Air Temperature:   % 3.1f °C\n", temperature_deg_c);
+    DEBUG_PRINTF("Humidity:           %2d   %%\n", humidity_percent);
+    DEBUG_PRINTF("Supply  Voltage:  %4d   mV\n",   supply_voltage_v);
+    DEBUG_PRINTF("Battery Voltage:  %4d   mV\n",   battery_voltage_v);
     DEBUG_PRINTF("Status:\n");
     DEBUG_PRINTF("    battery_ok:     %d\n",       battery_ok);
     DEBUG_PRINTF("    data_ok:        %d\n",       data_ok);
