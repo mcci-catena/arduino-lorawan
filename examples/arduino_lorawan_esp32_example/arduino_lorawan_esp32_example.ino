@@ -60,7 +60,7 @@
 // 20220729 Created
 // 20230307 Changed cMyLoRaWAN to inherit from Arduino_LoRaWAN_network
 //          instead of Arduino_LoRaWAN_ttn
-//
+//          Added Pin mappings for some common ESP32 LoRaWAN boards
 //
 // Notes:
 // - After a successful transmission, the controller can go into deep sleep
@@ -120,14 +120,75 @@
 // LoRa_Serialization
 #include <LoraMessage.h>
 
-// Pin mapping for ESP32
-// SPI2 is used on ESP32 per default! (e.g. see https://github.com/espressif/arduino-esp32/tree/master/variants/doitESP32devkitV1)
-#define PIN_LMIC_NSS      14
-#define PIN_LMIC_RST      12
-#define PIN_LMIC_DIO0     4
-#define PIN_LMIC_DIO1     16
-#define PIN_LMIC_DIO2     17
+// Pin mappings for some common ESP32 LoRaWAN boards.
+// The ARDUINO_* defines are set by selecting the appropriate board (and borad variant, if applicable) in the Arduino IDE.
+// The default SPI port of the specific board will be used.
+#if defined(ARDUINO_TTGO_LoRa32_V1)
+    // https://github.com/espressif/arduino-esp32/blob/master/variants/ttgo-lora32-v1/pins_arduino.h
+    // http://www.lilygo.cn/prod_view.aspx?TypeId=50003&Id=1130&FId=t3:50003:3
+    // https://github.com/Xinyuan-LilyGo/TTGO-LoRa-Series
+    // https://github.com/LilyGO/TTGO-LORA32/blob/master/schematic1in6.pdf
+    #define PIN_LMIC_NSS      LORA_CS
+    #define PIN_LMIC_RST      LORA_RST
+    #define PIN_LMIC_DIO0     LORA_IRQ
+    #define PIN_LMIC_DIO1     33
+    #define PIN_LMIC_DIO2     cMyLoRaWAN::lmic_pinmap::LMIC_UNUSED_PIN
 
+#elif defined(ARDUINO_TTGO_LoRa32_V2)
+    // https://github.com/espressif/arduino-esp32/blob/master/variants/ttgo-lora32-v2/pins_arduino.h
+    #define PIN_LMIC_NSS      LORA_CS
+    #define PIN_LMIC_RST      LORA_RST
+    #define PIN_LMIC_DIO0     LORA_IRQ
+    #define PIN_LMIC_DIO1     33
+    #define PIN_LMIC_DIO2     cMyLoRaWAN::lmic_pinmap::LMIC_UNUSED_PIN
+    #pragma message("LoRa DIO1 must be wired to GPIO33 manually!")
+
+#elif defined(ARDUINO_TTGO_LoRa32_v21new)
+    // https://github.com/espressif/arduino-esp32/blob/master/variants/ttgo-lora32-v21new/pins_arduino.h
+    #define PIN_LMIC_NSS      LORA_CS
+    #define PIN_LMIC_RST      LORA_RST
+    #define PIN_LMIC_DIO0     LORA_IRQ
+    #define PIN_LMIC_DIO1     LORA_D1
+    #define PIN_LMIC_DIO2     LORA_D2
+
+#elif defined(ARDUINO_heltec_wireless_stick)
+    // https://github.com/espressif/arduino-esp32/blob/master/variants/heltec_wireless_stick/pins_arduino.h
+    #define PIN_LMIC_NSS      SS
+    #define PIN_LMIC_RST      RST_LoRa
+    #define PIN_LMIC_DIO0     DIO0
+    #define PIN_LMIC_DIO1     DIO1
+    #define PIN_LMIC_DIO2     DIO2
+
+#elif defined(ARDUINO_ADAFRUIT_FEATHER_ESP32S2)
+    #define PIN_LMIC_NSS      6
+    #define PIN_LMIC_RST      9
+    #define PIN_LMIC_DIO0     5
+    #define PIN_LMIC_DIO1     11
+    #define PIN_LMIC_DIO2     cMyLoRaWAN::lmic_pinmap::LMIC_UNUSED_PIN
+    #pragma message("ARDUINO_ADAFRUIT_FEATHER_ESP32S2 defined; assuming RFM95W FeatherWing will be used")
+    #pragma message("Required wiring: E to IRQ, D to CS, C to RST, A to DI01")
+    #pragma message("BLE is not available!")
+
+#elif defined(ARDUINO_FEATHER_ESP32)
+    #define PIN_LMIC_NSS      14
+    #define PIN_LMIC_RST      27
+    #define PIN_LMIC_DIO0     32
+    #define PIN_LMIC_DIO1     33
+    #define PIN_LMIC_DIO2     cMyLoRaWAN::lmic_pinmap::LMIC_UNUSED_PIN
+    #pragma message("ARDUINO_ADAFRUIT_FEATHER_ESP32 defined; assuming RFM95W FeatherWing will be used")
+    #pragma message("Required wiring: A to RST, B to DIO1, D to DIO0, E to CS")
+
+#else
+    // LoRaWAN_Node board
+    // https://github.com/matthias-bs/LoRaWAN_Node
+    // (or anything else)
+    #define PIN_LMIC_NSS      14
+    #define PIN_LMIC_RST      12
+    #define PIN_LMIC_DIO0     4
+    #define PIN_LMIC_DIO1     16
+    #define PIN_LMIC_DIO2     17
+
+#endif
 
 // Uplink message payload size (calculate from assignments to 'encoder' object)
 const uint8_t PAYLOAD_SIZE = 8;
@@ -779,10 +840,10 @@ cSensor::doUplink(void) {
     battery_ok = true; // sensor battery status
         
     DEBUG_PRINTF("--- Uplink Data ---\n");
-    DEBUG_PRINTF("Air Temperature:   % 3.1f °C\n", weatherSensor.temp_c);
-    DEBUG_PRINTF("Humidity:           %2d   %%\n", weatherSensor.humidity);
-    DEBUG_PRINTF("Supply  Voltage:  %4d   mV\n",   supply_voltage);
-    DEBUG_PRINTF("Battery Voltage:  %4d   mV\n",   battery_voltage);
+    DEBUG_PRINTF("Air Temperature:   % 3.1f °C\n", temperature_deg_c);
+    DEBUG_PRINTF("Humidity:           %2d   %%\n", humidity_percent);
+    DEBUG_PRINTF("Supply  Voltage:  %4d   mV\n",   supply_voltage_v);
+    DEBUG_PRINTF("Battery Voltage:  %4d   mV\n",   battery_voltage_v);
     DEBUG_PRINTF("Status:\n");
     DEBUG_PRINTF("    battery_ok:     %d\n",       battery_ok);
     DEBUG_PRINTF("    data_ok:        %d\n",       data_ok);
