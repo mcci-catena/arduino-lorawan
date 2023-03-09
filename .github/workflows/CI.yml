@@ -67,7 +67,6 @@ jobs:
         if: ${{ env.run-build == 'true' }}
         run:
           |
-          
           declare -a required_libs=(
             "MCCI LoRaWAN LMIC library@4.1.1"
             "MCCI Arduino LoRaWAN Library@0.9.2"
