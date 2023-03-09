@@ -428,6 +428,10 @@ Much more elaborate uses can be found in the MCCI [Catena-Arduino-Platform](http
 
 ## Release History
 
+- v0.10.0-pre1 includes the following changes.
+
+  - examples/arduino_lorawan_esp32_example: @matthias-bs Added pin mappings for some common ESP32 LoRaWAN boards 
+
 - v0.9.2 includes the following changes.
 
   - Fix `-Wunused-parameter` warnings from GCC. ([#196](https://github.com/mcci-catena/arduino-lorawan/issues/196)). This is v0.9.2-pre3.
