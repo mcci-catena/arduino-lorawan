@@ -209,6 +209,7 @@
 #else
     // LoRaWAN_Node board
     // https://github.com/matthias-bs/LoRaWAN_Node
+    // (or anything else)
     #define PIN_LMIC_NSS      14
     #define PIN_LMIC_RST      12
     #define PIN_LMIC_DIO0     4
