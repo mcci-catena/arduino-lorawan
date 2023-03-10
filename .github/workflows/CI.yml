@@ -53,7 +53,7 @@ jobs:
         run:
           |
           # common settings - no extra options, all warnings
-          echo "skip-pattern=''" >> $GITHUB_OUTPUT
+          echo "skip-pattern='simple_sensor_bme280'" >> $GITHUB_OUTPUT
           echo "warnings='all'" >> $GITHUB_OUTPUT
 
           # platform-dependent settings - extra board options, board index URLs, skip patterns etc.
@@ -78,9 +78,8 @@ jobs:
             arduino-cli lib install "$i"
           done
           # Clone mcci-catena's fork of Adafruit_BME280_Library used in the example simple_sensor_bme280
-          #gh repo clone mcci-catena/Adafruit_BME280_Library
-          git clone https://github.com/mcci-catena/Adafruit_BME280_Library.git 
-          cp -r Adafruit_BME280_Library /home/runner/Arduino/libraries/
+          #git clone https://github.com/mcci-catena/Adafruit_BME280_Library.git
+          #cp -r Adafruit_BME280_Library /home/runner/Arduino/libraries/
 
       - name: Install platform
         if: ${{ env.run-build == 'true' }}
