@@ -219,8 +219,9 @@
 
 #endif
 
-// Uplink message payload size (calculate from assignments to 'encoder' object)
-const uint8_t PAYLOAD_SIZE = 8;
+// Uplink message payload size
+// The maximum allowed for all data rates is 51 bytes.
+const uint8_t PAYLOAD_SIZE = 51;
 
 // RTC Memory Handling
 #define MAGIC1 (('m' << 24) | ('g' < 16) | ('c' << 8) | '1')
@@ -1000,7 +1001,7 @@ cSensor::doUplink(void) {
     DEBUG_PRINTF("    runtimeExpired: %d\n",       runtimeExpired);
     DEBUG_PRINTF("\n");
     
-    // Serialize data into byte array
+    // Serialize data into byte array (max. PAYLOAD_SIZE)
     // NOTE: 
     // For TTN MQTT integration, ttn_decoder.js must be adjusted accordingly 
     LoraEncoder encoder(loraData);
@@ -1017,7 +1018,7 @@ cSensor::doUplink(void) {
     this->m_fBusy = true;
     
     if (! myLoRaWAN.SendBuffer(
-        loraData, sizeof(loraData),
+        loraData, encoder.getLength(),
         // this is the completion function:
         [](void *pClientData, bool fSucccess) -> void {
             auto const pThis = (cSensor *)pClientData;
