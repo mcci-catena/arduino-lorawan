@@ -10,6 +10,7 @@
 // - implements fast re-joining after sleep by storing network session data
 //   in the ESP32 RTC RAM
 // - LoRa_Serialization is used for encoding various data types into bytes
+// - internal Real-Time Clock (RTC) set from LoRaWAN network time (optional)
 //
 //
 // Based on:
@@ -27,6 +28,7 @@
 // MCCI LoRaWAN LMIC library            4.1.1
 // MCCI Arduino LoRaWAN Library         0.9.2
 // LoRa_Serialization                   3.2.1
+// ESP32Time                            2.0.0
 //
 //
 // created: 07/2022
@@ -61,6 +63,7 @@
 // 20230307 Changed cMyLoRaWAN to inherit from Arduino_LoRaWAN_network
 //          instead of Arduino_LoRaWAN_ttn
 //          Added Pin mappings for some common ESP32 LoRaWAN boards
+// 20230308 Added option for setting RTC from LoRaWAN network time
 //
 // Notes:
 // - After a successful transmission, the controller can go into deep sleep
@@ -73,6 +76,11 @@
 // - The ESP32's RTC RAM is used to store information about the LoRaWAN 
 //   network session; this speeds up the connection after a restart
 //   significantly
+// - To enable Network Time Requests:
+//   #define LMIC_ENABLE_DeviceTimeReq 1
+// - settimeofday()/gettimeofday() must be used to access the ESP32's RTC time
+// - Arduino ESP32 package has built-in time zone handling, see 
+//   https://github.com/SensorsIot/NTP-time-for-ESP8266-and-ESP32/blob/master/NTP_Example/NTP_Example.ino
 //
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -92,6 +100,12 @@
 #include <Arduino_LoRaWAN_EventLog.h>
 #include <arduino_lmic.h>
 
+// NOTE: Add #define LMIC_ENABLE_DeviceTimeReq 1
+//        in ~/Arduino/libraries/MCCI_LoRaWAN_LMIC_library/project_config/lmic_project_config.h
+#if (not(LMIC_ENABLE_DeviceTimeReq))
+    #warning "LMIC_ENABLE_DeviceTimeReq is not set - will not be able to retrieve network time!"
+#endif
+
 //-----------------------------------------------------------------------------
 //
 // User Configuration
@@ -102,6 +116,17 @@
 
 // Enable sleep mode - sleep after successful transmission to TTN (recommended!)
 #define SLEEP_EN
+
+// Enable setting RTC from LoRaWAN network time
+#define GET_NETWORKTIME
+
+#if defined(GET_NETWORKTIME)
+    // Enter your time zone (https://remotemonitoringsystems.ca/time-zone-abbreviations.php)
+    const char* TZ_INFO    = "CET-1CEST-2,M3.5.0/02:00:00,M10.5.0/03:00:00";
+
+    // RTC to network time sync interval (in minutes)
+    #define CLOCK_SYNC_INTERVAL 24 * 60
+#endif
 
 // If SLEEP_EN is defined, MCU will sleep for SLEEP_INTERVAL seconds after succesful transmission
 #define SLEEP_INTERVAL 360
@@ -116,6 +141,10 @@
 #define SLEEP_TIMEOUT_JOINED 600
 
 //-----------------------------------------------------------------------------
+
+#if defined(GET_NETWORKTIME)
+  #include <ESP32Time.h>
+#endif
 
 // LoRa_Serialization
 #include <LoraMessage.h>
@@ -190,8 +219,9 @@
 
 #endif
 
-// Uplink message payload size (calculate from assignments to 'encoder' object)
-const uint8_t PAYLOAD_SIZE = 8;
+// Uplink message payload size
+// The maximum allowed for all data rates is 51 bytes.
+const uint8_t PAYLOAD_SIZE = 51;
 
 // RTC Memory Handling
 #define MAGIC1 (('m' << 24) | ('g' < 16) | ('c' << 8) | '1')
@@ -205,11 +235,14 @@ const uint8_t PAYLOAD_SIZE = 8;
     #define DEBUG_PRINTF_TS(...) { DEBUG_PORT.printf("%d ms: ", osticks2ms(os_getTime())); \
                                    DEBUG_PORT.printf(__VA_ARGS__); }
 #else
-  #define DEBUG_PRINTF(...) {}
-  #define DEBUG_PRINTF_TS(...) {}
+    #define DEBUG_PRINTF(...) {}
+    #define DEBUG_PRINTF_TS(...) {}
 #endif
 
-    
+#if defined(GET_NETWORKTIME)
+    void printDateTime(void);
+#endif
+
 /****************************************************************************\
 |
 |	The LoRaWAN object
@@ -221,6 +254,15 @@ public:
     cMyLoRaWAN() {};
     using Super = Arduino_LoRaWAN_network;
     void setup();
+    
+    #if defined(GET_NETWORKTIME)
+        /*!
+         * \fn requestNetworkTime
+         * 
+         * \brief Wrapper function for LMIC_requestNetworkTime()
+         */
+        void requestNetworkTime(void);
+    #endif
     
 protected:
     // you'll need to provide implementation for this.
@@ -259,7 +301,7 @@ public:
     uint16_t getVoltageBattery(void);
     uint16_t getVoltageSupply(void);
     
-    bool uplinkRequest(void) {
+    void uplinkRequest(void) {
         m_fUplinkRequest = true;
     };
     ///
@@ -338,12 +380,26 @@ RTC_DATA_ATTR size_t                          rtcSavedNExtraInfo;
 RTC_DATA_ATTR uint8_t                         rtcSavedExtraInfo[EXTRA_INFO_MEM_SIZE];
 RTC_DATA_ATTR bool                            runtimeExpired = 0;
 
+#if defined(GET_NETWORKTIME)
+    RTC_DATA_ATTR time_t                          rtcLastClockSync = 0;     //!< timestamp of last RTC synchonization to network time
+#endif
+
 // Uplink payload buffer
 static uint8_t loraData[PAYLOAD_SIZE];
 
 // Force sleep mode after <sleepTimeout> has been reached (if FORCE_SLEEP is defined) 
 ostime_t sleepTimeout;
 
+/// RTC sync request flag - set (if due) in setup() / cleared in UserRequestNetworkTimeCb()
+bool rtcSyncReq = false;
+
+#if defined(GET_NETWORKTIME)
+    /// Seconds since the UTC epoch
+    uint32_t userUTCTime;
+
+    /// Real time clock
+    ESP32Time rtc;
+#endif
 
 /****************************************************************************\
 |
@@ -408,6 +464,18 @@ void setup() {
 
     DEBUG_PRINTF_TS("setup()\n");
 
+    #if defined(GET_NETWORKTIME)
+        // Set time zone
+        setenv("TZ", TZ_INFO, 1);
+        printDateTime();
+    
+        // Check if clock was never synchronized or sync interval has expired 
+        if ((rtcLastClockSync == 0) || ((rtc.getLocalEpoch() - rtcLastClockSync) > (CLOCK_SYNC_INTERVAL * 60))) {
+            DEBUG_PRINTF("RTC sync required\n");
+            rtcSyncReq = true;
+        }
+    #endif
+    
     // set up the log; do this first.
     myEventLog.setup();
     DEBUG_PRINTF("myEventlog.setup() - done\n");
@@ -436,7 +504,7 @@ void loop() {
     myEventLog.loop();
 
     #ifdef FORCE_SLEEP
-        if (os_getTime() > sleepTimeout) {
+        if ((os_getTime() > sleepTimeout) & !rtcSyncReq) {
             DEBUG_PRINTF_TS("Sleep timer expired!\n");
             DEBUG_PRINTF("Shutdown()\n");
             runtimeExpired = true;
@@ -460,9 +528,7 @@ void
 cMyLoRaWAN::setup() {
     // simply call begin() w/o parameters, and the LMIC's built-in
     // configuration for this board will be used.
-    bool res = this->Super::begin(myPinMap);
-    DEBUG_PRINTF("Arduino_LoRaWAN::begin(): %d\n", res);
-
+    this->Super::begin(myPinMap);
 
 //    LMIC_selectSubBand(0);
     LMIC_setClockError(MAX_CLOCK_ERROR * 1 / 100);
@@ -723,6 +789,82 @@ cMyLoRaWAN::GetAbpProvisioningInfo(AbpProvisioningInfo *pAbpInfo) {
     return true;
 }
 
+#if defined(GET_NETWORKTIME)
+    /// Print date and time (i.e. local time)
+    void printDateTime(void) {
+        struct tm timeinfo;
+        char tbuf[26];
+        
+        time_t tnow = rtc.getLocalEpoch();
+        localtime_r(&tnow, &timeinfo);
+        strftime(tbuf, 25, "%Y-%m-%d %H:%M:%S\n", &timeinfo);
+        DEBUG_PRINTF("%s", tbuf);
+    }
+
+    /**
+      * \fn UserRequestNetworkTimeCb
+      * 
+      * \brief Callback function for setting RTC from LoRaWAN network time
+      * 
+      * \param pVoidUserUTCTime user supplied buffer for UTC time
+      * 
+      * \param flagSuccess flag indicating if network time request was succesful
+      */
+     void UserRequestNetworkTimeCb(void *pVoidUserUTCTime, int flagSuccess) {
+        // Explicit conversion from void* to uint32_t* to avoid compiler errors
+        uint32_t *pUserUTCTime = (uint32_t *) pVoidUserUTCTime;
+
+        // A struct that will be populated by LMIC_getNetworkTimeReference.
+        // It contains the following fields:
+        //  - tLocal: the value returned by os_GetTime() when the time
+        //            request was sent to the gateway, and
+        //  - tNetwork: the seconds between the GPS epoch and the time
+        //              the gateway received the time request
+        lmic_time_reference_t lmicTimeReference;
+
+        if (flagSuccess != 1) {
+            // Most likely the service is not provided by the gateway. No sense in trying again...
+            DEBUG_PRINTF_TS("didn't succeed\n");
+            rtcSyncReq = false;
+            return;
+        }
+
+        // Populate "lmic_time_reference"
+        flagSuccess = LMIC_getNetworkTimeReference(&lmicTimeReference);
+        if (flagSuccess != 1) {
+            DEBUG_PRINTF_TS("LMIC_getNetworkTimeReference didn't succeed\n");
+            return;
+        }
+
+        // Update userUTCTime, considering the difference between the GPS and UTC
+        // epoch, and the leap seconds
+        *pUserUTCTime = lmicTimeReference.tNetwork + 315964800;
+
+        // Add the delay between the instant the time was transmitted and
+        // the current time
+
+        // Current time, in ticks
+        ostime_t ticksNow = os_getTime();
+        // Time when the request was sent, in ticks
+        ostime_t ticksRequestSent = lmicTimeReference.tLocal;
+        uint32_t requestDelaySec = osticks2ms(ticksNow - ticksRequestSent) / 1000;
+        *pUserUTCTime += requestDelaySec;
+
+        // Update the system time with the time read from the network
+        rtc.setTime(*pUserUTCTime);
+    
+        // Save clock sync timestamp and clear flag 
+        rtcLastClockSync = rtc.getLocalEpoch();
+        rtcSyncReq = false;
+        DEBUG_PRINTF_TS("RTC sync completed\n");
+        printDateTime();
+    }
+
+    void
+    cMyLoRaWAN::requestNetworkTime(void) {
+        LMIC_requestNetworkTime(UserRequestNetworkTimeCb, &userUTCTime);
+    }
+#endif
 
 /****************************************************************************\
 |
@@ -829,6 +971,15 @@ cSensor::doUplink(void) {
         return;
     }
     
+    #if defined(GET_NETWORKTIME)
+        //
+        // Request time and date
+        //
+        if (rtcSyncReq) {
+            myLoRaWAN.requestNetworkTime();
+        }
+    #endif
+    
     // Call sensor data function stubs
     temperature_deg_c = getTemperature();
     humidity_percent  = getHumidity();
@@ -850,7 +1001,7 @@ cSensor::doUplink(void) {
     DEBUG_PRINTF("    runtimeExpired: %d\n",       runtimeExpired);
     DEBUG_PRINTF("\n");
     
-    // Serialize data into byte array
+    // Serialize data into byte array (max. PAYLOAD_SIZE)
     // NOTE: 
     // For TTN MQTT integration, ttn_decoder.js must be adjusted accordingly 
     LoraEncoder encoder(loraData);
@@ -867,7 +1018,7 @@ cSensor::doUplink(void) {
     this->m_fBusy = true;
     
     if (! myLoRaWAN.SendBuffer(
-        loraData, sizeof(loraData),
+        loraData, encoder.getLength(),
         // this is the completion function:
         [](void *pClientData, bool fSucccess) -> void {
             auto const pThis = (cSensor *)pClientData;
