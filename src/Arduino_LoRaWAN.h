@@ -34,7 +34,7 @@ Author:
 ///     \ref ARDUINO_LORAWAN_VERSION_COMPARE_LT() to compare relative versions.
 ///
 #define ARDUINO_LORAWAN_VERSION \
-        ARDUINO_LORAWAN_VERSION_CALC(0, 10, 0, 1) /* v0.10.0-pre1 */
+        ARDUINO_LORAWAN_VERSION_CALC(0, 10, 0, 0) /* v0.10.0 */
 
 #define ARDUINO_LORAWAN_VERSION_GET_MAJOR(v)    \
         (((v) >> 24u) & 0xFFu)
