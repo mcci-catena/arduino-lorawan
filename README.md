@@ -2,7 +2,7 @@
 
 **User-friendly library for using the Arduino LMIC library with The Things Network and LoRaWAN&reg; networks.**
 
-[![GitHub release](https://img.shields.io/github/release/mcci-catena/arduino-lorawan.svg)](https://github.com/mcci-catena/arduino-lorawan/releases/latest) [![GitHub commits](https://img.shields.io/github/commits-since/mcci-catena/arduino-lorawan/latest.svg)](https://github.com/mcci-catena/arduino-lorawan/compare/v0.9.2...master) [![Build Status](https://travis-ci.com/mcci-catena/arduino-lorawan.svg?branch=master)](https://travis-ci.com/mcci-catena/arduino-lorawan)
+[![GitHub release](https://img.shields.io/github/release/mcci-catena/arduino-lorawan.svg)](https://github.com/mcci-catena/arduino-lorawan/releases/latest) [![GitHub commits](https://img.shields.io/github/commits-since/mcci-catena/arduino-lorawan/latest.svg)](https://github.com/mcci-catena/arduino-lorawan/compare/v0.10.0...master) [![Build Status](https://travis-ci.com/mcci-catena/arduino-lorawan.svg?branch=master)](https://travis-ci.com/mcci-catena/arduino-lorawan)
 
 **Contents:**
 
