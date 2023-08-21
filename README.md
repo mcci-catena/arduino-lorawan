@@ -428,9 +428,10 @@ Much more elaborate uses can be found in the MCCI [Catena-Arduino-Platform](http
 
 ## Release History
 
-- v0.10.0-pre1 includes the following changes.
+- v0.10.0 includes the following changes.
 
-  - examples/arduino_lorawan_esp32_example: @matthias-bs Added pin mappings for some common ESP32 LoRaWAN boards 
+  - examples/arduino_lorawan_esp32_example: @matthias-bs Added pin mappings for some common ESP32 LoRaWAN boards.
+  - Added return statement on `Arduino_LoRaWAN::setFrequency()`.
 
 - v0.9.2 includes the following changes.
 
