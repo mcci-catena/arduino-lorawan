@@ -2,7 +2,7 @@
 
 **User-friendly library for using the Arduino LMIC library with The Things Network and LoRaWAN&reg; networks.**
 
-[![GitHub release](https://img.shields.io/github/release/mcci-catena/arduino-lorawan.svg)](https://github.com/mcci-catena/arduino-lorawan/releases/latest) [![GitHub commits](https://img.shields.io/github/commits-since/mcci-catena/arduino-lorawan/latest.svg)](https://github.com/mcci-catena/arduino-lorawan/compare/v0.9.2...master) [![Build Status](https://travis-ci.com/mcci-catena/arduino-lorawan.svg?branch=master)](https://travis-ci.com/mcci-catena/arduino-lorawan)
+[![GitHub release](https://img.shields.io/github/release/mcci-catena/arduino-lorawan.svg)](https://github.com/mcci-catena/arduino-lorawan/releases/latest) [![GitHub commits](https://img.shields.io/github/commits-since/mcci-catena/arduino-lorawan/latest.svg)](https://github.com/mcci-catena/arduino-lorawan/compare/v0.10.0...master) [![Build Status](https://travis-ci.com/mcci-catena/arduino-lorawan.svg?branch=master)](https://travis-ci.com/mcci-catena/arduino-lorawan)
 
 **Contents:**
 
@@ -427,6 +427,10 @@ However, [examples/simple_sensor_bme280](examples/simple_sensor_bme280/simple_se
 Much more elaborate uses can be found in the MCCI [Catena-Arduino-Platform](https://github.com/mcci-catena/Catena-Arduino-Platform) library; but that library is so large that it's tough to figure out what's required for LoRaWAN, and what's used for supporting MCCI boards.
 
 ## Release History
+
+- v0.10.0 includes the following changes.
+  - examples/arduino_lorawan_esp32_example: @matthias-bs Added pin mappings for some common ESP32 LoRaWAN boards.
+  - Added return statement on `Arduino_LoRaWAN::setFrequency()`.
 
 - v0.9.2 includes the following changes.
 
