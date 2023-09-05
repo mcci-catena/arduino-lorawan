@@ -2,7 +2,7 @@
 // arduino_lorawan_esp32_example.ino
 // 
 // Example sketch showing how to periodically poll a sensor and send the data
-// to The Things Network.
+// to a LoRaWAN network.
 //
 // Based on simple_sensor_bme280.ino with the following modifications: 
 // - reading the sensor data is replaced by a stub
@@ -59,6 +59,9 @@
 // History:
 //
 // 20220729 Created
+// 20230307 Changed cMyLoRaWAN to inherit from Arduino_LoRaWAN_network
+//          instead of Arduino_LoRaWAN_ttn
+//          Added Pin mappings for some common ESP32 LoRaWAN boards
 // 20230903 Added time keeping with RTC and synchronization to network time
 //          Changed cMyLoRaWAN to inherit from Arduino_LoRaWAN_network
 //          instead of Arduino_LoRaWAN_ttn
@@ -99,7 +102,17 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
+//--- Select LoRaWAN Network ---
+// The Things Network
 #define ARDUINO_LMIC_CFG_NETWORK_TTN 1
+
+// Helium Network
+// see mcci-cathena/arduino-lorawan issue #185 "Add Helium EU868 support"
+// (https://github.com/mcci-catena/arduino-lorawan/issues/185)
+#define ARDUINO_LMIC_CFG_NETWORK_GENERIC 0
+
+// (Add other networks here)
+
 
 #include <Arduino_LoRaWAN_network.h>
 #include <Arduino_LoRaWAN_EventLog.h>
@@ -147,8 +160,10 @@
 // LoRa_Serialization
 #include <LoraMessage.h>
 
-// Pin mapping for ESP32
-// SPI2 is used on ESP32 per default! (e.g. see https://github.com/espressif/arduino-esp32/tree/master/variants/doitESP32devkitV1)
+
+// Pin mappings for some common ESP32 LoRaWAN boards.
+// The ARDUINO_* defines are set by selecting the appropriate board (and borad variant, if applicable) in the Arduino IDE.
+// The default SPI port of the specific board will be used.
 #if defined(ARDUINO_TTGO_LoRa32_V1)
     // https://github.com/espressif/arduino-esp32/blob/master/variants/ttgo-lora32-v1/pins_arduino.h
     // http://www.lilygo.cn/prod_view.aspx?TypeId=50003&Id=1130&FId=t3:50003:3
@@ -219,6 +234,7 @@
 
 /// Enter your time zone (https://remotemonitoringsystems.ca/time-zone-abbreviations.php)
 const char* TZ_INFO    = "CET-1CEST-2,M3.5.0/02:00:00,M10.5.0/03:00:00";  
+
 
 
 // Uplink message payload size
@@ -1258,7 +1274,7 @@ cSensor::doUplink(void) {
     // Status flags (Examples)
     bool data_ok    = true; // validation of sensor data
     bool battery_ok = true; // sensor battery status
-        
+    
     DEBUG_PRINTF("--- Uplink Data ---");
     DEBUG_PRINTF("Air Temperature:   % 3.1f °C", temperature_deg_c);
     DEBUG_PRINTF("Humidity:           %2d   %%", humidity_percent);
@@ -1269,6 +1285,7 @@ cSensor::doUplink(void) {
     DEBUG_PRINTF("    data_ok:        %d",       data_ok);
     DEBUG_PRINTF("    runtimeExpired: %d",       runtimeExpired);
     DEBUG_PRINTF("");
+
     
     // Serialize data into byte array
     // NOTE: 
