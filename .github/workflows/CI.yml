@@ -120,12 +120,7 @@ jobs:
             else
               # build sketch
               echo -e "\n\033[1;33mBuilding ${example##*/} ... \033[0m";
-              if [[ "${{ contains(matrix.board, '@1.0.6') }}" == "true" ]]; then
-                # hardcoded fqbn, because 'esp32:esp32@1.0.6' did not work
-                arduino-cli compile --libraries /home/runner/work/arduino-lorawan --fqbn esp32:esp32:esp32${{ steps.prep.outputs.options }} $example --warnings=${{ steps.prep.outputs.warnings }}
-              else
-                arduino-cli compile --libraries /home/runner/work/arduino-lorawan --fqbn ${{ matrix.board }}${{ steps.prep.outputs.options }} $example --warnings=${{ steps.prep.outputs.warnings }}
-              fi
+              arduino-cli compile --libraries /home/runner/work/arduino-lorawan --fqbn ${{ matrix.board }}${{ steps.prep.outputs.options }} $example --warnings=${{ steps.prep.outputs.warnings }}
 
               if [ $? -ne 0 ]; then
                 echo -e "\033[1;31m${example##*/} build FAILED\033[0m\n";
