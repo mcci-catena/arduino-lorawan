@@ -71,7 +71,8 @@ jobs:
             "MCCI Arduino LoRaWAN Library@0.10.0"
             "MCCI Arduino Development Kit ADK@0.2.2"
             "LoRa Serialization@3.2.1"
-            "ESP32Time@2.0.4")
+            "ESP32Time@2.0.4"
+            "ESP32AnalogRead@0.2.1")
           for i in "${required_libs[@]}"
           do
             arduino-cli lib install "$i"
