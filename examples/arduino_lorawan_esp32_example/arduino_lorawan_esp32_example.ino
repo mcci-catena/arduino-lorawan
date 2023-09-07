@@ -28,6 +28,7 @@
 // MCCI Arduino LoRaWAN Library         0.10.0
 // LoRa_Serialization                   3.2.1
 // ESP32Time                            2.0.4
+// ESP32AnalogRead                      0.2.1 (optional)
 //
 //
 // created: 07/2022
@@ -73,8 +74,8 @@
 //          Added setting of RTC via downlink
 //          Added remote configuration via LoRaWAN downlink
 //          Added configuration for several ESP32 boards
-//          Implemented downlink commands CMD_GET_DATETIME & CMD_GET_CONFIG, 
-//          added CMD_RESET_RAINGAUGE <flags>
+//          Implemented downlink commands CMD_GET_DATETIME & CMD_GET_CONFIG
+// 20230907 Added missing code for energy saving modes & generic ADC usage
 //
 //
 // Notes:
@@ -127,6 +128,19 @@
 
 // Enable debug mode (debug messages via serial port)
 //#define _DEBUG_MODE_
+// NOTE: Add #define LMIC_ENABLE_DeviceTimeReq 1
+//        in ~/Arduino/libraries/MCCI_LoRaWAN_LMIC_library/project_config/lmic_project_config.h
+#if (not(LMIC_ENABLE_DeviceTimeReq))
+    #warning "LMIC_ENABLE_DeviceTimeReq is not set - will not be able to retrieve network time!"
+#endif
+
+// Battery voltage thresholds for energy saving
+
+// If SLEEP_EN is defined and battery voltage is below BATTERY_WEAK [mV], MCU will sleep for SLEEP_INTERVAL_LONG
+#define BATTERY_WEAK 0 // example: 3500
+
+// Go to sleep mode immediately after start if battery voltage is below BATTERY_LOW [mV]
+#define BATTERY_LOW 0 // example: 3200
 
 /// Enable sleep mode - sleep after successful transmission to TTN (recommended!)
 #define SLEEP_EN
@@ -143,6 +157,9 @@
 /// Force deep sleep after a certain time, even if transmission was not completed
 #define FORCE_SLEEP
 
+// Force a new join procedure (instead of re-join) after encountering sleep timeout
+#define FORCE_JOIN_AFTER_SLEEP_TIMEOUT
+
 /// During initialization (not joined), force deep sleep after SLEEP_TIMEOUT_INITIAL (if enabled)
 #define SLEEP_TIMEOUT_INITIAL 1800
 
@@ -152,6 +169,65 @@
 /// Additional timeout to be applied after joining if Network Time Request pending
 #define SLEEP_TIMEOUT_EXTRA 300
 
+// Enable battery / supply voltage measurement
+#define ADC_EN
+
+// ADC for supply/battery voltage measurement
+// default: on-board connection to VB on FireBeetle ESP32 (with R10+R11 assembled)
+//          on-board connection to VBAT on TTGO LoRa32
+//          on-board connection to VBAT on Adafruit Feather ESP32
+//          no VBAT input circuit on Adafruit Feather ESP32-S2
+#ifdef ADC_EN
+    #if defined(ARDUINO_TTGO_LoRa32_V1) || defined(ARDUINO_TTGO_LoRa32_V2) || defined(ARDUINO_TTGO_LoRa32_v21new)
+        #define PIN_ADC_IN        35
+    #elif defined(ARDUINO_FEATHER_ESP32)
+        #define PIN_ADC_IN        A13
+    #elif defined(LORAWAN_NODE)
+        #define PIN_ADC_IN        A0
+    #else
+        #define PIN_ADC_IN        34
+    #endif
+#endif
+
+
+// Additional ADC pins (default: FireBeetle ESP32) 
+//#define PIN_ADC0_IN         A0
+//#define PIN_ADC1_IN         A1
+//#define PIN_ADC2_IN         A2
+#ifdef LORAWAN_NODE
+  #define PIN_ADC3_IN         A3
+#endif
+
+#ifdef PIN_ADC0_IN
+    // Voltage divider R1 / (R1 + R2) -> V_meas = V(R1 + R2); V_adc = V(R1)
+    const float ADC0_DIV         = 0.5;       
+    const uint8_t ADC0_SAMPLES   = 10;
+#endif
+
+#ifdef PIN_ADC1_IN
+    // Voltage divider R1 / (R1 + R2) -> V_meas = V(R1 + R2); V_adc = V(R1)
+    const float ADC1_DIV         = 0.5;       
+    const uint8_t ADC1_SAMPLES   = 10;
+#endif
+
+#ifdef ADC_EN
+    // Voltage divider R1 / (R1 + R2) -> V_meas = V(R1 + R2); V_adc = V(R1)
+    const float UBATT_DIV         = 0.5;       
+    const uint8_t UBATT_SAMPLES   = 10;
+#endif
+
+#ifdef PIN_ADC2_IN
+    // Voltage divider R1 / (R1 + R2) -> V_meas = V(R1 + R2); V_adc = V(R1)
+    const float ADC2_DIV         = 0.5;       
+    const uint8_t ADC2_SAMPLES   = 10;
+#endif
+
+#ifdef PIN_ADC3_IN
+    // Voltage divider R1 / (R1 + R2) -> V_meas = V(R1 + R2); V_adc = V(R1)
+    const float ADC3_DIV         = 0.5;       
+    const uint8_t ADC3_SAMPLES   = 10;
+#endif
+
 /// Preferences namespace
 #define PREFS_NAMESPACE "MY_PREFS"
 
@@ -160,6 +236,10 @@
 // LoRa_Serialization
 #include <LoraMessage.h>
 
+#ifdef ADC_EN
+    // ESP32 calibrated Analog Input Reading
+    #include <ESP32AnalogRead.h>
+#endif
 
 // Pin mappings for some common ESP32 LoRaWAN boards.
 // The ARDUINO_* defines are set by selecting the appropriate board (and borad variant, if applicable) in the Arduino IDE.
@@ -414,6 +494,32 @@ public:
     uint16_t getVoltageBattery(void);
     uint16_t getVoltageSupply(void);
     
+#ifdef ADC_EN
+        /*!
+         * \fn getVoltage
+         * 
+         * \brief Get supply voltage (fixed ADC input circuit on FireBeetle ESP32 board)
+         * 
+         * \returns Voltage [mV]
+         */
+        uint16_t getVoltage(void);
+        
+        /*
+         * \fn getVoltage
+         * 
+         * \brief Get ADC voltage from specified port with averaging and application of divider
+         * 
+         * \param adc ADC port
+         * 
+         * \param samples No. of samples used in averaging
+         * 
+         * \param divider Voltage divider
+         * 
+         * \returns Voltage [mV]
+         */
+        uint16_t getVoltage(ESP32AnalogRead &adc, uint8_t samples, float divider);
+    #endif
+        
   /*!
      * \fn uplinkRequest
      * 
@@ -501,6 +607,24 @@ static uint8_t loraData[PAYLOAD_SIZE];
 
 /// Force sleep mode after <sleepTimeout> has been reached (if FORCE_SLEEP is defined) 
 
+#ifdef ADC_EN
+    // ESP32 ADC with calibration
+    ESP32AnalogRead adc; //!< ADC object for supply voltage measurement
+#endif
+
+// ESP32 ADC with calibration
+#if defined(ADC_EN) && defined(PIN_ADC0_IN)
+    ESP32AnalogRead adc0; //!< ADC object
+#endif
+#if defined(ADC_EN) && defined(PIN_ADC1_IN)
+    ESP32AnalogRead adc1; //!< ADC object
+#endif
+#if defined(ADC_EN) && defined(PIN_ADC2_IN)
+    ESP32AnalogRead adc2; //!< ADC object
+#endif
+#if defined(ADC_EN) && defined(PIN_ADC3_IN)
+    ESP32AnalogRead adc3; //!< ADC object
+#endif
 /// ESP32 preferences (stored in flash memory)
 Preferences preferences;
 
@@ -1166,6 +1290,16 @@ cSensor::setup(std::uint32_t uplinkPeriodMs) {
     this->m_uplinkPeriodMs = uplinkPeriodMs;
     this->m_tReference = millis();
     
+    #ifdef ADC_EN
+        // Use ADC with PIN_ADC_IN
+        adc.attach(PIN_ADC_IN);
+        
+        if (getVoltage() < BATTERY_LOW) {
+          DEBUG_PRINTF("Battery low!");
+          prepareSleep();
+        }
+    #endif
+
     // Initialize your sensors here...
 }
 
@@ -1190,6 +1324,42 @@ cSensor::loop(void) {
     }
 }
 
+#ifdef ADC_EN
+//
+// Get supply / battery voltage
+//
+uint16_t
+cSensor::getVoltage(void)
+{
+    float voltage_raw = 0;
+    for (uint8_t i=0; i < UBATT_SAMPLES; i++) {
+        voltage_raw += float(adc.readMiliVolts());
+    }
+    uint16_t voltage = int(voltage_raw / UBATT_SAMPLES / UBATT_DIV);
+     
+    DEBUG_PRINTF("Voltage = %dmV", voltage);
+
+    return voltage;
+}
+
+//
+// Get supply / battery voltage
+//
+uint16_t
+cSensor::getVoltage(ESP32AnalogRead &adc, uint8_t samples, float divider)
+{
+    float voltage_raw = 0;
+    for (uint8_t i=0; i < samples; i++) {
+        voltage_raw += float(adc.readMiliVolts());
+    }
+    uint16_t voltage = int(voltage_raw / samples / divider);
+     
+    DEBUG_PRINTF("Voltage = %dmV", voltage);
+
+    return voltage;
+}
+#endif
+
 //
 // Get battery voltage (Stub)
 //
@@ -1202,6 +1372,7 @@ cSensor::getVoltageBattery(void)
 
     return voltage;
 }
+
 
 //
 // Get supply voltage (Stub)
