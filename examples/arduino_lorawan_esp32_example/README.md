@@ -1,6 +1,4 @@
-# arduino_lorawan_esp32_example
-
-ESP32 LoRaWAN Sensor Node Example
+# ESP32 LoRaWAN Sensor Node Example
 
 The provided sensor data function stubs `getTemperature()` and `getHumidity()` can be replaced by real function implementations. External sensors can be integrated via Bluetooth Low Energy (BLE), OneWire, UART, analog/digital inputs etc. 
 
