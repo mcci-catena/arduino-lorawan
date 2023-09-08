@@ -18,7 +18,7 @@ The provided sensor data function stubs `getTemperature()` and `getHumidity()` c
 * Example Javascript Uplink/Downlink Formatters for The Things Network
 * Debug Output using Arduino Logging Functions - using Debug Level set in Arduino IDE
 
-## Hardware
+## Supported Hardware
 * [LoRaWAN_Node](https://github.com/matthias-bs/LoRaWAN_Node)
 * [LILYGO® TTGO LORA32](http://www.lilygo.cn/prod_view.aspx?TypeId=50060&Id=1326&FId=t3:50060:3)
     
