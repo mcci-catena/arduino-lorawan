@@ -385,10 +385,10 @@ const uint8_t PAYLOAD_SIZE = 51;
 // byte4: rtc_source[ 7: 0]
 //
 // CMD_GET_CONFIG -> FPort=3
-// byte1: sleep_interval[15: 8]
-// byte2: sleep_interval[ 7:0]
-// byte3: sleep_interval_long[15:8]
-// byte4: sleep_interval_long[ 7:0]
+// byte0: sleep_interval[15:8]
+// byte1: sleep_interval[ 7:0]
+// byte2: sleep_interval_long[15:8]
+// byte3: sleep_interval_long[ 7:0]
 
 #define CMD_SET_SLEEP_INTERVAL          0xA8
 #define CMD_SET_SLEEP_INTERVAL_LONG     0xA9
