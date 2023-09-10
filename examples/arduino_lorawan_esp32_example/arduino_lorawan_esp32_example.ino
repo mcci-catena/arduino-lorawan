@@ -76,6 +76,7 @@
 //          Added configuration for several ESP32 boards
 //          Implemented downlink commands CMD_GET_DATETIME & CMD_GET_CONFIG
 // 20230907 Added missing code for energy saving modes & generic ADC usage
+// 20230910 Added pin definitions for FIREBEETLE_COVER_LORA
 //
 //
 // Notes:
@@ -300,6 +301,17 @@
     #pragma message("NOT TESTED!!!")
     #pragma message("ARDUINO_ADAFRUIT_FEATHER_ESP32 defined; assuming RFM95W FeatherWing will be used")
     #pragma message("Required wiring: A to RST, B to DIO1, D to DIO0, E to CS")
+
+#elif defined(FIREBEETLE_COVER_LORA)
+    // https://wiki.dfrobot.com/FireBeetle_ESP32_IOT_Microcontroller(V3.0)__Supports_Wi-Fi_&_Bluetooth__SKU__DFR0478
+    // https://wiki.dfrobot.com/FireBeetle_Covers_LoRa_Radio_868MHz_SKU_TEL0125
+    #define PIN_LMIC_NSS      27 // D4
+    #define PIN_LMIC_RST      25 // D2
+    #define PIN_LMIC_DIO0     26 // D3
+    #define PIN_LMIC_DIO1      9 // D5
+    #define PIN_LMIC_DIO2     cMyLoRaWAN::lmic_pinmap::LMIC_UNUSED_PIN
+    #pragma message("FIREBEETLE_COVER_LORA defined; assuming FireBeetle ESP32 with FireBeetle Cover LoRa will be used")
+    #pragma message("Required wiring: D2 to RESET, D3 to DIO0, D4 to CS, D5 to DIO1")
 
 #else
     // LoRaWAN_Node board
