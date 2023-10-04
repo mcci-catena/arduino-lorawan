@@ -853,7 +853,7 @@ void ReceiveCb(
             prefs.sleep_interval_long = pBuffer[2] | (pBuffer[1] << 8);
             log_d("Set sleep_interval_long: %u s", prefs.sleep_interval_long);
             preferences.begin(PREFS_NAMESPACE, false);
-            preferences.putUShort("sleep_interval", prefs.sleep_interval_long);
+            preferences.putUShort("sleep_interval_long", prefs.sleep_interval_long);
             preferences.end();            
         }
     }
