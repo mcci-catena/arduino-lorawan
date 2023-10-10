@@ -161,7 +161,7 @@
 
 // Battery voltage thresholds for energy saving
 
-// If SLEEP_EN is defined and battery voltage is below BATTERY_WEAK [mV], MCU will sleep for SLEEP_INTERVAL_LONG
+// If SLEEP_EN is defined and battery voltage is <= BATTERY_WEAK [mV], MCU will sleep for SLEEP_INTERVAL_LONG
 #if defined(ARDUINO_ADAFRUIT_FEATHER_RP2040) || defined(ARDUINO_ADAFRUIT_FEATHER_ESP32S2)
     // External voltage divider required
     #pragma message("External voltage divider required for battery voltage measurement.")
@@ -176,7 +176,7 @@
 #endif
 
 
-// Go to sleep mode immediately after start if battery voltage is below BATTERY_LOW [mV]
+// Go to sleep mode immediately after start if battery voltage is <= BATTERY_LOW [mV]
 #define BATTERY_LOW 0 // example: 3200
 
 /// Enable sleep mode - sleep after successful transmission to TTN (recommended!)
@@ -185,7 +185,7 @@
 /// If SLEEP_EN is defined, MCU will sleep for SLEEP_INTERVAL seconds after succesful transmission
 #define SLEEP_INTERVAL 360
 
-/// Long sleep interval, MCU will sleep for SLEEP_INTERVAL_LONG seconds if battery voltage is below BATTERY_WEAK
+/// Long sleep interval, MCU will sleep for SLEEP_INTERVAL_LONG seconds if battery voltage is <= BATTERY_WEAK
 #define SLEEP_INTERVAL_LONG 900
 
 /// RTC to network time sync interval (in minutes)
@@ -1345,7 +1345,7 @@ void prepareSleep(void) {
     longSleep = false;
     #ifdef ADC_EN
         // Long sleep interval if battery is weak
-        if (mySensor.getVoltage() < BATTERY_WEAK) {
+        if (mySensor.getVoltage() <= BATTERY_WEAK) {
             sleep_interval = prefs.sleep_interval_long;
             longSleep = true;
         }
@@ -1392,7 +1392,7 @@ void prepareSleep(void) {
         rtc_get_datetime(&dt);
         time_t now = datetime_to_epoch(&dt, NULL);
         watchdog_hw->scratch[0] = now;
-        log_i("Now: %lu", now);
+        log_i("Now: %llu", now);
         
         rp2040.restart();
     #endif
@@ -1575,7 +1575,7 @@ cSensor::setup(std::uint32_t uplinkPeriodMs) {
             analogReadResolution(12);
         #endif
         
-        if (getVoltage() < BATTERY_LOW) {
+        if (getVoltage() <= BATTERY_LOW) {
           log_i("Battery low!");
           prepareSleep();
         }
