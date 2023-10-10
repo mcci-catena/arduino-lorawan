@@ -817,7 +817,7 @@ void setup() {
     delay(500);
 
     #if defined(ARDUINO_ARCH_RP2040)
-        log_i("Time saved: %lu", time_saved);
+        log_i("Time saved: %llu", time_saved);
     #endif
 
     preferences.begin(PREFS_NAMESPACE, false);
