@@ -3,11 +3,12 @@
 The provided sensor data function stubs `getTemperature()` and `getHumidity()` can be replaced by real function implementations. External sensors can be integrated via Bluetooth Low Energy (BLE), OneWire, UART, analog/digital inputs etc. 
 
 ## Features
-* Pin configurations for several ESP32 boards
+* Pin configurations for several ESP32 boards and an RP2040 board
 * Tested with [The Things Network](https://www.thethingsnetwork.org/) and [Helium Network](https://www.helium.com/) (EU868)
-* Fast LoRaWAN Joining after Deep Sleep (using ESP32 RTC RAM)
-* Low Power Design (using ESP32 Deep Sleep Mode)
-* ESP32 Analog Digital Converter Integration (optional)
+* Low Power Design (using ESP32 Deep Sleep Mode / RP2040 Sleep State)
+* Fast LoRaWAN Joining after Deep Sleep (using ESP32 RTC RAM / RP2040 Flash)
+
+* ESP32/RP2040 Analog Digital Converter Integration (optional)
     * Supply/Battery Voltage Monitoring
     * Analog Sensor Data Aquisition 
 * Time Keeping with RTC and Synchronization to Network Time
@@ -20,7 +21,7 @@ The provided sensor data function stubs `getTemperature()` and `getHumidity()` c
 
 ## Supported Hardware
 * [LoRaWAN_Node](https://github.com/matthias-bs/LoRaWAN_Node)
-* [LILYGO® TTGO LORA32](http://www.lilygo.cn/prod_view.aspx?TypeId=50060&Id=1326&FId=t3:50060:3)
+* [LILYGO® TTGO LORA32](https://www.lilygo.cc/products/lora3?variant=42272562282677)
     
     [TTGO LoRa32 V2.1.6 Pinout](https://github.com/lnlp/pinout-diagrams/blob/main/LoRa%20development%20boards/TTGO%20LoRa32%20V2.1.6%20Pinout%20(LLP).pdf) 
 
@@ -33,6 +34,8 @@ The provided sensor data function stubs `getTemperature()` and `getHumidity()` c
 * [Thingpulse ePulse Feather](https://thingpulse.com/product/epulse-feather-low-power-esp32-development-board/) with [Adafruit LoRa Radio FeatherWing](https://www.adafruit.com/product/3231) (**see** [**#56**](https://github.com/matthias-bs/BresserWeatherSensorTTN/issues/56))
 
 * [DFRobot FireBeetle ESP32 IoT Microcontroller](https://www.dfrobot.com/product-1590.html) with [FireBeetle Cover LoRa Radio 868MHz](https://www.dfrobot.com/product-1831.html)
+
+* [Adafruit Feather RP2040](https://www.adafruit.com/product/4884) with [Adafruit LoRa Radio FeatherWing](https://www.adafruit.com/product/3231)
 
 See [The Things Network's](https://www.thethingsnetwork.org) [Big ESP32 + SX127x topic part 2](https://www.thethingsnetwork.org/forum/t/big-esp32-sx127x-topic-part-2/11973) for some hardware options.
 
@@ -70,6 +73,7 @@ Mains adapter or Li-Ion battery (with or without solar charger) - depending on d
 | MCCI Arduino LoRaWAN Library       | r                            |
 | LoRa_Serialization                 | r                            |
 | ESP32Time                          | r                            |
+| Preferences                        | r (RP2040)                   |
 | ESP32AnalogRead                    | o                            |
 
 
@@ -110,12 +114,13 @@ If this is not what you need, you have to switch to Manual Configuration.
    | -------------------------------------------------------------- | ------------------ | ---------------------------- | ---------------------- | -------- | ------- |
    | [LILYGO®TTGO-LORA32 V1](https://github.com/Xinyuan-LilyGo/TTGO-LoRa-Series) | "TTGO LoRa32-OLED" | "TTGO LoRa32 V1 (No TFCard)" | ARDUINO_TTGO_LORA32_V1 | SX1276 (HPD13A) | -   |
    | [LILYGO®TTGO-LORA32 V2](https://github.com/LilyGO/TTGO-LORA32) | "TTGO LoRa32-OLED" | "TTGO LoRa32 V2"             | ARDUINO_TTGO_LoRa32_V2 | SX1276 (HPD13A) | Wire DIO1 to GPIO33 |
-   | [LILYGO®TTGO-LORA32 V2.1](http://www.lilygo.cn/prod_view.aspx?TypeId=50060&Id=1271&FId=t3:50060:3) | "TTGO LoRa32-OLED" | "TTGO LoRa32 V2.1 (1.6.1)" | ARDUINO_TTGO_LoRa32_v21new |  SX1276 (HPD13A) | - |
+   | [LILYGO®TTGO-LORA32 V2.1](https://www.lilygo.cc/products/lora3?variant=42272562282677) | "TTGO LoRa32-OLED" | "TTGO LoRa32 V2.1 (1.6.1)" | ARDUINO_TTGO_LoRa32_v21new |  SX1276 (HPD13A) | - |
    | [Heltec Wireless Stick](https://heltec.org/project/wireless-stick/) | "Heltec Wireless Stick" | n.a. | ARDUINO_heltec_wireless_stick |  SX1276  | - |
    | [LoRaWAN_Node](https://github.com/matthias-bs/LoRaWAN_Node)      | "FireBeetle-ESP32" | n.a.                       | ARDUINO_ESP32_DEV -> LORAWAN_NODE     | SX1276 (RFM95W) | -      |
    | [DFRobot FireBeetle ESP32 IoT Microcontroller](https://www.dfrobot.com/product-1590.html) with [FireBeetle Cover LoRa Radio 868MHz](https://www.dfrobot.com/product-1831.html) | "FireBeetle-ESP32" | n.a.                       | ARDUINO_ESP32_DEV & FIREBEETLE_ESP32_COVER_LORA | SX1276 (LoRa1276) | Wiring on the cover: <br>D2 to RESET<br>D3 to DIO0<br>D4 to CS<br>D5 to DIO1 |
    | [Adafruit Feather ESP32S2 with Adafruit LoRa Radio FeatherWing](https://github.com/matthias-bs/BresserWeatherSensorReceiver#adafruit-feather-esp32s2-with-adafruit-lora-radio-featherwing)                                | "Adafruit Feather ESP32-S2" | n.a.               | ARDUINO_<br>ADAFRUIT_FEATHER_ESP32S2   | SX1276 (RFM95W) | **No Bluetooth available!**<br>Wiring on the Featherwing:<br>E to IRQ<br>D to CS<br>C to RST<br>A to DI01 |
-| [Thingpulse ePulse Feather](https://thingpulse.com/product/epulse-feather-low-power-esp32-development-board/) with [Adafruit LoRa Radio FeatherWing](https://www.adafruit.com/product/3231)     | "Adafruit ESP32 Feather" | n.a.               | ARDUINO_FEATHER_ESP32   | SX1276 (RFM95W) | Wiring on the Featherwing:<br>E to IRQ<br>D to CS<br>C to RST<br>A to DI01<br><br>**see** [**#55**](https://github.com/matthias-bs/BresserWeatherSensorTTN/issues/55) **and** [**#56**](https://github.com/matthias-bs/BresserWeatherSensorTTN/issues/56) |
+| [Thingpulse ePulse Feather](https://thingpulse.com/product/epulse-feather-low-power-esp32-development-board/) with [Adafruit LoRa Radio FeatherWing](https://www.adafruit.com/product/3231)     | "Adafruit ESP32 Feather" | n.a.               | ARDUINO_FEATHER_ESP32   | SX1276 (RFM95W) | Wiring on the Featherwing:<br>E to IRQ<br>D to CS<br>C to RST<br>A to DI01<br><br>**see** [**#55**](https://github.com/matthias-bs/BresserWeatherSensorTTN/issues/55) |
+| [Adafruit Feather RP2040](https://www.adafruit.com/product/4884) with [Adafruit LoRa Radio FeatherWing](https://www.adafruit.com/product/3231)     | "Adafruit Feather RP2040" | n.a.               | ARDUINO_ADAFRUIT_FEATHER_RP2040   | SX1276 (RFM95W) | **No Bluetooth available!**<br>**Configuration: Choose an entry with "FS" in section __Flash Size__!**<br>Wiring on the Featherwing:<br>E to IRQ<br>D to CS<br>C to RST<br>A to DI01 |
 
 If enabled in the Arduino IDE Preferences ("Verbose Output"), the preprosessor will provide some output regarding the selected configuration, e.g.
 
@@ -329,3 +334,4 @@ Based on
 * [Lora-Serialization](https://github.com/thesolarnomad/lora-serialization) by Joscha Feth
 * [ESP32Time](https://github.com/fbiego/ESP32Time) by Felix Biego
 * [ESP32AnalogRead](https://github.com/madhephaestus/ESP32AnalogRead) by Kevin Harrington (madhephaestus)
+* [Preferences](https://github.com/vshymanskyy/Preferences) by Volodymyr Shymanskyy
