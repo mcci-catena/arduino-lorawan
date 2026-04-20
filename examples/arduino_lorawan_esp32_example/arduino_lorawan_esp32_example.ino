@@ -260,7 +260,8 @@ public:
     uint16_t getVoltageSupply(void);
     
     bool uplinkRequest(void) {
-        m_fUplinkRequest = true;
+        
+        return m_fUplinkRequest = true;
     };
     ///
     /// \brief set up the sensor object
