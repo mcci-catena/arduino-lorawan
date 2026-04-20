@@ -94,10 +94,7 @@ Arduino_LoRaWAN::cEventLog::processSingleEvent()
 
     auto const pEvent = &this->m_queue[this->m_head];
 
-    Serial.print(osticks2ms(pEvent->time));
-    Serial.print(" ms:");
     pEvent->pCallBack(pEvent);
-    Serial.println();
 
     if (++m_head == sizeof(m_queue) / sizeof(m_queue[0]))
         {
