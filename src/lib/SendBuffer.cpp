@@ -88,7 +88,8 @@ Description:
         transmitted. For unconfirmed uplinks, as long as we sent the message, we
         return true. (Uplinks might be canceled due to link tracking or other issues.)
 
-        If the LMIC is already processing a message, then the request
+        If the LMIC is already processing a message, or is shut down (as
+        begin() leaves it when there is no provisioning), then the request
         is immediately completed, and this routine returns false.
 
         We guarantee that pDoneFn will be called once, when message
@@ -113,7 +114,10 @@ bool Arduino_LoRaWAN::SendBuffer(
 	uint8_t port
         )
         {
-        if (! this->GetTxReady())
+        // fail at once if the LMIC is shut down (for example, begin() found
+        // no provisioning): the LMIC would accept the message but never
+        // complete it, because the engine doesn't run while shut down (#95).
+        if ((LMIC.opmode & OP_SHUTDOWN) != 0 || ! this->GetTxReady())
                 {
                 if (pDoneFn)
                         (*pDoneFn)(pDoneCtx, false);

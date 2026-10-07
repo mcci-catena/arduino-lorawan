@@ -428,6 +428,10 @@ Much more elaborate uses can be found in the MCCI [Catena-Arduino-Platform](http
 
 ## Release History
 
+- v0.10.1 (in progress) includes the following changes.
+
+  - [#95](https://github.com/mcci-catena/arduino-lorawan/issues/95): `begin()` shuts down the LMIC when there is no provisioning, and `SendBuffer()` fails at once while the LMIC is shut down. Before, the first `SendBuffer()` started an OTAA join with blank credentials (v0.10.1-pre1).
+
 - v0.10.0 includes the following changes.
 
   - examples/arduino_lorawan_esp32_example: @matthias-bs Added pin mappings for some common ESP32 LoRaWAN boards.
