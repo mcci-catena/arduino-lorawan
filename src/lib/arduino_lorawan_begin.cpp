@@ -57,10 +57,16 @@ bool Arduino_LoRaWAN::begin(
         }
 
     //
-    // If no provisioning info, return false.
+    // If no provisioning info, shut the LMIC down and return false. Left
+    // running, the LMIC would start an OTAA join with blank credentials
+    // on the first SendBuffer() (#95). SendBuffer() fails while the LMIC
+    // is shut down; call begin() again after provisioning.
     //
     if (this->GetProvisioningStyle() == ProvisioningStyle::kNone)
+        {
+        LMIC_shutdown();
         return false;
+        }
 
     //
     // this will succeed either if provisioned for ABP, or if OTAA and we
