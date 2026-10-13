@@ -72,6 +72,14 @@ Description:
         a message in the Arduino_LoRaWAN queue being processed,
         then transmit is not ready. Otherwise, transmit is ready.
 
+        The LMIC is busy if it is sending or receiving (OP_TXRXPEND),
+        has data queued (OP_TXDATA), is joining (OP_JOINING), or has
+        an uplink of its own pending, such as the answer to a MAC
+        command (OP_POLL). These are the conditions under which
+        LMIC_setTxData2() refuses a message (LMICJ_isTxPathBusy() in
+        arduino-lmic), so SendBuffer() succeeds only if this returns
+        true.
+
 Returns:
         true if ready for a message, false otherwise.
 
@@ -79,7 +87,7 @@ Returns:
 
 bool Arduino_LoRaWAN::GetTxReady() const
         {
-        if (LMIC.opmode & OP_TXRXPEND)
+        if (LMIC.opmode & (OP_POLL | OP_TXDATA | OP_JOINING | OP_TXRXPEND))
                 return false;
         else
                 return ! this->m_SendBufferData.fTxPending;

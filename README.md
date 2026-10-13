@@ -431,6 +431,7 @@ Much more elaborate uses can be found in the MCCI [Catena-Arduino-Platform](http
 - v0.10.1 (in progress) includes the following changes.
 
   - [#95](https://github.com/mcci-catena/arduino-lorawan/issues/95): `begin()` shuts down the LMIC when there is no provisioning, and `SendBuffer()` fails at once while the LMIC is shut down. Before, the first `SendBuffer()` started an OTAA join with blank credentials (v0.10.1-pre1).
+  - [#209](https://github.com/mcci-catena/arduino-lorawan/issues/209): `GetTxReady()` returns false whenever the LMIC would refuse a message: while it is joining, has data queued, or has an uplink of its own pending, such as the answer to a MAC command. Before, it checked only for a transmission or receive window in progress, so `SendBuffer()` could fail right after `GetTxReady()` returned true (v0.10.1-pre2).
 
 - v0.10.0 includes the following changes.
 
